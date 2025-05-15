@@ -1,0 +1,137 @@
+QComboBox,
+QLineEdit,
+QTextEdit {
+    height: 25px;
+    background-color: #ffffff;
+}
+
+QDateEdit {
+    height: 21px;
+    background-color: #ffffff;
+}
+
+QGraphicsView {
+    border-radius: 50%;
+}
+
+QGroupBox {
+    background-color: #f8f9fa;
+    border: 1px solid #0078D7;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Personaliza el título del QGroupBox */
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 3px 10px;
+}
+
+/* Cambia la apariencia cuando el grupo está deshabilitado */
+QGroupBox:disabled {
+    background-color: #e9ecef;
+    color: #aaa;
+    border: 1px solid #ccc;
+    font-weight: normal;
+}
+
+QHeaderView::section {
+    background-color: #0078D7;
+    color: white;
+    padding: 5px;
+    border: 1px solid #0056a3;
+    font-weight: normal;
+}
+
+QLineEdit {
+    padding-left: 5px;
+}
+
+QListView::item {
+    margin: 10px;
+}
+
+QPushButton {
+    /* background: #0078D7;
+    color: white;
+    border-radius: 5px; */
+    min-width: 80px;
+    min-height: 25px;
+}
+
+QPushButton:hover {
+    background: #4A98F7;
+}
+
+QPushButton:pressed {
+    background: #3A88E0;
+}
+
+QPushButton:disabled {
+    background: #C0DAFF;
+    color: #6B7A99;
+}
+
+QTableView {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+}
+
+QTableView::item:selected {
+    background-color: #c8e8f5;
+    color: #000000;
+}
+
+QTableView::horizontalHeader {
+    font-weight: normal;
+}
+
+/* Estilo del fondo del QTabWidget */
+QTabWidget::pane {
+    border: 1px solid #0078D7;
+    background: #f8f9fa;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+/* Estilo de las pestañas */
+QTabBar::tab {
+    background: #e0e0e0;
+    color: #333;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+/* Pestaña seleccionada */
+QTabBar::tab:selected {
+    background: #0078D7;
+    color: white;
+    border-bottom: 1px solid #0078D7;
+}
+
+/* Pestaña al pasar el mouse */
+QTabBar::tab:hover {
+    background: #66a3ff;
+    color: white;
+}
+
+/* Pestaña deshabilitada */
+QTabBar::tab:disabled {
+    color: #aaa;
+    background: #f0f0f0;
+}
+
+/* Estilo de las flechas de navegación de las pestañas */
+QTabBar::left-arrow,
+QTabBar::right-arrow {
+    width: 12px;
+    height: 12px;
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frm_main</class>
+ <widget class="QMainWindow" name="frm_main">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Plataforma Empresa</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_archive">
+    <property name="title">
+     <string>&amp;Archivo</string>
+    </property>
+    <addaction name="action_change_company"/>
+    <addaction name="action_close_session"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <widget class="QMenu" name="menu_administration">
+    <property name="title">
+     <string>A&amp;dministración</string>
+    </property>
+    <addaction name="action_employees"/>
+    <addaction name="action_vehicles"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>&amp;Ayuda</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menu_archive"/>
+   <addaction name="menu_administration"/>
+   <addaction name="menu_help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <action name="action_exit">
+   <property name="text">
+    <string>&amp;Salir</string>
+   </property>
+  </action>
+  <action name="act_companies">
+   <property name="text">
+    <string>Empresas</string>
+   </property>
+  </action>
+  <action name="act_users">
+   <property name="text">
+    <string>Usuarios</string>
+   </property>
+  </action>
+  <action name="act_roles">
+   <property name="text">
+    <string>Roles</string>
+   </property>
+  </action>
+  <action name="action_employees">
+   <property name="text">
+    <string>&amp;Empleados</string>
+   </property>
+  </action>
+  <action name="action_suppliers">
+   <property name="text">
+    <string>&amp;Proveedores</string>
+   </property>
+  </action>
+  <action name="action_vehicles">
+   <property name="text">
+    <string>&amp;Vehículos</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>A&amp;cerca de Nexus Admin</string>
+   </property>
+  </action>
+  <action name="action_close_session">
+   <property name="text">
+    <string>&amp;Cerrar sesión</string>
+   </property>
+  </action>
+  <action name="action_change_company">
+   <property name="text">
+    <string>&amp;Cambiar de empresa</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
