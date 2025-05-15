@@ -1,6 +1,7 @@
 from .company import Ui_frm_company
 from .configuration import Ui_frm_configuration
 from .inspection import Ui_frm_inspection
+from .login import Ui_frm_login
 from .main import Ui_frm_main
 from .password import Ui_frm_password
 from .permission import Ui_frm_permission

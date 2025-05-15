@@ -1,8 +1,8 @@
 import os
 
 # Folders
-ui_folder = "nexus_admin_client/views/forms_ui"  
-py_folder = "nexus_admin_client/views/forms_py"  
+ui_folder = "views/forms_ui"  
+py_folder = "views/forms_py"  
 
 # Create py_folder if not exists
 for file in os.listdir(ui_folder):
