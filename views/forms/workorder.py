@@ -58,6 +58,9 @@ class frm_workorder(QDialog):
             self.ui.btn_delete_document.setEnabled(
                 self.auth_manager.has_permission("DEV")
             )
+            self.ui.lbl_dragdrop.setEnabled(
+                self.auth_manager.has_permission("EMV")
+            )
             self.ui.btn_save.setEnabled(False)
 
         if self.edit:

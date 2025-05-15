@@ -7,6 +7,7 @@ dotenv==0.9.9
 idna==3.10
 pillow==11.2.1
 pycparser==2.22
+PyJWT==2.10.1
 PyQt6==6.9.0
 PyQt6-Qt6==6.9.0
 PyQt6_sip==13.10.0
