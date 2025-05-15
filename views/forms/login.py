@@ -54,7 +54,7 @@ class frm_login(QWidget):
 
         # Crear el QLabel para el logo
         self.lbl_logo = QLabel()
-        self.logo_pixmap = QPixmap("nexus_admin_client/img/logo.png")
+        self.logo_pixmap = QPixmap("img/logo.png")
         self.lbl_logo.setPixmap(
             self.logo_pixmap.scaled(
                 100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio

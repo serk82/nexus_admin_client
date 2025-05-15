@@ -14,7 +14,7 @@ from views.forms import (
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    with open("nexus_admin_client/lib/styles.css", "r") as file:
+    with open("lib/styles.css", "r") as file:
         app.setStyleSheet(file.read())
 
     # auth_manager = AuthManager()
