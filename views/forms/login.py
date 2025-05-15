@@ -1,3 +1,4 @@
+import os
 from controllers import AuthManager
 from views.forms_py import Ui_frm_login
 from PyQt6.QtCore import Qt
@@ -42,7 +43,10 @@ class frm_login(QWidget):
         self.ui.btn_exit.clicked.connect(self.close)
 
         # Crear el QLabel para el logo
-        self.logo_pixmap = QPixmap("img/logo.png")
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        logo_path = os.path.join(BASE_DIR, "img", "logo.png")
+        print(logo_path)
+        self.logo_pixmap = QPixmap(logo_path)
         self.ui.lbl_logo.setPixmap(
             self.logo_pixmap.scaled(
                 100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio

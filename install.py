@@ -22,18 +22,20 @@ def crear_env(ip):
         f.write(f"API_HOST={ip}\nAPI_PORT=8000\n")
     print("✅ Archivo .env creado.")
 
-def crear_acceso_directo_linux(nombre, ruta_script, icono_path=None):
-    escritorio_path = os.path.expanduser("~/Desktop")
-    os.makedirs(escritorio_path, exist_ok=True)
+def crear_acceso_directo_menu(nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None):
+    apps_dir = os.path.expanduser("~/.local/share/applications")
+    os.makedirs(apps_dir, exist_ok=True)
 
-    ruta_launcher = os.path.join(escritorio_path, f"{nombre}.desktop")
+    ruta_launcher = os.path.join(apps_dir, f"{nombre}.desktop")
 
     contenido = f"""[Desktop Entry]
-Type=Application
-Name={nombre}
-Exec=python3 {ruta_script}
-Terminal=false
-"""
+                Type=Application
+                Name={nombre}
+                Exec={ruta_abosluta_venv} {ruta_absoluta_app}
+                Terminal=false
+                StartupNotify=true
+                Categories=Utility;
+                """
 
     if icono_path:
         contenido += f"Icon={icono_path}\n"
@@ -42,7 +44,8 @@ Terminal=false
         f.write(contenido)
 
     os.chmod(ruta_launcher, 0o755)
-    print(f"📎 Acceso directo creado: {ruta_launcher}")
+    print(f"📎 Acceso directo instalado en el menú de aplicaciones: {ruta_launcher}")
+
 
 def main():
     while True:
@@ -55,8 +58,11 @@ def main():
         if probar_conexion(ip, puerto=8000):
             crear_env(ip)
 
-            # ruta_absoluta = os.path.abspath("app.py")
-            # crear_acceso_directo_linux("MiAplicacionPyQt6", ruta_absoluta)
+            ruta_absoluta_app = os.path.abspath("app.py")
+            ruta_absoluta_venv = os.path.abspath("venv/bin/python")
+            icono_path = os.path.abspath("img/logo.png") if os.path.exists("img/logo.png") else None
+            print(f"Ruta absoluta del script: {ruta_absoluta_app}")
+            crear_acceso_directo_menu("Nexus-Admin", ruta_absoluta_app, ruta_absoluta_venv, icono_path)
             print("🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python3 app.py")
             break
         else:
