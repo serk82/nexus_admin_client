@@ -33,7 +33,7 @@ def generate_pdf(filename: str, permissions: dict):
     # Título
     title_style = ParagraphStyle(
         name="Title",
-        parent=styles["Heading1"],
+        parent=styles['Heading1'],
         fontSize=18,
         alignment=TA_CENTER,
         spaceAfter=20,
@@ -47,7 +47,7 @@ def generate_pdf(filename: str, permissions: dict):
 
     # Tabla de materiales
     table_data = [
-        ["ID", "Permiso"],
+        ['ID", "Permiso'],
     ]
     table_data.extend(
         [

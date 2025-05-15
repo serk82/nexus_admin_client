@@ -66,7 +66,7 @@ class frm_company(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        response["error"],
+                        response['error'],
                     )
         else:
             answer = QMessageBox.question(
@@ -88,7 +88,7 @@ class frm_company(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        response["error"],
+                        response['error'],
                     )
 
     def collect_company_data(self):

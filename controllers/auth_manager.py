@@ -49,8 +49,8 @@ class AuthManager:
             response = requests.get(url, json=data)
             if response.status_code == 200:
                 login = response.json()
-                self.token = login["token"]
-                self.role_id = int(login["role_id"])
+                self.token = login['token']
+                self.role_id = int(login['role_id'])
                 return True
             else:
                 return False

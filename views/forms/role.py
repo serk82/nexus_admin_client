@@ -158,7 +158,7 @@ class frm_role(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        f"No se ha podido añadir el rol{": " + response["error"] if response else "."}",
+                        f"No se ha podido añadir el rol{": " + response['error'] if response else "."}",
                     )
         else:
             answer = QMessageBox.question(
@@ -186,5 +186,5 @@ class frm_role(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        f"No se ha podido añadir el rol{": " + response["error"] if response else "."}",
+                        f"No se ha podido añadir el rol{": " + response['error'] if response else "."}",
                     )

@@ -6,7 +6,6 @@ from .main import frm_main
 from .options import frm_options
 from .password import frm_password
 from .permissions import frm_permissions
-from .permission import frm_permission
 from .role import frm_role
 from .table_view import frm_table_view
 from .user import frm_user

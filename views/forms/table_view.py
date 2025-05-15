@@ -1,7 +1,6 @@
 from .company import frm_company
 from .role import frm_role
 from .user import frm_user
-from .permission import frm_permission
 from controllers import (
     AuthManager,
     CompaniesController,
@@ -50,8 +49,6 @@ class frm_table_view(QDialog):
         self.ui.btn_add.clicked.connect(self.add)
         self.ui.btn_edit.clicked.connect(self.edit)
         self.ui.btn_delete.clicked.connect(self.delete)
-        if not table == "permissions":
-            self.ui.table_view.doubleClicked.connect(self.edit)
 
     def configuration_based_on_table(self):
 
@@ -87,17 +84,6 @@ class frm_table_view(QDialog):
                 self.ui.table_view.setColumnWidth(2, 400)
                 self.ui.table_view.setFixedWidth(652)
                 self.ui.table_view.setMinimumHeight(300)
-            case "permissions":
-                table_es = "permisos"
-                self.model.setHorizontalHeaderLabels(["ID", "Permiso"])
-                # Set height and width of columns
-                self.ui.table_view.setColumnWidth(0, 50)
-                self.ui.table_view.setColumnWidth(1, 350)
-                self.ui.table_view.setFixedWidth(416)
-                self.ui.table_view.setMinimumHeight(300)
-                self.ui.btn_add.setVisible(False)
-                self.ui.btn_edit.setVisible(False)
-                self.ui.btn_delete.setVisible(False)
         # Update users on table view
         self.on_update()
         # Add window title
@@ -125,8 +111,6 @@ class frm_table_view(QDialog):
         match self.table:
             case "companies":
                 self.form = frm_company(self, self.auth_manager, False, None)
-            case "permissions":
-                self.form = frm_permission(self, False, None)
             case "users":
                 self.form = frm_user(self, self.auth_manager, False, None)
             case "roles":
@@ -141,8 +125,6 @@ class frm_table_view(QDialog):
             match self.table:
                 case "companies":
                     self.form = frm_company(self, self.auth_manager, True, selected_id)
-                case "permissions":
-                    self.form = frm_permission(self, True, selected_id)
                 case "users":
                     self.form = frm_user(self, self.auth_manager, True, selected_id)
                 case "roles":
@@ -176,25 +158,6 @@ class frm_table_view(QDialog):
                                 QMessageBox.warning(
                                     self, " ", "No se ha eliminado la empresa."
                                 )
-                case "permissions":
-                    answer = QMessageBox.question(
-                        self,
-                        " ",
-                        "Seguro quieres eliminar el permiso?",
-                        QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-                    )
-                    if answer == QMessageBox.StandardButton.Yes:
-                        try:
-                            if self.permissions_controller.delete_permission(
-                                selected_id
-                            ):
-                                self.on_update()
-                            else:
-                                QMessageBox.warning(
-                                    self, " ", "No se ha eliminado el permiso."
-                                )
-                        except ValueError as e:
-                            QMessageBox.warning(self, " ", str(e))
                 case "users":
                     answer = QMessageBox.question(
                         self,
@@ -257,16 +220,6 @@ class frm_table_view(QDialog):
                         QStandardItem(str(company.get("id"))),
                         QStandardItem(company.get("id_code")),
                         QStandardItem(company.get("name")),
-                    ]
-                    self.model.appendRow(row)
-            case "permissions":
-                permissions = self.permissions_controller.get_permissions(
-                    self.auth_manager.token
-                )
-                for permission in permissions:
-                    row = [
-                        QStandardItem(str(permission.get("id"))),
-                        QStandardItem(permission.get("name")),
                     ]
                     self.model.appendRow(row)
             case "users":

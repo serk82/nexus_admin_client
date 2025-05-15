@@ -1,6 +1,7 @@
 import json, os, requests, sys, subprocess
 from controllers import AuthManager, WorkOrdersController
 from datetime import date, datetime
+from lib.config import API_HOST, API_PORT
 from lib.task_thread import *
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QMessageBox, QHeaderView, QTableView
@@ -58,9 +59,7 @@ class frm_workorder(QDialog):
             self.ui.btn_delete_document.setEnabled(
                 self.auth_manager.has_permission("DEV")
             )
-            self.ui.lbl_dragdrop.setEnabled(
-                self.auth_manager.has_permission("EMV")
-            )
+            self.ui.lbl_dragdrop.setEnabled(self.auth_manager.has_permission("EMV"))
             self.ui.btn_save.setEnabled(False)
 
         if self.edit:
@@ -342,15 +341,17 @@ class frm_workorder(QDialog):
         elif sys.platform.startswith("win"):
             os.startfile(file_path)
         elif sys.platform.startswith("linux"):
-            subprocess.Popen(["evince", str(file_path)])
-            # subprocess.run(["xdg-open", str(file_path)])
+            if str(file_path).endswith(".pdf"):
+                subprocess.Popen(["evince", str(file_path)])
+                return
+            subprocess.run(["xdg-open", str(file_path)])
 
     def save(self):
         workorder = self.collect_workorder_data()
         self.workorders_controller.update_workorder(self.auth_manager.token, workorder)
 
     def upload_file(self, file_path: Path):
-        url = "http://127.0.0.1:8000/files/"
+        url = f"http://{API_HOST}:{API_PORT}/files/"
         subfolder = f"{self.company_id}/vehicles/{self.vehicle_id}/workorders/{self.workorder_id}"
 
         try:

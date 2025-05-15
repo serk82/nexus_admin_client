@@ -75,11 +75,11 @@ class VehiclesController:
         headers = {"Authorization": f"Bearer {token}"}
         params = {}
         if company_id:
-            params["company_id"] = company_id
+            params['company_id'] = company_id
         if disabled is not None:
-            params["disabled"] = disabled
+            params['disabled'] = disabled
         if search:
-            params["search"] = search
+            params['search'] = search
         try:
             response = requests.get(url, headers=headers, json=params)
             if response.status_code == 200:

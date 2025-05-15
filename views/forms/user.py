@@ -44,17 +44,17 @@ class frm_user(QDialog):
                 break
 
         for index, role in enumerate(roles):
-            self.ui.cmb_role.addItem(role["name"])
-            self.ui.cmb_role.setItemData(index, role["id"])
+            self.ui.cmb_role.addItem(role['name'])
+            self.ui.cmb_role.setItemData(index, role['id'])
 
         if edit:
             self.setWindowTitle("Editar usuario")
             self.ui.btn_save.setText("Guardar")
             user = self.users_controller.get_user_by_id(self.auth_manager.token, id)
-            self.ui.txt_username.setText(user["username"])
-            self.ui.txt_name.setText(user["name"])
-            self.ui.txt_lastname.setText(user["lastname"])
-            self.ui.txt_email.setText(user["email"])
+            self.ui.txt_username.setText(user['username'])
+            self.ui.txt_name.setText(user['name'])
+            self.ui.txt_lastname.setText(user['lastname'])
+            self.ui.txt_email.setText(user['email'])
 
             # Get name's role
             role_name = self.roles_controller.get_role(
@@ -115,7 +115,7 @@ class frm_user(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        f"No se ha podido guardar los cambios: {response["error"]}",
+                        f"No se ha podido guardar los cambios: {response['error']}",
                     )
         else:
             if not self.password:
@@ -142,7 +142,7 @@ class frm_user(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        f"No se ha podido añadir el usuario. {":" + response["error"] if response else ""}",
+                        f"No se ha podido añadir el usuario. {":" + response['error'] if response else ""}",
                     )
 
     def set_password(self, password):
