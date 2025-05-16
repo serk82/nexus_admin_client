@@ -68,6 +68,7 @@ class frm_update(QDialog):
             return e
     
     def set_local_version(self, nuevos_datos):
+        nuevos_datos["VERSION"] = self.latest_version
         with open(CONFIG_PATH, "w") as f:
             json.dump(nuevos_datos, f, indent=4)
 
