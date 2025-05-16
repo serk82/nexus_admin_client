@@ -1,4 +1,4 @@
-import json, os, requests, sys, subprocess
+import json, os, requests, sys, subprocess, webbrowser
 from controllers import AuthManager, WorkOrdersController
 from datetime import date, datetime
 from lib.config import API_HOST, API_PORT
@@ -157,25 +157,42 @@ class frm_workorder(QDialog):
         if urls:
             file_path = Path(urls[0].toLocalFile())
             if file_path.is_file():
-                try:
-                    if self.exist_document(file_path.name):
-                        QMessageBox.warning(
-                            self,
-                            " ",
-                            f"El documento '{file_path.name}' ya existe.",
+                if (
+                    str(file_path).endswith(".pdf")
+                    or str(file_path).endswith(".PDF")
+                    or str(file_path).endswith(".png")
+                    or str(file_path).endswith(".PNG")
+                    or str(file_path).endswith(".jpg")
+                    or str(file_path).endswith(".JPG")
+                    or str(file_path).endswith(".jpeg")
+                    or str(file_path).endswith(".JPEG")
+                ):
+                    try:
+                        if self.exist_document(file_path.name):
+                            QMessageBox.warning(
+                                self,
+                                " ",
+                                f"El documento '{file_path.name}' ya existe.",
+                            )
+                            return
+                        self.upload_file(file_path)
+                        self.model_documents.appendRow(
+                            [
+                                QStandardItem(file_path.name),
+                            ]
                         )
-                        return
-                    self.upload_file(file_path)
-                    self.model_documents.appendRow(
-                        [
-                            QStandardItem(file_path.name),
-                        ]
-                    )
-                except Exception as e:
-                    QMessageBox.critical(
+                    except Exception as e:
+                        QMessageBox.critical(
+                            self,
+                            "Error",
+                            f"No se pudo subir el archivo:\n{e}",
+                        )
+                else:
+                    QMessageBox.information(
                         self,
-                        "Error",
-                        f"No se pudo subir el archivo:\n{e}",
+                        " ",
+                        "El archivo no es un documento válido.\n"
+                        "Por favor, sube un archivo PDF o de imagen.",
                     )
 
     def exist_document(self, filename):
@@ -279,7 +296,7 @@ class frm_workorder(QDialog):
                 QStandardItem(file_path.name),
             ]
         )
-        
+
     def on_open_document(self):
         self.auth_manager.is_token_expired(self)
         self.setEnabled(False)
@@ -311,7 +328,7 @@ class frm_workorder(QDialog):
         self.load_documents()
         self.loading_dialog.close()
         self.setEnabled(True)
-        
+
     def on_task_open_document_finished(self):
         self.loading_dialog.close()
         self.ui.gbx_documents.setEnabled(True)
@@ -351,15 +368,18 @@ class frm_workorder(QDialog):
             QMessageBox.information(self, " ", "No se ha elegido ningún registro.")
 
     def open_file(self, file_path):
-        if sys.platform.startswith("darwin"):
-            subprocess.run(["open", str(file_path)])
-        elif sys.platform.startswith("win"):
-            os.startfile(file_path)
-        elif sys.platform.startswith("linux"):
-            if str(file_path).endswith(".pdf"):
-                subprocess.Popen(["evince", str(file_path)])
-                return
-            subprocess.run(["xdg-open", str(file_path)])
+        if (
+            str(file_path).endswith(".pdf")
+            or str(file_path).endswith(".PDF")
+            or str(file_path).endswith(".png")
+            or str(file_path).endswith(".PNG")
+            or str(file_path).endswith(".jpg")
+            or str(file_path).endswith(".JPG")
+            or str(file_path).endswith(".jpeg")
+            or str(file_path).endswith(".JPEG")
+        ):
+            webbrowser.open(str(file_path))
+            return
 
     def save(self):
         workorder = self.collect_workorder_data()

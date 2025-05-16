@@ -48,7 +48,7 @@ if __name__ == "__main__":
         # form = frm_vehicles(None, auth_manager, 16)
         # form.show()
 
-        form = frm_vehicle(None, auth_manager, True, 166, 16)
+        form = frm_vehicle(None, auth_manager, True, 140, 4)
         form.show()
 
     sys.exit(app.exec())
