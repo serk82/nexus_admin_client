@@ -66,11 +66,11 @@ class frm_update(QDialog):
                 return json.load(f)
         except Exception as e:
             return e
-    
-    def set_local_version(self, nuevos_datos):
-        nuevos_datos["VERSION"] = self.latest_version
+
+    def set_local_version(self, data):
+        data = {"VERSION": data}
         with open(CONFIG_PATH, "w") as f:
-            json.dump(nuevos_datos, f, indent=4)
+            json.dump(data, f, indent=4)
 
     def check_update(self):
         self.label_status.setText("Buscando nueva versión...")

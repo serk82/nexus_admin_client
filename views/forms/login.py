@@ -10,8 +10,6 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QMessageBox,
 )
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from __version__ import VERSION
 
 
 class frm_login(QWidget):
@@ -23,12 +21,6 @@ class frm_login(QWidget):
 
         # Configuración de la ventana principal
         self.setWindowTitle("Nexus Admin")
-
-        # Crear el layout principal
-        main_layout = QVBoxLayout()
-
-        # Crear el formulario (campos de texto)
-        form_layout = QVBoxLayout()
 
         self.ui.txt_password.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -53,7 +45,9 @@ class frm_login(QWidget):
         )
 
         # Set version at label
-        self.ui.lbl_version.setText(f"v{VERSION}")
+        
+        from views.forms import frm_update
+        self.ui.lbl_version.setText(f"v{frm_update.get_local_version(self)["VERSION"]}")
 
 
     def login(self):
