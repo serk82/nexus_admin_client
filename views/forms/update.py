@@ -1,8 +1,4 @@
-import os
-import sys
-import requests
-import zipfile
-import shutil
+import os, sys, subprocess, requests, zipfile, shutil
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -16,6 +12,7 @@ from packaging import version
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from __version__ import VERSION
+
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
 APP_FOLDER = os.path.abspath(".")
@@ -40,6 +37,8 @@ class frm_update(QDialog):
         self.layout.addWidget(self.label_latest)
         self.layout.addWidget(self.label_status)
         self.layout.addWidget(self.button_update)
+
+        self.actualized = False
 
         self.button_update.clicked.connect(self.perform_update)
 
@@ -72,7 +71,7 @@ class frm_update(QDialog):
 
     def check_update(self):
         self.label_status.setText("Buscando nueva versión...")
-        local_ver = VERSION#self.get_local_version()
+        local_ver = VERSION
         self.label_current.setText(f"Versión actual: {local_ver}")
         try:
             url = (
@@ -88,11 +87,10 @@ class frm_update(QDialog):
             if version.parse(latest_ver) > version.parse(local_ver):
                 self.label_status.setText("🔔 ¡Nueva versión disponible!")
                 self.button_update.setEnabled(True)
-                # Utilizar zipball_url
                 self.latest_asset = data.get("zipball_url")
                 return True
             else:
-                # self.label_status.setText("✅ Ya tienes la última versión.")
+                self.label_status.setText("✅ Ya tienes la última versión.")
                 return False
         except Exception as e:
             self.label_status.setText(f"❌ Error: {str(e)}")
@@ -134,9 +132,6 @@ class frm_update(QDialog):
                     shutil.copy2(src, dst)
 
             VERSION = self.latest_version
-            # Actualizar versión
-            # with open(VERSION_FILE, "w") as f:
-            #     f.write(f'version = "{self.latest_version}"\n')
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."
@@ -147,9 +142,9 @@ class frm_update(QDialog):
             QMessageBox.critical(self, "Error", f"No se pudo actualizar: {e}")
 
     def restart_app(self):
-        self.close()
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
+        QApplication.quit()
+        subprocess.Popen([sys.executable, "nexus_admin_client/main.py"])
+        sys.exit()
 
 
 if __name__ == "__main__":
