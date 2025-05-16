@@ -1,4 +1,6 @@
-import os, sys, subprocess, requests, zipfile, shutil
+import os, sys, subprocess, requests, zipfile, shutil, json
+from packaging import version
+from pathlib import Path
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -8,13 +10,11 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 from PyQt6.QtCore import Qt
-from packaging import version
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from __version__ import VERSION
 
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
+CONFIG_PATH = Path(__file__).resolve().parents[2] / "config.json"
 APP_FOLDER = os.path.abspath(".")
 
 
@@ -45,6 +45,7 @@ class frm_update(QDialog):
         self.latest_version = None
         self.latest_asset = None
         self.setStyleSheet("font-size: 14px;")
+        self.check_update()
 
     def closeEvent(self, event):
         if event.isAccepted():
@@ -61,17 +62,18 @@ class frm_update(QDialog):
 
     def get_local_version(self):
         try:
-            version_path = VERSION
-            version_globals = {}
-            with open(version_path, "r") as f:
-                exec(f.read(), version_globals)
-            return version_globals["version"]
+            with open(CONFIG_PATH, "r") as f:
+                return json.load(f)
         except Exception as e:
             return e
+    
+    def set_local_version(self, nuevos_datos):
+        with open(CONFIG_PATH, "w") as f:
+            json.dump(nuevos_datos, f, indent=4)
 
     def check_update(self):
         self.label_status.setText("Buscando nueva versión...")
-        local_ver = VERSION
+        local_ver = self.get_local_version()["VERSION"]
         self.label_current.setText(f"Versión actual: {local_ver}")
         try:
             url = (
@@ -131,7 +133,7 @@ class frm_update(QDialog):
                 else:
                     shutil.copy2(src, dst)
 
-            VERSION = self.latest_version
+            self.set_local_version(self.latest_version)
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."
@@ -143,7 +145,7 @@ class frm_update(QDialog):
 
     def restart_app(self):
         QApplication.quit()
-        subprocess.Popen([sys.executable, "nexus_admin_client/main.py"])
+        subprocess.Popen([sys.executable, "nexus_admin_client/app.py"])
         sys.exit()
 
 

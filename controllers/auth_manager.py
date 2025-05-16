@@ -66,7 +66,7 @@ class AuthManager:
             "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
         )
         QApplication.quit()
-        subprocess.Popen([sys.executable, "nexus_admin_client/main.py"])
+        subprocess.Popen([sys.executable, "nexus_admin_client/app.py"])
         sys.exit()
 
     def logout(self):
