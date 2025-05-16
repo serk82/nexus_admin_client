@@ -1,4 +1,4 @@
-import os
+import os, sys
 from controllers import AuthManager
 from views.forms_py import Ui_frm_login
 from PyQt6.QtCore import Qt
@@ -8,12 +8,10 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QLineEdit,
-    QPushButton,
-    QLabel,
-    QSpacerItem,
-    QSizePolicy,
     QMessageBox,
 )
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from __version__ import VERSION
 
 
 class frm_login(QWidget):
@@ -54,10 +52,9 @@ class frm_login(QWidget):
             )
         )
 
-        self.setFixedSize(self.size())
+        # Set version at label
+        self.ui.lbl_version.setText(f"v{VERSION}")
 
-        self.ui.txt_username.setText("admin")
-        self.ui.txt_password.setText("1")
 
     def login(self):
         from views.forms.options import frm_options

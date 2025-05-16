@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>263</width>
-    <height>288</height>
+    <height>313</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -152,6 +152,16 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="lbl_version">
+     <property name="text">
+      <string>VERSION</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

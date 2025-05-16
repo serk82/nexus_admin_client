@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_frm_login(object):
     def setupUi(self, frm_login):
         frm_login.setObjectName("frm_login")
-        frm_login.resize(263, 288)
+        frm_login.resize(263, 313)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(frm_login)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -50,6 +50,10 @@ class Ui_frm_login(object):
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem5)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.lbl_version = QtWidgets.QLabel(parent=frm_login)
+        self.lbl_version.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.lbl_version.setObjectName("lbl_version")
+        self.verticalLayout_2.addWidget(self.lbl_version)
 
         self.retranslateUi(frm_login)
         QtCore.QMetaObject.connectSlotsByName(frm_login)
@@ -62,3 +66,4 @@ class Ui_frm_login(object):
         self.txt_password.setPlaceholderText(_translate("frm_login", "Password"))
         self.btn_exit.setText(_translate("frm_login", "Salir"))
         self.btn_login.setText(_translate("frm_login", "Entrar"))
+        self.lbl_version.setText(_translate("frm_login", "VERSION"))
