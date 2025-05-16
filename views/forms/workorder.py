@@ -279,6 +279,16 @@ class frm_workorder(QDialog):
                 QStandardItem(file_path.name),
             ]
         )
+        
+    def on_open_document(self):
+        self.auth_manager.is_token_expired(self)
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(self.open_document)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.on_task_open_document_finished)
+        self.hilo.start()
 
     def on_save_clicked(self):
         self.auth_manager.is_token_expired(self)
@@ -300,6 +310,11 @@ class frm_workorder(QDialog):
     def on_task_delete_document_finished(self):
         self.load_documents()
         self.loading_dialog.close()
+        self.setEnabled(True)
+        
+    def on_task_open_document_finished(self):
+        self.loading_dialog.close()
+        self.ui.gbx_documents.setEnabled(True)
         self.setEnabled(True)
 
     def on_task_finished(self):

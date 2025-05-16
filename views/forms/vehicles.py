@@ -67,6 +67,7 @@ class frm_vehicles(QDialog):
             ['ID", "Alias", "Matrícula", "Marca y modelo", "KMS Actuales']
         )
         self.ui.tvw_vehicles.setColumnHidden(0, True)
+        self.ui.tvw_vehicles.setAlternatingRowColors(True)
         # Set height and width of columns
         header = self.ui.tvw_vehicles.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)

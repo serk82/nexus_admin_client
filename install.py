@@ -4,12 +4,14 @@ import re
 import subprocess
 import sys
 
+
 def es_ip_valida(ip):
-    pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
+    pattern = r"^(\d{1,3}\.){3}\d{1,3}$"
     if not re.match(pattern, ip):
         return False
     partes = ip.split(".")
     return all(0 <= int(parte) <= 255 for parte in partes)
+
 
 def probar_conexion(ip, puerto=8000, timeout=3):
     try:
@@ -18,15 +20,24 @@ def probar_conexion(ip, puerto=8000, timeout=3):
     except (socket.timeout, socket.error):
         return False
 
+
 def crear_env(ip):
     with open(".env", "w") as f:
         f.write(f"API_HOST={ip}\nAPI_PORT=8000\n")
     print("✅ Archivo .env creado.")
 
+
 def crear_entorno_virtual(ruta_venv="venv"):
     print("⚙️ Creando entorno virtual...")
     subprocess.check_call([sys.executable, "-m", "venv", ruta_venv])
     print(f"✅ Entorno virtual creado en {ruta_venv}")
+
+
+def crear_carpeta_tmp():
+    tmp_path = os.path.abspath("tmp")
+    os.makedirs(tmp_path, exist_ok=True)
+    print(f"📂 Carpeta temporal creada en {tmp_path}")
+
 
 def instalar_dependencias(requirements="requirements.txt"):
     print("📦 Instalando dependencias...")
@@ -39,7 +50,10 @@ def instalar_dependencias(requirements="requirements.txt"):
     subprocess.check_call([pip_path, "install", "-r", requirements_path])
     print("✅ Dependencias instaladas.")
 
-def crear_acceso_directo_menu(nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None):
+
+def crear_acceso_directo_menu(
+    nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None
+):
     apps_dir = os.path.expanduser("~/.local/share/applications")
     os.makedirs(apps_dir, exist_ok=True)
 
@@ -63,6 +77,7 @@ def crear_acceso_directo_menu(nombre, ruta_absoluta_app, ruta_abosluta_venv, ico
     os.chmod(ruta_launcher, 0o755)
     print(f"📎 Acceso directo instalado en el menú de aplicaciones: {ruta_launcher}")
 
+
 def main():
     while True:
         ip = input("Ingrese la IP del servidor: ").strip()
@@ -76,20 +91,33 @@ def main():
 
             # Crear entorno virtual
             crear_entorno_virtual("venv")
+
+            # Crear carpeta tmp en la raíz
+            crear_carpeta_tmp()
+
             # Instalar dependencias
             instalar_dependencias("requirements.txt")
 
             ruta_absoluta_app = os.path.abspath("app.py")
             ruta_absoluta_venv = os.path.abspath("venv/bin/python")
-            icono_path = os.path.abspath("img/logo.png") if os.path.exists("img/logo.png") else None
+            icono_path = (
+                os.path.abspath("img/logo.png")
+                if os.path.exists("img/logo.png")
+                else None
+            )
 
-            print(f"Ruta absoluta del script: {ruta_absoluta_app}")
-            crear_acceso_directo_menu("Nexus-Admin", ruta_absoluta_app, ruta_absoluta_venv, icono_path)
+            # Crear acceso directo en el menú de aplicaciones
+            crear_acceso_directo_menu(
+                "Nexus-Admin", ruta_absoluta_app, ruta_absoluta_venv, icono_path
+            )
 
-            print("🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python3 app.py")
+            print(
+                "🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python3 app.py"
+            )
             break
         else:
             print("❌ No se pudo conectar al servidor. Intente otra IP.")
+
 
 if __name__ == "__main__":
     main()
