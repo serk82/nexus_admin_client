@@ -17,20 +17,21 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    print(BASE_DIR)
     css_path = os.path.join(BASE_DIR, "lib", "styles.css")
 
     with open(css_path, "r") as file:
         app.setStyleSheet(file.read())
 
     # Check for updates
-    update_form = frm_update()
-    if update_form.check_update():
-        update_form.exec()
-    login = frm_login()
-    login.show()
+    # update_form = frm_update()
+    # if update_form.check_update():
+    #     update_form.exec()
+    # login = frm_login()
+    # login.show()
 
-    # auth_manager = AuthManager()
-    # if auth_manager.login("admin", "1"):
+    auth_manager = AuthManager()
+    if auth_manager.login("admin", "1"):
 
         # form = frm_configuration(auth_manager)
         # form.show()
@@ -47,7 +48,7 @@ if __name__ == "__main__":
         # form = frm_vehicles(None, auth_manager, 16)
         # form.show()
 
-        # form = frm_vehicle(None, auth_manager, True, 166, 16)
-        # form.show()
+        form = frm_vehicle(None, auth_manager, True, 166, 16)
+        form.show()
 
     sys.exit(app.exec())
