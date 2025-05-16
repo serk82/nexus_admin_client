@@ -44,10 +44,9 @@ class frm_login(QWidget):
             )
         )
 
-        # Set version at label
-        
+        # Set version at label        
         from views.forms import frm_update
-        self.ui.lbl_version.setText(f"v{frm_update.get_local_version(self)["VERSION"]}")
+        self.ui.lbl_version.setText(f"v{frm_update.get_local_version(self)['VERSION']}")
 
 
     def login(self):
