@@ -47,6 +47,7 @@ class frm_workorder(QDialog):
         self.ui.btn_close.clicked.connect(self.close)
         self.ui.btn_delete_document.clicked.connect(self.on_delete_document)
         self.ui.btn_view_document.clicked.connect(self.open_document)
+        self.ui.tvw_documents.doubleClicked.connect(self.open_document)
 
         # Check Permissions
         if not self.auth_manager.has_permission("EMV"):
