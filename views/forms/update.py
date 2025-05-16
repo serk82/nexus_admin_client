@@ -15,7 +15,7 @@ from PyQt6.QtCore import Qt
 from packaging import version
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from version import VERSION
+from __version__ import VERSION
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
 APP_FOLDER = os.path.abspath(".")
