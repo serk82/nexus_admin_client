@@ -24,8 +24,8 @@ if __name__ == "__main__":
 
     # Check for updates
     update_form = frm_update()
-    update_form.exec()
-    
+    if update_form.check_update():
+        update_form.exec()
     login = frm_login()
     login.show()
 
