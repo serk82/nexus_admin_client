@@ -142,7 +142,7 @@ class frm_user(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        f"No se ha podido añadir el usuario. {":" + response['error'] if response else ""}",
+                        f"No se ha podido añadir el usuario. {': ' + response['error'] if response else ''}",
                     )
 
     def set_password(self, password):

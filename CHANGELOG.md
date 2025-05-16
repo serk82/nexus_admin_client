@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.0.1_beta](https://github.com/serk82/nexus_admin_client/tree/v0.0.1_beta) (2025-05-15)
+## [v0.0.1_beta](https://github.com/serk82/nexus_admin_client/tree/v0.0.1_beta) (2025-05-16)
 
 [Full Changelog](https://github.com/serk82/nexus_admin_client/compare/eaa8f78e61ca48bf0690ec8debf3c4c5f5e773a1...v0.0.1_beta)
 

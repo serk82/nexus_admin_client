@@ -5,3 +5,4 @@ venv/
 # Archivos de configuración sensible
 # *.env
 *.key
+scripts/
