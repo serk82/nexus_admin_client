@@ -1,6 +1,6 @@
 from controllers import AuthManager, CompaniesController
 from lib.methods import *
-from PyQt6.QtWidgets import QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QMainWindow, QLabel
 from views.forms_py import Ui_frm_main
 from views.forms.vehicles import frm_vehicles
 
@@ -21,6 +21,12 @@ class frm_main(QMainWindow):
         # Load UI
         self.ui = Ui_frm_main()
         self.ui.setupUi(self)
+
+        self.lbl_user = QLabel()
+        self.lbl_user.setText(
+            f"Usuario: {self.auth_manager.username}"
+        )
+        self.ui.statusbar.addWidget(self.lbl_user)
 
         self.setWindowTitle("Nexus Admin - " + self.company.get("name"))
 

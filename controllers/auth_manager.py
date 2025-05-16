@@ -12,6 +12,7 @@ class AuthManager:
     def __init__(self):
         self.token = None
         self.role_id = None
+        self.username = None
 
     def is_token_expired(self, window=None):
         if not self.token:
@@ -51,6 +52,7 @@ class AuthManager:
                 login = response.json()
                 self.token = login['token']
                 self.role_id = int(login['role_id'])
+                self.username = username
                 return True
             else:
                 return False

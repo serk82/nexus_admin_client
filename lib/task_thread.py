@@ -17,6 +17,7 @@ class TaskThread(QThread):
             self.error.emit(str(e))
 
 
+import os
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel
 from PyQt6.QtGui import QMovie
@@ -37,7 +38,11 @@ class LoadingDialog(QDialog):
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setFixedSize(100, 100)
 
-        self.movie = QMovie("lib/Spinner.gif")
+        BASE_DIR = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
+        img_path = os.path.join(BASE_DIR, "lib", "Spinner.gif")
+        self.movie = QMovie(img_path)
         self.movie.setScaledSize(self.label.sizeHint())  # Ajustar tamaño del GIF
         self.label.setMovie(self.movie)
         self.movie.start()

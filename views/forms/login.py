@@ -19,10 +19,10 @@ from PyQt6.QtWidgets import (
 class frm_login(QWidget):
     def __init__(self):
         super().__init__()
-        
+
         self.ui = Ui_frm_login()
         self.ui.setupUi(self)
-        
+
         # Configuración de la ventana principal
         self.setWindowTitle("Nexus Admin")
 
@@ -43,9 +43,10 @@ class frm_login(QWidget):
         self.ui.btn_exit.clicked.connect(self.close)
 
         # Crear el QLabel para el logo
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        BASE_DIR = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        )
         logo_path = os.path.join(BASE_DIR, "img", "logo.png")
-        print(logo_path)
         self.logo_pixmap = QPixmap(logo_path)
         self.ui.lbl_logo.setPixmap(
             self.logo_pixmap.scaled(
@@ -63,7 +64,7 @@ class frm_login(QWidget):
 
         username = self.ui.txt_username.text()
         password = self.ui.txt_password.text()
-        
+
         auth_manager = AuthManager()
         if auth_manager.login(username, password):
             self.form = frm_options(auth_manager)

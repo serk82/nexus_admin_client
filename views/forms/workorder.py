@@ -213,7 +213,6 @@ class frm_workorder(QDialog):
             self.auth_manager.token,
             self.path,
         )
-        print(documents)
         if documents:
             for document in documents:
                 self.model_documents.appendRow([QStandardItem(document)])
