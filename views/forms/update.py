@@ -14,11 +14,10 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from packaging import version
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from version import VERSION
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
-VERSION_FILE = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "__version__.py")
-)
 APP_FOLDER = os.path.abspath(".")
 
 
@@ -50,16 +49,20 @@ class frm_update(QDialog):
 
     def closeEvent(self, event):
         if event.isAccepted():
-            QMessageBox.warning(
+            response = QMessageBox.warning(
                 self,
                 "Advertencia",
-                "Debes actualizar la aplicación para inicar.",
+                "No puedes iniciar la aplicación sin actualizar. ¿Quieres salir?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             )
-            sys.exit(0)
+            if response == QMessageBox.StandardButton.Yes:
+                sys.exit(0)
+            else:
+                event.ignore()
 
     def get_local_version(self):
         try:
-            version_path = VERSION_FILE
+            version_path = VERSION
             version_globals = {}
             with open(version_path, "r") as f:
                 exec(f.read(), version_globals)
@@ -69,7 +72,7 @@ class frm_update(QDialog):
 
     def check_update(self):
         self.label_status.setText("Buscando nueva versión...")
-        local_ver = self.get_local_version()
+        local_ver = VERSION#self.get_local_version()
         self.label_current.setText(f"Versión actual: {local_ver}")
         try:
             url = (
@@ -130,9 +133,10 @@ class frm_update(QDialog):
                 else:
                     shutil.copy2(src, dst)
 
+            VERSION = self.latest_version
             # Actualizar versión
-            with open(VERSION_FILE, "w") as f:
-                f.write(f'version = "{self.latest_version}"\n')
+            # with open(VERSION_FILE, "w") as f:
+            #     f.write(f'version = "{self.latest_version}"\n')
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."

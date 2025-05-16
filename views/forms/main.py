@@ -1,3 +1,4 @@
+import os
 from controllers import AuthManager, CompaniesController
 from lib.methods import *
 from PyQt6.QtWidgets import QMainWindow, QLabel
@@ -27,6 +28,10 @@ class frm_main(QMainWindow):
             f"Usuario: {self.auth_manager.username}"
         )
         self.ui.statusbar.addWidget(self.lbl_user)
+        
+        VERSION_FILE = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "__version__.py")
+        )
 
         self.setWindowTitle("Nexus Admin - " + self.company.get("name"))
 

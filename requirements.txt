@@ -5,6 +5,7 @@ charset-normalizer==3.4.2
 cryptography==44.0.3
 dotenv==0.9.9
 idna==3.10
+packaging==25.0
 pillow==11.2.1
 pycparser==2.22
 PyJWT==2.10.1
