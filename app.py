@@ -7,6 +7,7 @@ from views.forms import (
     frm_main,
     frm_table_view,
     frm_permissions,
+    frm_update,
     frm_user,
     frm_vehicles,
     frm_vehicle,
@@ -21,11 +22,15 @@ if __name__ == "__main__":
     with open(css_path, "r") as file:
         app.setStyleSheet(file.read())
 
+    # Check for updates
+    update_form = frm_update()
+    update_form.exec()
+    
+    login = frm_login()
+    login.show()
+
     # auth_manager = AuthManager()
     # if auth_manager.login("admin", "1"):
-
-        login = frm_login()
-        login.show()
 
         # form = frm_configuration(auth_manager)
         # form.show()

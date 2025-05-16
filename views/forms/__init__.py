@@ -8,6 +8,7 @@ from .password import frm_password
 from .permissions import frm_permissions
 from .role import frm_role
 from .table_view import frm_table_view
+from .update import frm_update
 from .user import frm_user
 from .vehicle import frm_vehicle
 from .vehicles import frm_vehicles
