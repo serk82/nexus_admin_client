@@ -137,6 +137,12 @@ class frm_update(QDialog):
                     shutil.copy2(src, dst)
 
             self.set_local_version(self.latest_version)
+            
+            # Eliminar archivos temporales
+            if os.path.exists(app_zip_path):
+                os.remove(app_zip_path)
+            if os.path.exists(extract_dir):
+                shutil.rmtree(extract_dir)
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."
