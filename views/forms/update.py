@@ -136,7 +136,7 @@ class frm_update(QDialog):
                 else:
                     shutil.copy2(src, dst)
 
-            # self.set_local_version(self.latest_version)
+            self.set_local_version(self.latest_version)
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."
