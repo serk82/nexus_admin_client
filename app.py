@@ -17,7 +17,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    print(BASE_DIR)
     css_path = os.path.join(BASE_DIR, "lib", "styles.css")
 
     with open(css_path, "r") as file:

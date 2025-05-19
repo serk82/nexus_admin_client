@@ -15,7 +15,7 @@ from PyQt6.QtCore import Qt
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "config.json"
-APP_FOLDER = os.path.abspath(".")
+APP_FOLDER = os.path.join(os.path.abspath("."), "nexus_admin_client")
 
 class frm_update(QDialog):
     def __init__(self):
@@ -104,10 +104,8 @@ class frm_update(QDialog):
 
         self.label_status.setText("⬇️ Descargando nueva versión...")
         
-        app_zip_path = os.path.join(f"{APP_FOLDER}/nexus_admin_client/tmp", "app_update.zip")
-        print(f"app_zip_path: {app_zip_path}")
-        extract_dir = os.path.join(f"{APP_FOLDER}/nexus_admin_client/tmp", "app_update")
-        print(f"extract_dir: {extract_dir}")
+        app_zip_path = os.path.join(f"{APP_FOLDER}/tmp", "app_update.zip")
+        extract_dir = os.path.join(f"{APP_FOLDER}/tmp", "app_update")
 
         try:
             r = requests.get(self.latest_asset, stream=True)
@@ -122,9 +120,11 @@ class frm_update(QDialog):
             subfolders = [os.path.join(extract_dir, d) for d in os.listdir(extract_dir)]
             if subfolders:
                 extracted_root = subfolders[0]  # primera carpeta
+                QMessageBox.information(
+                    self, " ", f"Carpeta extraída: {extracted_root}"
+                )
             else:
                 raise RuntimeError("No se encontró contenido extraído.")
-
             # Sustituir archivos de la aplicación
             for item in os.listdir(extracted_root):
                 src = os.path.join(extracted_root, item)
@@ -136,7 +136,7 @@ class frm_update(QDialog):
                 else:
                     shutil.copy2(src, dst)
 
-            self.set_local_version(self.latest_version)
+            # self.set_local_version(self.latest_version)
 
             QMessageBox.information(
                 self, "Actualizado", "✅ Aplicación actualizada. Se reiniciará."
