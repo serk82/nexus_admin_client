@@ -6,3 +6,5 @@ venv/
 *.env
 *.key
 scripts/
+test.py
+informe.pdf
