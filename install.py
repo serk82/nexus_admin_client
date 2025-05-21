@@ -1,4 +1,4 @@
-import os, socket, platform, re, subprocess, sys
+import os, socket, platform, re, subprocess, sys, tempfile, urllib.request
 
 
 def es_ip_valida(ip):
@@ -45,6 +45,20 @@ def instalar_dependencias(requirements="requirements.txt"):
         raise RuntimeError("No se encontró pip en el entorno virtual")
     subprocess.check_call([pip_path, "install", "-r", requirements_path])
     print("✅ Dependencias instaladas.")
+
+
+def instalar_pip():
+    try:
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as f:
+            print("⬇️ Descargando get-pip.py...")
+            urllib.request.urlretrieve(url, f.name)
+            print("⚙️ Ejecutando get-pip.py...")
+            subprocess.check_call([sys.executable, f.name])
+        return True
+    except Exception as e:
+        print(f"❌ Error instalando pip: {e}")
+        return False
 
 
 def asegurar_dependencias_windows():
