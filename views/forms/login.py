@@ -1,6 +1,5 @@
 import os
 from controllers import AuthManager
-from lib.methods import center_window
 from views.forms_py import Ui_frm_login
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
@@ -18,7 +17,6 @@ class frm_login(QWidget):
 
         self.ui = Ui_frm_login()
         self.ui.setupUi(self)
-        center_window(self)
 
         # Configuración de la ventana principal
         self.setWindowTitle("Nexus Admin")

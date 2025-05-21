@@ -1,4 +1,5 @@
 def center_window(self):
+    self.show()
     qr = self.frameGeometry()
     cp = self.screen().availableGeometry().center()
     qr.moveCenter(cp)
