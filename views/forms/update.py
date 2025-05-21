@@ -119,10 +119,7 @@ class frm_update(QDialog):
             # Buscar la carpeta principal extraída (suele ser única)
             subfolders = [os.path.join(extract_dir, d) for d in os.listdir(extract_dir)]
             if subfolders:
-                extracted_root = subfolders[0]  # primera carpeta
-                QMessageBox.information(
-                    self, " ", f"Carpeta extraída: {extracted_root}"
-                )
+                extracted_root = subfolders[0]
             else:
                 raise RuntimeError("No se encontró contenido extraído.")
             # Sustituir archivos de la aplicación
