@@ -8,3 +8,4 @@ venv/
 scripts/
 test.py
 informe.pdf
+app.py
