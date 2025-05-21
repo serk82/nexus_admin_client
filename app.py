@@ -23,31 +23,10 @@ if __name__ == "__main__":
         app.setStyleSheet(file.read())
 
     # Check for updates
-    # update_form = frm_update()
-    # if update_form.check_update():
-    #     update_form.exec()
-    # login = frm_login()
-    # login.show()
-
-    auth_manager = AuthManager()
-    if auth_manager.login("admin", "1"):
-
-        # form = frm_configuration(auth_manager)
-        # form.show()
-
-        # form = frm_main(None, 1)
-        # form.show()
-
-        # form = frm_permissions(None, auth_manager)
-        # form.show()
-
-        # form = frm_table_view(None, auth_manager, "companies", 1)
-        # form.show()
-
-        # form = frm_vehicles(None, auth_manager, 16)
-        # form.show()
-
-        form = frm_vehicle(None, auth_manager, True, 166, 16)
-        form.show()
+    update_form = frm_update()
+    if update_form.check_update():
+        update_form.exec()
+    login = frm_login()
+    login.show()
 
     sys.exit(app.exec())
