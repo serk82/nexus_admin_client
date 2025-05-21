@@ -185,15 +185,20 @@ def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
     import winshell
     from win32com.client import Dispatch
 
+    # Usar pythonw.exe para evitar abrir la consola
+    ruta_pythonw = os.path.join(ruta_venv, "Scripts", "pythonw.exe")
+    if not os.path.exists(ruta_pythonw):
+        raise FileNotFoundError(f"No se encontró pythonw.exe en: {ruta_pythonw}")
+
     desktop = winshell.desktop()
     acceso_path = os.path.join(desktop, f"{nombre}.lnk")
 
     shell = Dispatch("WScript.Shell")
     acceso = shell.CreateShortCut(acceso_path)
-    acceso.Targetpath = ruta_venv
+    acceso.Targetpath = ruta_pythonw
     acceso.Arguments = f'"{ruta_app}"'
     acceso.WorkingDirectory = os.path.dirname(ruta_app)
-    if icono_path:
+    if icono_path and os.path.exists(icono_path):
         acceso.IconLocation = icono_path
     acceso.save()
 
@@ -227,16 +232,15 @@ def main():
 
             ruta_app = os.path.abspath("app.py")
             ruta_venv = obtener_python_path()
-            icono_path = (
-                os.path.abspath("img/logo.png")
-                if os.path.exists("img/logo.png")
-                else None
-            )
+            if os.system() == "Windows":
+                icono_path = "img/logo.ico"
+            else:
+                icono_path = "img/logo.png"
 
             crear_acceso_directo("Nexus-Admin", ruta_app, ruta_venv, icono_path)
 
             print(
-                "🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python app.py"
+                "🚀 Instalación completada."
             )
             break
         else:
