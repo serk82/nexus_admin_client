@@ -1,5 +1,6 @@
 import os
 from controllers import AuthManager
+from lib.methods import center_window
 from views.forms_py import Ui_frm_login
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
@@ -17,6 +18,7 @@ class frm_login(QWidget):
 
         self.ui = Ui_frm_login()
         self.ui.setupUi(self)
+        center_window(self)
 
         # Configuración de la ventana principal
         self.setWindowTitle("Nexus Admin")
@@ -45,7 +47,7 @@ class frm_login(QWidget):
 
         # Set version at label        
         from views.forms import frm_update
-        self.ui.lbl_version.setText(f"v{frm_update.get_local_version(self)['VERSION']}")
+        self.ui.lbl_version.setText(f"versión {frm_update.get_local_version(self)['VERSION']}")
 
 
     def login(self):

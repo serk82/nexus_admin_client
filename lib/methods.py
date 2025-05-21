@@ -1,10 +1,20 @@
+def center_window(self):
+    qr = self.frameGeometry()
+    cp = self.screen().availableGeometry().center()
+    qr.moveCenter(cp)
+    self.move(qr.topLeft())
+
+
 def get_format_miles(number):
     return f"{int(number):,}".replace(",", ".")
 
+
 def get_date_format(date):
     from datetime import datetime
+
     date = datetime.strptime(date, "%Y-%m-%d")
     return date.strftime("%d/%m/%Y")
+
 
 def get_kms_vehicle(license_plate):
     import requests
