@@ -1,16 +1,8 @@
 import os, sys
-from controllers import AuthManager
 from PyQt6.QtWidgets import QApplication
 from views.forms import (
-    frm_configuration,
     frm_login,
-    frm_main,
-    frm_table_view,
-    frm_permissions,
     frm_update,
-    frm_user,
-    frm_vehicles,
-    frm_vehicle,
 )
 
 if __name__ == "__main__":
