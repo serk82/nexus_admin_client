@@ -1,11 +1,3 @@
-def center_window(self):
-    self.show()
-    qr = self.frameGeometry()
-    cp = self.screen().availableGeometry().center()
-    qr.moveCenter(cp)
-    self.move(qr.topLeft())
-
-
 def get_format_miles(number):
     return f"{int(number):,}".replace(",", ".")
 

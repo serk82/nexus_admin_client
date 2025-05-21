@@ -1,8 +1,4 @@
-import os
-import socket
-import re
-import subprocess
-import sys
+import os, socket, platform, re, subprocess, sys
 
 
 def es_ip_valida(ip):
@@ -51,9 +47,50 @@ def instalar_dependencias(requirements="requirements.txt"):
     print("✅ Dependencias instaladas.")
 
 
+def asegurar_dependencias_windows():
+    try:
+        import winshell
+        import win32com.client
+
+        return True
+    except ImportError:
+        print("🔧 Instalando dependencias para Windows (pywin32, winshell)...")
+        try:
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "pywin32", "winshell"]
+            )
+            import winshell
+            import win32com.client
+
+            return True
+        except Exception as e:
+            print(f"❌ Error instalando dependencias: {e}")
+            return False
+
+
 def crear_acceso_directo_menu(
-    nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None
+    nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path=None
 ):
+    sistema = platform.system()
+
+    if sistema == "Linux":
+        crear_acceso_linux(nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path)
+    elif sistema == "Windows":
+        if asegurar_dependencias_windows():
+            crear_acceso_windows(
+                nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path
+            )
+        else:
+            print(
+                "❌ No se pudieron instalar las dependencias necesarias para Windows."
+            )
+    elif sistema == "Darwin":
+        crear_acceso_mac(nombre, ruta_absoluta_app, ruta_absoluta_venv)
+    else:
+        print(f"⚠️ Sistema operativo no soportado: {sistema}")
+
+
+def crear_acceso_linux(nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None):
     apps_dir = os.path.expanduser("~/.local/share/applications")
     os.makedirs(apps_dir, exist_ok=True)
 
@@ -76,6 +113,33 @@ def crear_acceso_directo_menu(
 
     os.chmod(ruta_launcher, 0o755)
     print(f"📎 Acceso directo instalado en el menú de aplicaciones: {ruta_launcher}")
+
+
+def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
+    import winshell
+    from win32com.client import Dispatch
+
+    desktop = winshell.desktop()
+    ruta_lnk = os.path.join(desktop, f"{nombre}.lnk")
+
+    shell = Dispatch("WScript.Shell")
+    acceso = shell.CreateShortCut(ruta_lnk)
+    acceso.Targetpath = ruta_venv
+    acceso.Arguments = f'"{ruta_app}"'
+    acceso.WorkingDirectory = os.path.dirname(ruta_app)
+    if icono_path:
+        acceso.IconLocation = icono_path
+    acceso.save()
+
+    print(f"📎 Acceso directo creado en el escritorio: {ruta_lnk}")
+
+
+def crear_acceso_mac(nombre, ruta_app, ruta_venv):
+    ruta_command = os.path.expanduser(f"~/Desktop/{nombre}.command")
+    with open(ruta_command, "w") as f:
+        f.write(f'#!/bin/bash\n"{ruta_venv}" "{ruta_app}"\n')
+    os.chmod(ruta_command, 0o755)
+    print(f"📎 Script de acceso creado en el escritorio: {ruta_command}")
 
 
 def main():
