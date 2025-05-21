@@ -152,7 +152,12 @@ class frm_update(QDialog):
 
     def restart_app(self):
         QApplication.quit()
-        subprocess.Popen([sys.executable, "nexus_admin_client/app.py"])
+
+        app_path = Path(__file__).parent / "nexus_admin_client" / "app.py"
+        app_path = app_path.resolve()
+
+        subprocess.Popen([sys.executable, str(app_path)])
+
         sys.exit()
 
 
