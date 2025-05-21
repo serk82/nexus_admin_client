@@ -49,6 +49,14 @@ def instalar_dependencias(requirements="requirements.txt"):
 
 def asegurar_dependencias_windows():
     try:
+        subprocess.check_call([sys.executable, "-m", "pip", "--version"])
+    except subprocess.CalledProcessError:
+        print("❌ pip no está disponible. Intentando instalar pip...")
+        if not instalar_pip():
+            return False
+
+    # Paso 2: instalar las librerías necesarias
+    try:
         import winshell
         import win32com.client
 
@@ -56,6 +64,9 @@ def asegurar_dependencias_windows():
     except ImportError:
         print("🔧 Instalando dependencias para Windows (pywin32, winshell)...")
         try:
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "--upgrade", "pip"]
+            )
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "pywin32", "winshell"]
             )
