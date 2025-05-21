@@ -64,7 +64,7 @@ class frm_vehicles(QDialog):
         self.ui.tvw_vehicles.setModel(self.model)
         table_es = "vehículos"
         self.model.setHorizontalHeaderLabels(
-            ['ID", "Alias", "Matrícula", "Marca y modelo", "KMS Actuales']
+            ["ID", "Alias", "Matrícula", "Marca y modelo", "KMS Actuales"]
         )
         self.ui.tvw_vehicles.setColumnHidden(0, True)
         self.ui.tvw_vehicles.setAlternatingRowColors(True)
