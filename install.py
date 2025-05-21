@@ -232,7 +232,7 @@ def main():
 
             ruta_app = os.path.abspath("app.py")
             ruta_venv = obtener_python_path()
-            if os.system() == "Windows":
+            if platform.system() == "Windows":
                 icono_path = "img/logo.ico"
             else:
                 icono_path = "img/logo.png"
