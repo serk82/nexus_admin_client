@@ -1,4 +1,14 @@
-import os, socket, platform, re, subprocess, sys, tempfile, urllib.request
+import os
+import re
+import sys
+import socket
+import platform
+import subprocess
+import tempfile
+import urllib.request
+
+
+# === VALIDACIONES ==========================================================
 
 
 def es_ip_valida(ip):
@@ -17,16 +27,13 @@ def probar_conexion(ip, puerto=8000, timeout=3):
         return False
 
 
+# === ARCHIVOS Y RUTAS ======================================================
+
+
 def crear_env(ip):
     with open(".env", "w") as f:
         f.write(f"API_HOST={ip}\nAPI_PORT=8000\n")
     print("✅ Archivo .env creado.")
-
-
-def crear_entorno_virtual(ruta_venv="venv"):
-    print("⚙️ Creando entorno virtual...")
-    subprocess.check_call([sys.executable, "-m", "venv", ruta_venv])
-    print(f"✅ Entorno virtual creado en {ruta_venv}")
 
 
 def crear_carpeta_tmp():
@@ -35,16 +42,23 @@ def crear_carpeta_tmp():
     print(f"📂 Carpeta temporal creada en {tmp_path}")
 
 
-def instalar_dependencias(requirements="requirements.txt"):
-    print("📦 Instalando dependencias...")
-    pip_path = os.path.abspath("venv/bin/pip")
-    requirements_path = os.path.abspath(requirements)
-    print(f"Ruta de pip: {pip_path}")
-    print(f"Ruta de requirements: {requirements_path}")
-    if not os.path.isfile(pip_path):
-        raise RuntimeError("No se encontró pip en el entorno virtual")
-    subprocess.check_call([pip_path, "install", "-r", requirements_path])
-    print("✅ Dependencias instaladas.")
+def obtener_python_path():
+    sistema = platform.system()
+    if sistema == "Windows":
+        return os.path.abspath("venv\\Scripts\\python.exe")
+    else:
+        return os.path.abspath("venv/bin/python")
+
+
+def obtener_pip_path():
+    sistema = platform.system()
+    if sistema == "Windows":
+        return os.path.abspath("venv\\Scripts\\pip.exe")
+    else:
+        return os.path.abspath("venv/bin/pip")
+
+
+# === INSTALACIÓN DE DEPENDENCIAS ===========================================
 
 
 def instalar_pip():
@@ -61,6 +75,41 @@ def instalar_pip():
         return False
 
 
+def instalar_pip_en_venv():
+    python_venv = obtener_python_path()
+    try:
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as f:
+            print("⬇️ Descargando get-pip.py...")
+            urllib.request.urlretrieve(url, f.name)
+            print("⚙️ Instalando pip dentro del entorno virtual...")
+            subprocess.check_call([python_venv, f.name])
+        return True
+    except Exception as e:
+        print(f"❌ Error al instalar pip en el entorno virtual: {e}")
+        return False
+
+
+def instalar_dependencias(requirements="requirements.txt"):
+    print("📦 Verificando pip en el entorno virtual...")
+    pip_path = obtener_pip_path()
+
+    if not os.path.isfile(pip_path):
+        print("❌ pip no encontrado en el entorno virtual. Intentando instalar pip...")
+        if not instalar_pip_en_venv():
+            raise RuntimeError("No se pudo instalar pip en el entorno virtual.")
+
+    print("📦 Instalando dependencias desde requirements.txt...")
+    subprocess.check_call([pip_path, "install", "-r", os.path.abspath(requirements)])
+    print("✅ Dependencias instaladas.")
+
+
+def crear_entorno_virtual(ruta_venv="venv"):
+    print("⚙️ Creando entorno virtual...")
+    subprocess.check_call([sys.executable, "-m", "venv", ruta_venv])
+    print(f"✅ Entorno virtual creado en {ruta_venv}")
+
+
 def asegurar_dependencias_windows():
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "--version"])
@@ -69,7 +118,6 @@ def asegurar_dependencias_windows():
         if not instalar_pip():
             return False
 
-    # Paso 2: instalar las librerías necesarias
     try:
         import winshell
         import win32com.client
@@ -84,60 +132,53 @@ def asegurar_dependencias_windows():
             subprocess.check_call(
                 [sys.executable, "-m", "pip", "install", "pywin32", "winshell"]
             )
-            import winshell
-            import win32com.client
-
             return True
         except Exception as e:
             print(f"❌ Error instalando dependencias: {e}")
             return False
 
 
-def crear_acceso_directo_menu(
-    nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path=None
-):
+# === ACCESOS DIRECTOS =======================================================
+
+
+def crear_acceso_directo(nombre, ruta_app, ruta_venv, icono_path=None):
     sistema = platform.system()
 
     if sistema == "Linux":
-        crear_acceso_linux(nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path)
+        crear_acceso_linux(nombre, ruta_app, ruta_venv, icono_path)
     elif sistema == "Windows":
         if asegurar_dependencias_windows():
-            crear_acceso_windows(
-                nombre, ruta_absoluta_app, ruta_absoluta_venv, icono_path
-            )
+            crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path)
         else:
             print(
                 "❌ No se pudieron instalar las dependencias necesarias para Windows."
             )
     elif sistema == "Darwin":
-        crear_acceso_mac(nombre, ruta_absoluta_app, ruta_absoluta_venv)
+        crear_acceso_mac(nombre, ruta_app, ruta_venv)
     else:
         print(f"⚠️ Sistema operativo no soportado: {sistema}")
 
 
-def crear_acceso_linux(nombre, ruta_absoluta_app, ruta_abosluta_venv, icono_path=None):
+def crear_acceso_linux(nombre, ruta_app, ruta_venv, icono_path=None):
     apps_dir = os.path.expanduser("~/.local/share/applications")
     os.makedirs(apps_dir, exist_ok=True)
 
-    ruta_launcher = os.path.join(apps_dir, f"{nombre}.desktop")
-
+    launcher = os.path.join(apps_dir, f"{nombre}.desktop")
     contenido = f"""[Desktop Entry]
-                Type=Application
-                Name={nombre}
-                Exec={ruta_abosluta_venv} {ruta_absoluta_app}
-                Terminal=false
-                StartupNotify=true
-                Categories=Utility;
-                """
-
+Type=Application
+Name={nombre}
+Exec={ruta_venv} {ruta_app}
+Terminal=false
+StartupNotify=true
+Categories=Utility;
+"""
     if icono_path:
         contenido += f"Icon={icono_path}\n"
 
-    with open(ruta_launcher, "w") as f:
+    with open(launcher, "w") as f:
         f.write(contenido)
-
-    os.chmod(ruta_launcher, 0o755)
-    print(f"📎 Acceso directo instalado en el menú de aplicaciones: {ruta_launcher}")
+    os.chmod(launcher, 0o755)
+    print(f"📎 Acceso directo creado: {launcher}")
 
 
 def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
@@ -145,10 +186,10 @@ def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
     from win32com.client import Dispatch
 
     desktop = winshell.desktop()
-    ruta_lnk = os.path.join(desktop, f"{nombre}.lnk")
+    acceso_path = os.path.join(desktop, f"{nombre}.lnk")
 
     shell = Dispatch("WScript.Shell")
-    acceso = shell.CreateShortCut(ruta_lnk)
+    acceso = shell.CreateShortCut(acceso_path)
     acceso.Targetpath = ruta_venv
     acceso.Arguments = f'"{ruta_app}"'
     acceso.WorkingDirectory = os.path.dirname(ruta_app)
@@ -156,7 +197,7 @@ def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
         acceso.IconLocation = icono_path
     acceso.save()
 
-    print(f"📎 Acceso directo creado en el escritorio: {ruta_lnk}")
+    print(f"📎 Acceso directo creado en el escritorio: {acceso_path}")
 
 
 def crear_acceso_mac(nombre, ruta_app, ruta_venv):
@@ -167,6 +208,9 @@ def crear_acceso_mac(nombre, ruta_app, ruta_venv):
     print(f"📎 Script de acceso creado en el escritorio: {ruta_command}")
 
 
+# === MAIN ===================================================================
+
+
 def main():
     while True:
         ip = input("Ingrese la IP del servidor: ").strip()
@@ -175,33 +219,24 @@ def main():
             continue
 
         print("🔍 Probando conexión...")
-        if probar_conexion(ip, puerto=8000):
+        if probar_conexion(ip):
             crear_env(ip)
-
-            # Crear entorno virtual
-            crear_entorno_virtual("venv")
-
-            # Crear carpeta tmp en la raíz
+            crear_entorno_virtual()
             crear_carpeta_tmp()
+            instalar_dependencias()
 
-            # Instalar dependencias
-            instalar_dependencias("requirements.txt")
-
-            ruta_absoluta_app = os.path.abspath("app.py")
-            ruta_absoluta_venv = os.path.abspath("venv/bin/python")
+            ruta_app = os.path.abspath("app.py")
+            ruta_venv = obtener_python_path()
             icono_path = (
                 os.path.abspath("img/logo.png")
                 if os.path.exists("img/logo.png")
                 else None
             )
 
-            # Crear acceso directo en el menú de aplicaciones
-            crear_acceso_directo_menu(
-                "Nexus-Admin", ruta_absoluta_app, ruta_absoluta_venv, icono_path
-            )
+            crear_acceso_directo("Nexus-Admin", ruta_app, ruta_venv, icono_path)
 
             print(
-                "🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python3 app.py"
+                "🚀 Instalación completa. Puede usar el acceso directo o ejecutar: python app.py"
             )
             break
         else:
