@@ -1,6 +1,6 @@
-import os, sys, subprocess, requests, zipfile, shutil, json
-from packaging import version
 from pathlib import Path
+import sys, subprocess, requests, zipfile, shutil, json
+from packaging import version
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -11,12 +11,10 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 
-
 REPO_USER = "serk82"
 REPO_NAME = "nexus_admin_client"
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "config.json"
-APP_FOLDER = os.path.join(os.path.abspath("."), "nexus_admin_client")
-
+APP_FOLDER = Path.cwd() / "nexus_admin_client"
 
 class frm_update(QDialog):
     def __init__(self):
@@ -68,18 +66,15 @@ class frm_update(QDialog):
             return e
 
     def set_local_version(self, data):
-        data = {"VERSION": data}
         with open(CONFIG_PATH, "w") as f:
-            json.dump(data, f, indent=4)
+            json.dump({"VERSION": data}, f, indent=4)
 
     def check_update(self):
         self.label_status.setText("Buscando nueva versión...")
         local_ver = self.get_local_version()["VERSION"]
         self.label_current.setText(f"Versión actual: {local_ver}")
         try:
-            url = (
-                f"https://api.github.com/repos/{REPO_USER}/{REPO_NAME}/releases/latest"
-            )
+            url = f"https://api.github.com/repos/{REPO_USER}/{REPO_NAME}/releases/latest"
             r = requests.get(url, timeout=5)
             r.raise_for_status()
             data = r.json()
@@ -105,8 +100,10 @@ class frm_update(QDialog):
 
         self.label_status.setText("⬇️ Descargando nueva versión...")
 
-        app_zip_path = os.path.join(f"{APP_FOLDER}", "tmp", "app_update.zip")
-        extract_dir = os.path.join(f"{APP_FOLDER}", "tmp", "app_update")
+        tmp_dir = APP_FOLDER / "tmp"
+        tmp_dir.mkdir(parents=True, exist_ok=True)
+        app_zip_path = tmp_dir / "app_update.zip"
+        extract_dir = tmp_dir / "app_update"
 
         try:
             r = requests.get(self.latest_asset, stream=True)
@@ -117,29 +114,26 @@ class frm_update(QDialog):
             with zipfile.ZipFile(app_zip_path, "r") as zip_ref:
                 zip_ref.extractall(extract_dir)
 
-            # Buscar la carpeta principal extraída (suele ser única)
-            subfolders = [os.path.join(extract_dir, d) for d in os.listdir(extract_dir)]
+            subfolders = [f for f in extract_dir.iterdir() if f.is_dir()]
             if subfolders:
                 extracted_root = subfolders[0]
             else:
                 raise RuntimeError("No se encontró contenido extraído.")
-            # Sustituir archivos de la aplicación
-            for item in os.listdir(extracted_root):
-                src = os.path.join(extracted_root, item)
-                dst = os.path.join(APP_FOLDER, item)
-                if os.path.isdir(src):
-                    if os.path.exists(dst):
+
+            for item in extracted_root.iterdir():
+                dst = APP_FOLDER / item.name
+                if item.is_dir():
+                    if dst.exists():
                         shutil.rmtree(dst)
-                    shutil.copytree(src, dst)
+                    shutil.copytree(item, dst)
                 else:
-                    shutil.copy2(src, dst)
+                    shutil.copy2(item, dst)
 
             self.set_local_version(self.latest_version)
 
-            # Eliminar archivos temporales
-            if os.path.exists(app_zip_path):
-                os.remove(app_zip_path)
-            if os.path.exists(extract_dir):
+            if app_zip_path.exists():
+                app_zip_path.unlink()
+            if extract_dir.exists():
                 shutil.rmtree(extract_dir)
 
             QMessageBox.information(
@@ -151,18 +145,7 @@ class frm_update(QDialog):
             QMessageBox.critical(self, "Error", f"No se pudo actualizar: {e}")
 
     def restart_app(self):
-        QApplication.quit()
-
-        app_path = Path(__file__).parent / "nexus_admin_client" / "app.py"
-        app_path = app_path.resolve()
-
+        app_path = Path.cwd() / "nexus_admin_client" / "app.py"
         subprocess.Popen([sys.executable, str(app_path)])
-
+        QApplication.quit()
         sys.exit()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ventana = frm_update()
-    ventana.show()
-    sys.exit(app.exec())
