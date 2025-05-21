@@ -17,6 +17,7 @@ REPO_NAME = "nexus_admin_client"
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "config.json"
 APP_FOLDER = os.path.join(os.path.abspath("."), "nexus_admin_client")
 
+
 class frm_update(QDialog):
     def __init__(self):
         super().__init__()
@@ -103,9 +104,9 @@ class frm_update(QDialog):
             return
 
         self.label_status.setText("⬇️ Descargando nueva versión...")
-        
-        app_zip_path = os.path.join(f"{APP_FOLDER}/tmp", "app_update.zip")
-        extract_dir = os.path.join(f"{APP_FOLDER}/tmp", "app_update")
+
+        app_zip_path = os.path.join(f"{APP_FOLDER}", "tmp", "app_update.zip")
+        extract_dir = os.path.join(f"{APP_FOLDER}", "tmp", "app_update")
 
         try:
             r = requests.get(self.latest_asset, stream=True)
@@ -134,7 +135,7 @@ class frm_update(QDialog):
                     shutil.copy2(src, dst)
 
             self.set_local_version(self.latest_version)
-            
+
             # Eliminar archivos temporales
             if os.path.exists(app_zip_path):
                 os.remove(app_zip_path)

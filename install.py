@@ -165,13 +165,13 @@ def crear_acceso_linux(nombre, ruta_app, ruta_venv, icono_path=None):
 
     launcher = os.path.join(apps_dir, f"{nombre}.desktop")
     contenido = f"""[Desktop Entry]
-Type=Application
-Name={nombre}
-Exec={ruta_venv} {ruta_app}
-Terminal=false
-StartupNotify=true
-Categories=Utility;
-"""
+                Type=Application
+                Name={nombre}
+                Exec={ruta_venv} {ruta_app}
+                Terminal=false
+                StartupNotify=true
+                Categories=Utility;
+                """
     if icono_path:
         contenido += f"Icon={icono_path}\n"
 
