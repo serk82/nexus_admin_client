@@ -1,3 +1,4 @@
+from .backup import frm_backup
 from .company import frm_company
 from .configuration import frm_configuration
 from .inspection import frm_inspection

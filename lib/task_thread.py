@@ -2,6 +2,10 @@ from PyQt6.QtCore import QThread, pyqtSignal
 
 
 class TaskThread(QThread):
+    progress = pyqtSignal(int)  # Señal para actualizar el progreso
+    total_progress = pyqtSignal(int)  # Señal para actualizar el progreso total
+    messages = pyqtSignal(str)  # Señal para mostrar mensajes
+    working = pyqtSignal(str) # Señal para mostrar el mensaje de trabajo
     finished = pyqtSignal()  # Señal para indicar que terminó el proceso
     error = pyqtSignal(str)  # Señal para capturar errores
 

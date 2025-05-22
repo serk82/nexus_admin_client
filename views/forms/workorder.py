@@ -230,7 +230,12 @@ class frm_workorder(QDialog):
             self.auth_manager.token,
             self.path,
         )
-        if documents:
+        QMessageBox.information(
+            self,
+            " ",
+            f"Se han encontrado {len(documents)} documentos.\n{documents}",
+        )
+        if documents and isinstance(documents, str):
             for document in documents:
                 self.model_documents.appendRow([QStandardItem(document)])
 

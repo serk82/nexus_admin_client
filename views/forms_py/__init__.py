@@ -1,3 +1,4 @@
+from .backup import Ui_frm_backup
 from .company import Ui_frm_company
 from .configuration import Ui_frm_configuration
 from .inspection import Ui_frm_inspection

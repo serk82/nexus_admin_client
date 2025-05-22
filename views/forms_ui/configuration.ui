@@ -38,21 +38,21 @@
     <property name="title">
      <string>&amp;Configuración</string>
     </property>
-    <widget class="QMenu" name="menu_workorders">
-     <property name="title">
-      <string>&amp;Ordenes de trabajo</string>
-     </property>
-     <addaction name="action_workorder_document_types"/>
-    </widget>
-    <addaction name="menu_workorders"/>
     <addaction name="separator"/>
     <addaction name="action_companies"/>
     <addaction name="action_permissions"/>
     <addaction name="action_roles"/>
     <addaction name="action_users"/>
    </widget>
+   <widget class="QMenu" name="menu_Seguridad">
+    <property name="title">
+     <string>&amp;Seguridad</string>
+    </property>
+    <addaction name="action_Copia_de_seguridad"/>
+   </widget>
    <addaction name="menu_archive"/>
    <addaction name="menu_configuration"/>
+   <addaction name="menu_Seguridad"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="mouseTracking">
@@ -112,6 +112,11 @@
   <action name="action_workorder_document_types">
    <property name="text">
     <string>&amp;Tipos de documento</string>
+   </property>
+  </action>
+  <action name="action_Copia_de_seguridad">
+   <property name="text">
+    <string>&amp;Copia de seguridad</string>
    </property>
   </action>
  </widget>
