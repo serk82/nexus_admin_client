@@ -5,6 +5,7 @@ from lib.config import API_HOST
 from lib.task_thread import TaskThread
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt6.QtCore import QEventLoop
 from views.forms_py import Ui_frm_backup
 
 
@@ -120,6 +121,11 @@ class frm_backup(QDialog):
             self.hilo.working.emit("¡Copia de seguridad NO realizada!")
             
     def check_or_install_mysqldump(self):
+        loop = QEventLoop()
+        self.response = None
+        def receive_response(r):
+            self.response = r
+            loop.quit()
         self.hilo.progress.emit(0)
         num_workers = 2
         if self.is_mysqldump_available():
@@ -139,13 +145,11 @@ class frm_backup(QDialog):
             return False
 
         elif system == "Linux":
-            reply = QMessageBox.question(
-                self,
-                "Instalar mysqldump",
-                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con apt?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-            )
-            if reply == QMessageBox.StandardButton.Yes:
+            self.hilo.show_message.emit("Instalar mysqldump",
+                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con apt?")
+            self.hilo.response_message.connect(receive_response)
+            loop.exec()
+            if self.response:
                 try:
                     subprocess.run(["sudo", "apt", "install", "-y", "mysql-client"], check=True)
                     self.hilo.progress.emit(2 * 100 // num_workers)
@@ -175,6 +179,14 @@ class frm_backup(QDialog):
     
     def is_mysqldump_available(self):
         return shutil.which("mysqldump") is not None
+    
+    def handle_ask_user(self, title, message):
+        response = QMessageBox.question(
+            self, title, message,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        self.hilo.response_message.emit(response == QMessageBox.StandardButton.Yes)
+
 
     def handle_error(self, error_message):
         # Función para manejar errores
@@ -198,6 +210,7 @@ class frm_backup(QDialog):
         self.hilo.total_progress.connect(self.ui.progressBar_total.setValue)
         self.hilo.working.connect(self.ui.txt_messages.setText)
         self.hilo.messages.connect(self.ui.txt_copy_target.setText)
+        self.hilo.show_message.connect(self.handle_ask_user)
         self.hilo.error.connect(self.handle_error)
         self.hilo.finished.connect(self.on_task_finished)
         self.hilo.start()
