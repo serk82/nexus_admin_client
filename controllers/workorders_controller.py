@@ -34,8 +34,8 @@ class WorkOrdersController:
         url = f"http://{API_HOST}:{API_PORT}/files/"
         headers = {"Authorization": f"Bearer {token}"}
         params = {}
-        params['subfolder'] = subfolder
-        params['filename'] = filename
+        params["subfolder"] = subfolder
+        params["filename"] = filename
         try:
             response = requests.delete(url, headers=headers, json=params)
             if response.status_code == 200:
@@ -145,7 +145,7 @@ class WorkOrdersController:
         url = f"http://{API_HOST}:{API_PORT}/files/"
         headers = {"Authorization": f"Bearer {token}"}
         params = {}
-        params['subfolder'] = subfolder
+        params["subfolder"] = subfolder
         try:
             response = requests.get(url, headers=headers, json=params)
             if response.status_code == 200:
@@ -155,7 +155,7 @@ class WorkOrdersController:
             elif response.status_code == 422:
                 return {"error": "Datos inválidos enviados"}
             elif response.status_code == 404:
-                return response.json().get("detail")
+                return {"error": response.json().get("detail")}
             else:
                 return {"error": f"Error inesperado: {response.status_code}"}
         except requests.exceptions.RequestException as e:
@@ -194,11 +194,11 @@ class WorkOrdersController:
         headers = {"Authorization": f"Bearer {token}"}
         params = {}
         if date_from:
-            params['date_from'] = date_from
+            params["date_from"] = date_from
         if date_to:
-            params['date_to'] = date_to
+            params["date_to"] = date_to
         if search:
-            params['search'] = search
+            params["search"] = search
         try:
             response = requests.get(url, headers=headers, json=params)
             if response.status_code == 200:
