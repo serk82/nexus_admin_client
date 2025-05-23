@@ -1,4 +1,4 @@
-import subprocess, shutil
+import subprocess, shutil,platform
 from controllers import AuthManager
 from datetime import date
 from lib.config import API_HOST
@@ -30,7 +30,11 @@ class frm_backup(QDialog):
 
     def backup(self):
         try:
+            num_workers = 3
             self.hilo.messages.emit("Preparando copia de seguridad...")
+            if not self.check_or_install_mysqldump():
+                return
+            self.hilo.total_progress.emit(1 * 100 // num_workers)
             self.path_folder = Path(self.target)
             self.path_folder = self.path_folder / "Backup_Nexus_Admin"
             self.hilo.messages.emit(
@@ -44,8 +48,9 @@ class frm_backup(QDialog):
             self.path_folder_today.mkdir(parents=True, exist_ok=True)
 
             self.backup_mysql()
-
+            self.hilo.total_progress.emit(2 * 100 // num_workers)
             self.backup_files()
+            self.hilo.total_progress.emit(3 * 100 // num_workers)
             self.hilo.messages.emit("")
             self.hilo.working.emit("¡Copia de seguridad realizada satisfactoriamente!")
         except subprocess.CalledProcessError as e:
@@ -59,6 +64,7 @@ class frm_backup(QDialog):
 
     def backup_files(self):
         try:
+            self.hilo.progress.emit(0)
             self.hilo.working.emit(
                 "Iniciando copia de seguridad de carpetas y archivos..."
             )
@@ -82,6 +88,7 @@ class frm_backup(QDialog):
 
     def backup_mysql(self):
         try:
+            self.hilo.progress.emit(0)
             self.hilo.working.emit(
                 "Iniciando copia de seguridad de la base de datos..."
             )
@@ -101,7 +108,7 @@ class frm_backup(QDialog):
                 subprocess.run(
                     cmd, stdout=f, stderr=subprocess.PIPE, text=True, check=True
                 )
-
+            self.hilo.progress.emit(100)
             self.hilo.messages.emit(f"Respaldo completado:\n{output_file}")
         except subprocess.CalledProcessError as e:
             self.hilo.error.emit(f"Error al respaldar:\n{e.stderr}")
@@ -111,6 +118,63 @@ class frm_backup(QDialog):
             self.hilo.error.emit(str(e))
             self.hilo.messages.emit("")
             self.hilo.working.emit("¡Copia de seguridad NO realizada!")
+            
+    def check_or_install_mysqldump(self):
+        self.hilo.progress.emit(0)
+        num_workers = 2
+        if self.is_mysqldump_available():
+            return True
+        self.hilo.progress.emit(1 * 100 // num_workers)
+
+        system = platform.system()
+
+        if system == "Windows":
+            QMessageBox.critical(
+                self,
+                "mysqldump no encontrado",
+                "No se encontró mysqldump en tu sistema.\n\n"
+                "Por favor instala MySQL desde:\n"
+                "https://dev.mysql.com/downloads/mysql/"
+            )
+            return False
+
+        elif system == "Linux":
+            reply = QMessageBox.question(
+                self,
+                "Instalar mysqldump",
+                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con apt?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                try:
+                    subprocess.run(["sudo", "apt", "install", "-y", "mysql-client"], check=True)
+                    self.hilo.progress.emit(2 * 100 // num_workers)
+                    return self.is_mysqldump_available()
+                except Exception as e:
+                    QMessageBox.critical(self, "Error", f"No se pudo instalar mysqldump:\n{e}")
+                    return False
+
+        elif system == "Darwin":  # macOS
+            reply = QMessageBox.question(
+                self,
+                "Instalar mysqldump",
+                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con Homebrew?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                try:
+                    subprocess.run(["brew", "install", "mysql-client"], check=True)
+                    self.hilo.progress.emit(2 * 100 // num_workers)
+                    return self.is_mysqldump_available()
+                except Exception as e:
+                    QMessageBox.critical(self, "Error", f"No se pudo instalar mysqldump:\n{e}")
+                    return False
+        else:
+            QMessageBox.warning(self, "No compatible", f"Tu sistema no está soportado: {system}")
+            return False
+    
+    def is_mysqldump_available(self):
+        return shutil.which("mysqldump") is not None
 
     def handle_error(self, error_message):
         # Función para manejar errores
