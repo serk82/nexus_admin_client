@@ -33,7 +33,7 @@ def generate_pdf(filename: str, permissions: dict):
     # Título
     title_style = ParagraphStyle(
         name="Title",
-        parent=styles['Heading1'],
+        parent=styles["Heading1"],
         fontSize=18,
         alignment=TA_CENTER,
         spaceAfter=20,
@@ -86,9 +86,7 @@ def generate_pdf(filename: str, permissions: dict):
     doc.build(elements)
 
     # Abrir el PDF generado
-    if platform.system() == "Darwin":  # macOS
-        os.system(f"open {filename}")
-    elif platform.system() == "Windows":
+    if platform.system() == "Windows":
         os.startfile(filename)
     else:  # Linux
         subprocess.Popen(["evince", filename])

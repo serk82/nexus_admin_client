@@ -1,4 +1,4 @@
-import subprocess, shutil,platform
+import subprocess, shutil, platform
 from controllers import AuthManager
 from datetime import date
 from lib.config import API_HOST
@@ -119,13 +119,15 @@ class frm_backup(QDialog):
             self.hilo.error.emit(str(e))
             self.hilo.messages.emit("")
             self.hilo.working.emit("¡Copia de seguridad NO realizada!")
-            
+
     def check_or_install_mysqldump(self):
         loop = QEventLoop()
         self.response = None
+
         def receive_response(r):
             self.response = r
             loop.quit()
+
         self.hilo.progress.emit(0)
         num_workers = 2
         if self.is_mysqldump_available():
@@ -135,62 +137,59 @@ class frm_backup(QDialog):
         system = platform.system()
 
         if system == "Windows":
-            QMessageBox.critical(
-                self,
-                "mysqldump no encontrado",
+            self.hilo.show_message_info.emit(
+                "Error",
                 "No se encontró mysqldump en tu sistema.\n\n"
                 "Por favor instala MySQL desde:\n"
-                "https://dev.mysql.com/downloads/mysql/"
+                "https://dev.mysql.com/downloads/mysql/",
             )
+            self.hilo.response_message.connect(receive_response)
+            loop.exec()
             return False
 
         elif system == "Linux":
-            self.hilo.show_message.emit("Instalar mysqldump",
-                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con apt?")
+            self.hilo.show_message_response.emit(
+                "Instalar mysqldump",
+                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con apt?",
+            )
             self.hilo.response_message.connect(receive_response)
             loop.exec()
             if self.response:
                 try:
-                    subprocess.run(["sudo", "apt", "install", "-y", "mysql-client"], check=True)
+                    subprocess.run(
+                        ["pkexec", "apt", "install", "-y", "mysql-client"], check=True
+                    )
                     self.hilo.progress.emit(2 * 100 // num_workers)
                     return self.is_mysqldump_available()
                 except Exception as e:
-                    QMessageBox.critical(self, "Error", f"No se pudo instalar mysqldump:\n{e}")
+                    self.hilo.show_message_info.emit(
+                        "Error", f"No se pudo instalar mysqldump:\n{e}"
+                    )
+                    self.hilo.response_message.connect(receive_response)
+                    loop.exec()
                     return False
 
-        elif system == "Darwin":  # macOS
-            reply = QMessageBox.question(
-                self,
-                "Instalar mysqldump",
-                "mysqldump no está instalado.\n¿Deseas instalarlo ahora con Homebrew?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-            )
-            if reply == QMessageBox.StandardButton.Yes:
-                try:
-                    subprocess.run(["brew", "install", "mysql-client"], check=True)
-                    self.hilo.progress.emit(2 * 100 // num_workers)
-                    return self.is_mysqldump_available()
-                except Exception as e:
-                    QMessageBox.critical(self, "Error", f"No se pudo instalar mysqldump:\n{e}")
-                    return False
-        else:
-            QMessageBox.warning(self, "No compatible", f"Tu sistema no está soportado: {system}")
-            return False
-    
     def is_mysqldump_available(self):
         return shutil.which("mysqldump") is not None
-    
+
     def handle_ask_user(self, title, message):
         response = QMessageBox.question(
-            self, title, message,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            self,
+            title,
+            message,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
         )
         self.hilo.response_message.emit(response == QMessageBox.StandardButton.Yes)
 
-
     def handle_error(self, error_message):
-        # Función para manejar errores
         QMessageBox.warning(self, "Error", error_message)
+
+    def handle_info_user(self, title, message):
+        QMessageBox.question(
+            self,
+            title,
+            message,
+        )
 
     def on_backup(self):
         self.auth_manager.is_token_expired(self)
@@ -210,7 +209,8 @@ class frm_backup(QDialog):
         self.hilo.total_progress.connect(self.ui.progressBar_total.setValue)
         self.hilo.working.connect(self.ui.txt_messages.setText)
         self.hilo.messages.connect(self.ui.txt_copy_target.setText)
-        self.hilo.show_message.connect(self.handle_ask_user)
+        self.hilo.show_message_response.connect(self.handle_ask_user)
+        self.hilo.show_message_info.connect(self.handle_info_user)
         self.hilo.error.connect(self.handle_error)
         self.hilo.finished.connect(self.on_task_finished)
         self.hilo.start()

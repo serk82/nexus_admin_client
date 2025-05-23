@@ -153,8 +153,6 @@ def crear_acceso_directo(nombre, ruta_app, ruta_venv, icono_path=None):
             print(
                 "❌ No se pudieron instalar las dependencias necesarias para Windows."
             )
-    elif sistema == "Darwin":
-        crear_acceso_mac(nombre, ruta_app, ruta_venv)
     else:
         print(f"⚠️ Sistema operativo no soportado: {sistema}")
 
