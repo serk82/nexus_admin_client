@@ -1,5 +1,5 @@
-import json, os, requests, sys, subprocess, webbrowser
-from controllers import AuthManager, WorkOrdersController
+import requests, sys, webbrowser
+from controllers import AuthManager, WorkOrdersController, FilesController
 from datetime import date, datetime
 from lib.config import API_HOST, API_PORT
 from lib.task_thread import *
@@ -35,6 +35,7 @@ class frm_workorder(QDialog):
 
         # Variables
         self.workorders_controller = WorkOrdersController()
+        self.files_controller = FilesController()
         self.company_id = company_id
         self.vehicle_id = vehicle_id
         self.workorder_id = workorder_id
@@ -133,7 +134,7 @@ class frm_workorder(QDialog):
         self.ui.tvw_documents.horizontalHeader().hide()
 
     def delete_document(self):
-        self.workorders_controller.delete_document(
+        self.files_controller.delete_file(
             self.auth_manager.token,
             self.path,
             self.get_selected_document(),
@@ -175,7 +176,7 @@ class frm_workorder(QDialog):
                                 f"El documento '{file_path.name}' ya existe.",
                             )
                             return
-                        self.upload_file(file_path)
+                        self.upload_file(file_path, self.path)
                         self.model_documents.appendRow(
                             [
                                 QStandardItem(file_path.name),
@@ -226,7 +227,7 @@ class frm_workorder(QDialog):
 
     def load_documents(self):
         self.model_documents.removeRows(0, self.model_documents.rowCount())
-        documents = self.workorders_controller.get_documents(
+        documents = self.files_controller.get_files(
             self.auth_manager.token,
             self.path,
         )
@@ -348,7 +349,7 @@ class frm_workorder(QDialog):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_document()
         if selected_id is not None:
-            response = self.workorders_controller.get_file(
+            response = self.files_controller.get_file(
                 self.auth_manager.token,
                 self.path,
                 selected_id,
@@ -385,10 +386,9 @@ class frm_workorder(QDialog):
         workorder = self.collect_workorder_data()
         self.workorders_controller.update_workorder(self.auth_manager.token, workorder)
 
-    def upload_file(self, file_path: Path):
+    def upload_file(self, file_path: Path, subfolder: str):
         url = f"http://{API_HOST}:{API_PORT}/files/"
-        subfolder = f"{self.company_id}/vehicles/{self.vehicle_id}/workorders/{self.workorder_id}"
-
+        
         try:
             with open(file_path, "rb") as f:
                 files = {"file": (file_path.name, f)}

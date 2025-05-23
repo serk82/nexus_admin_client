@@ -1,15 +1,20 @@
+import requests
 from controllers import (
     AuthManager,
+    FilesController,
     InspectionsController,
     VehiclesController,
     WorkOrdersController,
 )
 from datetime import date, datetime
+from lib.config import API_HOST, API_PORT
 from lib.exceptions import *
 from lib.methods import *
 from lib.task_thread import *
+from pathlib import Path
+import sys
 from PyQt6.QtCore import pyqtSignal, QDate
-from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtGui import QStandardItemModel, QStandardItem, QPixmap
 from PyQt6.QtWidgets import (
     QDialog,
     QMessageBox,
@@ -28,8 +33,9 @@ class frm_vehicle(QDialog):
         super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(self)
-        self.vehicles_controller = VehiclesController()
+        self.files_controller = FilesController()
         self.inspections_controller = InspectionsController()
+        self.vehicles_controller = VehiclesController()
         self.workorders_controller = WorkOrdersController()
         self.frm_users = form
         self.edit = edit
@@ -45,6 +51,7 @@ class frm_vehicle(QDialog):
         self.date_last_workorder = None
         self.date_from_workorder = None
         self.date_to_workorder = None
+        self.path_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
 
@@ -58,6 +65,7 @@ class frm_vehicle(QDialog):
         # Events
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
         self.ui.btn_close.clicked.connect(self.close)
+        self.ui.btn_image.clicked.connect(self.change_image)
         self.ui.chb_tachograph_expiry.stateChanged.connect(self.check_tachograph_expery)
         self.ui.chb_itv_expiry.stateChanged.connect(self.check_itv_expery)
         self.ui.chb_inspection_km.stateChanged.connect(self.check_inspection_km)
@@ -157,6 +165,36 @@ class frm_vehicle(QDialog):
             self.ui.date_to.date().month(),
             self.ui.date_to.date().day(),
         )
+
+    def change_image(self):
+        self.auth_manager.is_token_expired(self)
+        image, _ = QFileDialog.getOpenFileName(
+            self, "Selecciona una imagen JPG", "", "Archivos JPG (*.jpg)"
+        )
+        if image:
+            path = Path(image)
+            self.upload_image(path, self.path_image)
+
+            response = self.files_controller.get_file(
+                self.auth_manager.token,
+                self.path_image,
+                "image.jpg",
+            )
+            try:
+                file_path = Path(sys.argv[0]).resolve().parent / "tmp" / "image.jpg"
+                QMessageBox.information(self, " ", str(file_path))
+                with open(file_path, "wb") as f:
+                    f.write(response)
+                self.image_pixmap = QPixmap(str(file_path))
+                self.ui.lbl_image.setPixmap(self.image_pixmap.scaled(
+                100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio
+            ))
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    " ",
+                    f"No se pudo abrir el archivo:\n{e}",
+                )
 
     def check_inspection_hours(self):
         self.ui.sbx_inspection_hours.setVisible(
@@ -918,3 +956,21 @@ class frm_vehicle(QDialog):
                 date.strftime(self.date_to_workorder, "%Y-%m-%d"),
                 self.ui.txt_search.text(),
             )
+
+    def upload_image(self, file_path: Path, subfolder: str):
+        url = f"http://{API_HOST}:{API_PORT}/files/"
+
+        try:
+            with open(file_path, "rb") as f:
+                files = {"file": ("image.jpg", f)}
+                data = {"subfolder": subfolder}
+                response = requests.post(url, files=files, data=data)
+
+            if not response.ok:
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"Error del servidor: {response.status_code}\n{response.text}",
+                )
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"No se pudo subir el archivo:\n{e}")

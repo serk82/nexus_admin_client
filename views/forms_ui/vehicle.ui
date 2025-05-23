@@ -124,13 +124,10 @@
           <layout class="QGridLayout" name="gridLayout_10">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <widget class="QGraphicsView" name="graphicsView">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="chb_deactivate">
+               <property name="text">
+                <string>Desactivar vehículo</string>
                </property>
               </widget>
              </item>
@@ -141,10 +138,28 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="chb_deactivate">
+             <item row="0" column="0">
+              <widget class="QLabel" name="lbl_image">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>300</width>
+                 <height>300</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>300</width>
+                 <height>300</height>
+                </size>
+               </property>
                <property name="text">
-                <string>Desactivar vehículo</string>
+                <string/>
                </property>
               </widget>
              </item>
@@ -1359,7 +1374,6 @@
   <tabstop>tab_file</tabstop>
   <tabstop>tvw_inspections</tabstop>
   <tabstop>btn_edit_inspection</tabstop>
-  <tabstop>graphicsView</tabstop>
   <tabstop>btn_image</tabstop>
  </tabstops>
  <resources/>

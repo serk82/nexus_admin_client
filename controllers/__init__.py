@@ -1,5 +1,6 @@
 from .auth_manager import AuthManager
 from .companies_controller import CompaniesController
+from .files_controller import FilesController
 from .inspections_controller import InspectionsController
 from .permissions_controller import PermissionsController
 from .roles_controller import RolesController
