@@ -230,7 +230,7 @@ class frm_workorder(QDialog):
             self.auth_manager.token,
             self.path,
         )
-        if documents and isinstance(documents, str):
+        if "error" not in documents:
             for document in documents:
                 self.model_documents.appendRow([QStandardItem(document)])
 
