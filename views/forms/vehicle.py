@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QTableView,
     QHeaderView,
+    QFileDialog,
 )
 from views.forms_py import Ui_frm_vehicle
 
@@ -84,6 +85,11 @@ class frm_vehicle(QDialog):
         self.ui.btn_edit_inspection.clicked.connect(self.edit_inspection)
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
+        # Events for documentation
+        self.ui.btn_registration_certificate.clicked.connect(
+            self.add_registration_certificate
+        )
+
         # Check permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))
         self.ui.btn_add_inspection.setEnabled(self.auth_manager.has_permission("ARV"))
@@ -120,11 +126,21 @@ class frm_vehicle(QDialog):
         self.form.data_update_inspections.connect(self.on_load_inspections)
         self.form.exec()
 
+    def add_registration_certificate(self):
+        self.auth_manager.is_token_expired(self)
+        document, _ = QFileDialog.getOpenFileName(
+            self, "Selecciona un documento PDF", "", "Archivos PDF (*.pdf)"
+        )
+        if document:
+            QMessageBox.information(self, " ", document)
+
     def add_workorder(self):
         self.auth_manager.is_token_expired(self)
         from views.forms import frm_workorder
 
-        self.form = frm_workorder(self, self.auth_manager, False, None, self.id, self.company_id)
+        self.form = frm_workorder(
+            self, self.auth_manager, False, None, self.id, self.company_id
+        )
         self.form.data_update_workorder.connect(self.on_load_workorders)
         self.form.exec()
 
