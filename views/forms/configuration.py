@@ -31,6 +31,7 @@ class frm_configuration(QMainWindow):
         self.ui.action_permissions.triggered.connect(self.permissions)
         self.ui.action_roles.triggered.connect(self.roles)
         self.ui.action_users.triggered.connect(self.users)
+        self.ui.action_Tipos_de_documento.triggered.connect(self.document_types)
 
     def backup(self):
         self.auth_manager.is_token_expired(self)
@@ -51,6 +52,12 @@ class frm_configuration(QMainWindow):
     def companies(self):
         self.auth_manager.is_token_expired(self)
         self.form = frm_table_view(self, self.auth_manager, "companies")
+        self.form.exec()
+        
+    def document_types(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_document_types
+        self.form = frm_document_types(self, self.auth_manager)
         self.form.exec()
 
     def permissions(self):

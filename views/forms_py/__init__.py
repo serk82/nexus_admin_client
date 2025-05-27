@@ -1,6 +1,7 @@
 from .backup import Ui_frm_backup
 from .company import Ui_frm_company
 from .configuration import Ui_frm_configuration
+from .vehicle_documents import Ui_frm_vehicle_documents
 from .inspection import Ui_frm_inspection
 from .login import Ui_frm_login
 from .main import Ui_frm_main

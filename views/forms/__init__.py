@@ -1,6 +1,7 @@
 from .backup import frm_backup
 from .company import frm_company
 from .configuration import frm_configuration
+from .vehicle_documents import frm_document_types
 from .inspection import frm_inspection
 from .login import frm_login
 from .main import frm_main
