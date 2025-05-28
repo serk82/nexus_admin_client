@@ -12,5 +12,6 @@ from .role import Ui_frm_role
 from .table_view import Ui_frm_table_view
 from .user import Ui_frm_user
 from .vehicle import Ui_frm_vehicle
+from .vehicle_document import Ui_frm_vehicle_document
 from .vehicles import Ui_frm_vehicles
 from .workorder import Ui_frm_workorder

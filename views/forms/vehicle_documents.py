@@ -4,17 +4,18 @@ from controllers import (
 )
 from lib.exceptions import *
 from lib.task_thread import TaskThread, LoadingDialog
-from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
+from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox
 from views.forms_py import Ui_frm_vehicle_documents
 
 
 class frm_document_types(QDialog):
+
     def __init__(self, form, auth_manager: AuthManager):
         super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(form)
-        self.permissions_controller = VehicleDocumentsController()
+        self.vehicle_documents = VehicleDocumentsController()
         self.ui = Ui_frm_vehicle_documents()
         self.ui.setupUi(self)
 
@@ -40,6 +41,18 @@ class frm_document_types(QDialog):
 
         # Events
         self.ui.btn_close.clicked.connect(self.close)
+        self.ui.btn_add.clicked.connect(self.add)
+        self.ui.btn_edit.clicked.connect(self.edit)
+        self.ui.tvw_vehicle_documents.doubleClicked.connect(self.edit)
+        self.ui.btn_delete.clicked.connect(self.delete)
+
+    def add(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_vehicle_document
+
+        form = frm_vehicle_document(self, self.auth_manager, False, None)
+        form.data_update.connect(self.on_update)
+        form.exec()
 
     def configuration_based_on_table(self):
 
@@ -50,10 +63,46 @@ class frm_document_types(QDialog):
         # Set height and width of columns
         self.ui.tvw_vehicle_documents.setColumnWidth(0, 50)
         self.ui.tvw_vehicle_documents.setColumnWidth(1, 350)
-        self.ui.tvw_vehicle_documents.setFixedWidth(416)
+        self.ui.tvw_vehicle_documents.setFixedWidth(402)
         self.ui.tvw_vehicle_documents.setMinimumHeight(400)
         # Update users on table view
         self.on_update()
+
+    def delete(self):
+        self.auth_manager.is_token_expired(self)
+        selected_id = self.get_selected_id()
+        if not selected_id:
+            QMessageBox.information(
+                self, " ", "No hay ningun tipo de documento seleccionado."
+            )
+            return
+        response = self.vehicle_documents.delete_vehicle_document(
+            self.auth_manager.token, selected_id
+        )
+        if response and "error" not in response:
+            QMessageBox.information(
+                self, " ", "Tipo de documento eliminado correctamente."
+            )
+        else:
+            QMessageBox.warning(
+                self,
+                " ",
+                f"No se ha podido eliminar el tipo de documento{': ' + response['error'] if response else '.'}",
+            )
+
+    def edit(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_vehicle_document
+
+        selected_id = self.get_selected_id()
+        if not selected_id:
+            QMessageBox.information(
+                self, " ", "No hay ningun tipo de documento seleccionado."
+            )
+            return
+        form = frm_vehicle_document(self, self.auth_manager, True, selected_id)
+        form.data_update.connect(self.on_update)
+        form.exec()
 
     def on_update(self):
         self.loading_dialog = LoadingDialog(self)
@@ -83,7 +132,7 @@ class frm_document_types(QDialog):
 
     def update(self):
         self.model.removeRows(0, self.model.rowCount())
-        permissions = self.permissions_controller.get_vehicle_documents(
+        permissions = self.vehicle_documents.get_vehicle_documents(
             self.auth_manager.token
         )
         for permission in permissions:
