@@ -97,7 +97,7 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
-        self.ui.btn_add_vehicle_document.clicked.connect(self.add_vehicle_document)
+        self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))
@@ -335,19 +335,15 @@ class frm_vehicle(QDialog):
     def configuration_based_on_vehicle_documents(self):
         self.model_vehicle_documents = QStandardItemModel()
         # Add model on table view
-        self.ui.tvw_vehicle_documents.setModel(self.model_vehicle_documents)
+        self.ui.tvw_aditional_coduments.setModel(self.model_vehicle_documents)
         self.model_vehicle_documents.setHorizontalHeaderLabels(
             [
-                "ID",
-                "Tipo de documento",
                 "Nombre",
             ]
         )
-        self.ui.tvw_vehicle_documents.setColumnHidden(0, True)
         # Set height and width of columns
-        self.ui.tvw_vehicle_documents.setColumnWidth(1, 300)
-        self.ui.tvw_vehicle_documents.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.Stretch
+        self.ui.tvw_aditional_coduments.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch
         )
 
     def configuration_based_on_workorders(self):
@@ -373,11 +369,11 @@ class frm_vehicle(QDialog):
     def configuration_tableviews(self):
         # Hide index of rows
         self.ui.tvw_inspections.verticalHeader().setVisible(False)
-        self.ui.tvw_vehicle_documents.verticalHeader().setVisible(False)
+        self.ui.tvw_aditional_coduments.verticalHeader().setVisible(False)
         self.ui.tvw_workorders.verticalHeader().setVisible(False)
         # Sets the table to not be directly editable
         self.ui.tvw_inspections.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
-        self.ui.tvw_vehicle_documents.setEditTriggers(
+        self.ui.tvw_aditional_coduments.setEditTriggers(
             QTableView.EditTrigger.NoEditTriggers
         )
         self.ui.tvw_workorders.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
@@ -385,7 +381,7 @@ class frm_vehicle(QDialog):
         self.ui.tvw_inspections.setSelectionMode(
             QTableView.SelectionMode.SingleSelection
         )
-        self.ui.tvw_vehicle_documents.setSelectionMode(
+        self.ui.tvw_aditional_coduments.setSelectionMode(
             QTableView.SelectionMode.SingleSelection
         )
         self.ui.tvw_workorders.setSelectionMode(
@@ -394,17 +390,17 @@ class frm_vehicle(QDialog):
         self.ui.tvw_inspections.setSelectionBehavior(
             QTableView.SelectionBehavior.SelectRows
         )
-        self.ui.tvw_vehicle_documents.setSelectionBehavior(
+        self.ui.tvw_aditional_coduments.setSelectionBehavior(
             QTableView.SelectionBehavior.SelectRows
         )
         self.ui.tvw_workorders.setSelectionBehavior(
             QTableView.SelectionBehavior.SelectRows
         )
         self.ui.tvw_inspections.resizeColumnsToContents()
-        self.ui.tvw_vehicle_documents.resizeColumnsToContents()
+        self.ui.tvw_aditional_coduments.resizeColumnsToContents()
         self.ui.tvw_workorders.resizeColumnsToContents()
         self.ui.tvw_inspections.setAlternatingRowColors(True)
-        self.ui.tvw_vehicle_documents.setAlternatingRowColors(True)
+        self.ui.tvw_aditional_coduments.setAlternatingRowColors(True)
         self.ui.tvw_workorders.setAlternatingRowColors(True)
 
     def delete_inspection(self):
