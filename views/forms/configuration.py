@@ -56,8 +56,8 @@ class frm_configuration(QMainWindow):
         
     def document_types(self):
         self.auth_manager.is_token_expired(self)
-        from views.forms import frm_document_types
-        self.form = frm_document_types(self, self.auth_manager)
+        from views.forms import frm_types_vehicle_documents
+        self.form = frm_types_vehicle_documents(self, self.auth_manager)
         self.form.exec()
 
     def permissions(self):

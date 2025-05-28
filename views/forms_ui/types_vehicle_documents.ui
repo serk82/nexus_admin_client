@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frm_vehicle_documents</class>
- <widget class="QDialog" name="frm_vehicle_documents">
+ <class>frm_types_vehicle_documents</class>
+ <widget class="QDialog" name="frm_types_vehicle_documents">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Tipos de documentos de vehículo</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTableView" name="tvw_vehicle_documents"/>
+    <widget class="QTableView" name="tvw_types_vehicle_documents"/>
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">

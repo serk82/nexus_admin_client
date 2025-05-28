@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>frm_vehicle_document</class>
- <widget class="QDialog" name="frm_vehicle_document">
+ <class>frm_type_vehicle_document</class>
+ <widget class="QDialog" name="frm_type_vehicle_document">
   <property name="geometry">
    <rect>
     <x>0</x>

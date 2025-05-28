@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'views/forms_ui/vehicle_document.ui'
+# Form implementation generated from reading ui file 'views/forms_ui/type_vehicle_document.ui'
 #
 # Created by: PyQt6 UI code generator 6.9.0
 #
@@ -9,22 +9,22 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_frm_vehicle_document(object):
-    def setupUi(self, frm_vehicle_document):
-        frm_vehicle_document.setObjectName("frm_vehicle_document")
-        frm_vehicle_document.resize(400, 153)
-        self.gridLayout = QtWidgets.QGridLayout(frm_vehicle_document)
+class Ui_frm_type_vehicle_document(object):
+    def setupUi(self, frm_type_vehicle_document):
+        frm_type_vehicle_document.setObjectName("frm_type_vehicle_document")
+        frm_type_vehicle_document.resize(400, 153)
+        self.gridLayout = QtWidgets.QGridLayout(frm_type_vehicle_document)
         self.gridLayout.setObjectName("gridLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.btn_close = QtWidgets.QPushButton(parent=frm_vehicle_document)
+        self.btn_close = QtWidgets.QPushButton(parent=frm_type_vehicle_document)
         self.btn_close.setObjectName("btn_close")
         self.horizontalLayout.addWidget(self.btn_close)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.btn_save = QtWidgets.QPushButton(parent=frm_vehicle_document)
+        self.btn_save = QtWidgets.QPushButton(parent=frm_type_vehicle_document)
         self.btn_save.setObjectName("btn_save")
         self.horizontalLayout.addWidget(self.btn_save)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -32,10 +32,10 @@ class Ui_frm_vehicle_document(object):
         self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
-        self.lbl_name = QtWidgets.QLabel(parent=frm_vehicle_document)
+        self.lbl_name = QtWidgets.QLabel(parent=frm_type_vehicle_document)
         self.lbl_name.setObjectName("lbl_name")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.lbl_name)
-        self.txt_name = QtWidgets.QLineEdit(parent=frm_vehicle_document)
+        self.txt_name = QtWidgets.QLineEdit(parent=frm_type_vehicle_document)
         self.txt_name.setObjectName("txt_name")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.txt_name)
         self.gridLayout.addLayout(self.formLayout, 1, 0, 1, 1)
@@ -44,12 +44,12 @@ class Ui_frm_vehicle_document(object):
         spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout.addItem(spacerItem4, 0, 0, 1, 1)
 
-        self.retranslateUi(frm_vehicle_document)
-        QtCore.QMetaObject.connectSlotsByName(frm_vehicle_document)
+        self.retranslateUi(frm_type_vehicle_document)
+        QtCore.QMetaObject.connectSlotsByName(frm_type_vehicle_document)
 
-    def retranslateUi(self, frm_vehicle_document):
+    def retranslateUi(self, frm_type_vehicle_document):
         _translate = QtCore.QCoreApplication.translate
-        frm_vehicle_document.setWindowTitle(_translate("frm_vehicle_document", "Tipo de documento"))
-        self.btn_close.setText(_translate("frm_vehicle_document", "Cerrar"))
-        self.btn_save.setText(_translate("frm_vehicle_document", "Guardar"))
-        self.lbl_name.setText(_translate("frm_vehicle_document", "Nombre"))
+        frm_type_vehicle_document.setWindowTitle(_translate("frm_type_vehicle_document", "Tipo de documento"))
+        self.btn_close.setText(_translate("frm_type_vehicle_document", "Cerrar"))
+        self.btn_save.setText(_translate("frm_type_vehicle_document", "Guardar"))
+        self.lbl_name.setText(_translate("frm_type_vehicle_document", "Nombre"))

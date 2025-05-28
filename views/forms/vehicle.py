@@ -94,9 +94,6 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
-        self.ui.btn_registration_certificate.clicked.connect(
-            self.add_registration_certificate
-        )
 
         # Check permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))

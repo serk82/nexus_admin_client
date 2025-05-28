@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'views/forms_ui/vehicle_documents.ui'
+# Form implementation generated from reading ui file 'views/forms_ui/types_vehicle_documents.ui'
 #
 # Created by: PyQt6 UI code generator 6.9.0
 #
@@ -9,46 +9,46 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_frm_vehicle_documents(object):
-    def setupUi(self, frm_vehicle_documents):
-        frm_vehicle_documents.setObjectName("frm_vehicle_documents")
-        frm_vehicle_documents.resize(373, 417)
-        self.gridLayout = QtWidgets.QGridLayout(frm_vehicle_documents)
+class Ui_frm_types_vehicle_documents(object):
+    def setupUi(self, frm_types_vehicle_documents):
+        frm_types_vehicle_documents.setObjectName("frm_types_vehicle_documents")
+        frm_types_vehicle_documents.resize(373, 417)
+        self.gridLayout = QtWidgets.QGridLayout(frm_types_vehicle_documents)
         self.gridLayout.setObjectName("gridLayout")
-        self.tvw_vehicle_documents = QtWidgets.QTableView(parent=frm_vehicle_documents)
-        self.tvw_vehicle_documents.setObjectName("tvw_vehicle_documents")
-        self.gridLayout.addWidget(self.tvw_vehicle_documents, 0, 0, 1, 1)
+        self.tvw_types_vehicle_documents = QtWidgets.QTableView(parent=frm_types_vehicle_documents)
+        self.tvw_types_vehicle_documents.setObjectName("tvw_types_vehicle_documents")
+        self.gridLayout.addWidget(self.tvw_types_vehicle_documents, 0, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
-        self.btn_add = QtWidgets.QPushButton(parent=frm_vehicle_documents)
+        self.btn_add = QtWidgets.QPushButton(parent=frm_types_vehicle_documents)
         self.btn_add.setObjectName("btn_add")
         self.horizontalLayout.addWidget(self.btn_add)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
-        self.btn_edit = QtWidgets.QPushButton(parent=frm_vehicle_documents)
+        self.btn_edit = QtWidgets.QPushButton(parent=frm_types_vehicle_documents)
         self.btn_edit.setObjectName("btn_edit")
         self.horizontalLayout.addWidget(self.btn_edit)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.btn_delete = QtWidgets.QPushButton(parent=frm_vehicle_documents)
+        self.btn_delete = QtWidgets.QPushButton(parent=frm_types_vehicle_documents)
         self.btn_delete.setObjectName("btn_delete")
         self.horizontalLayout.addWidget(self.btn_delete)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
-        self.btn_close = QtWidgets.QPushButton(parent=frm_vehicle_documents)
+        self.btn_close = QtWidgets.QPushButton(parent=frm_types_vehicle_documents)
         self.btn_close.setObjectName("btn_close")
         self.gridLayout.addWidget(self.btn_close, 2, 0, 1, 1)
 
-        self.retranslateUi(frm_vehicle_documents)
-        QtCore.QMetaObject.connectSlotsByName(frm_vehicle_documents)
+        self.retranslateUi(frm_types_vehicle_documents)
+        QtCore.QMetaObject.connectSlotsByName(frm_types_vehicle_documents)
 
-    def retranslateUi(self, frm_vehicle_documents):
+    def retranslateUi(self, frm_types_vehicle_documents):
         _translate = QtCore.QCoreApplication.translate
-        frm_vehicle_documents.setWindowTitle(_translate("frm_vehicle_documents", "Dialog"))
-        self.btn_add.setText(_translate("frm_vehicle_documents", "Añadir"))
-        self.btn_edit.setText(_translate("frm_vehicle_documents", "Editar"))
-        self.btn_delete.setText(_translate("frm_vehicle_documents", "Eliminar"))
-        self.btn_close.setText(_translate("frm_vehicle_documents", "Cerrar"))
+        frm_types_vehicle_documents.setWindowTitle(_translate("frm_types_vehicle_documents", "Tipos de documentos de vehículo"))
+        self.btn_add.setText(_translate("frm_types_vehicle_documents", "Añadir"))
+        self.btn_edit.setText(_translate("frm_types_vehicle_documents", "Editar"))
+        self.btn_delete.setText(_translate("frm_types_vehicle_documents", "Eliminar"))
+        self.btn_close.setText(_translate("frm_types_vehicle_documents", "Cerrar"))

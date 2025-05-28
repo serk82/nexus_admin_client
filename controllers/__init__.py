@@ -6,5 +6,5 @@ from .permissions_controller import PermissionsController
 from .roles_controller import RolesController
 from .users_controller import UsersController
 from .vehicles_controller import VehiclesController
-from .vehicle_documents_controller import VehicleDocumentsController
+from .types_vehicle_documents_controller import TypesVehicleDocumentsController
 from .workorders_controller import WorkOrdersController

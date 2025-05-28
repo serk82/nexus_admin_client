@@ -2,13 +2,13 @@ import requests
 from lib.config import API_HOST, API_PORT
 
 
-class VehicleDocumentsController:
+class TypesVehicleDocumentsController:
 
-    def add_vehicle_document(self, token, vehicle_document: dict):
-        url = f"http://{API_HOST}:{API_PORT}/vehicle_documents/"
+    def add_type_vehicle_document(self, token, type_vehicle_document: dict):
+        url = f"http://{API_HOST}:{API_PORT}/types_vehicle_documents/"
         headers = {"Authorization": f"Bearer {token}"}
         try:
-            response = requests.post(url, json=vehicle_document, headers=headers)
+            response = requests.post(url, json=type_vehicle_document, headers=headers)
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 401:
@@ -30,8 +30,8 @@ class VehicleDocumentsController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def delete_vehicle_document(self, token, vehicle_document_id):
-        url = f"http://{API_HOST}:{API_PORT}/vehicle_documents/{vehicle_document_id}"
+    def delete_type_vehicle_document(self, token, type_vehicle_document_id):
+        url = f"http://{API_HOST}:{API_PORT}/types_vehicle_documents/{type_vehicle_document_id}"
         headers = {"Authorization": f"Bearer {token}"}
         try:
             response = requests.delete(url, headers=headers)
@@ -56,8 +56,8 @@ class VehicleDocumentsController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def get_vehicle_document(self, token, vehicle_document_id):
-        url = f"http://{API_HOST}:{API_PORT}/vehicle_documents/{vehicle_document_id}"
+    def get_type_vehicle_document(self, token, type_vehicle_document_id):
+        url = f"http://{API_HOST}:{API_PORT}/types_vehicle_documents/{type_vehicle_document_id}"
         headers = {"Authorization": f"Bearer {token}"}
         try:
             response = requests.get(url, headers=headers)
@@ -82,8 +82,8 @@ class VehicleDocumentsController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def get_vehicle_documents(self, token):
-        url = f"http://{API_HOST}:{API_PORT}/vehicle_documents/"
+    def get_types_vehicle_documents(self, token):
+        url = f"http://{API_HOST}:{API_PORT}/types_vehicle_documents/"
         headers = {"Authorization": f"Bearer {token}"}
         try:
             response = requests.get(url, headers=headers)
@@ -108,11 +108,11 @@ class VehicleDocumentsController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def update_vehicle_document(self, token, vehicle_document: dict):
-        url = f"http://{API_HOST}:{API_PORT}/vehicle_documents/{vehicle_document.get('id')}"
+    def update_type_vehicle_document(self, token, type_vehicle_document: dict):
+        url = f"http://{API_HOST}:{API_PORT}/types_vehicle_documents/{type_vehicle_document.get('id')}"
         headers = {"Authorization": f"Bearer {token}"}
         try:
-            response = requests.put(url, json=vehicle_document, headers=headers)
+            response = requests.put(url, json=type_vehicle_document, headers=headers)
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 401:

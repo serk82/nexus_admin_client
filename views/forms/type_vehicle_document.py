@@ -1,14 +1,14 @@
 from controllers import (
     AuthManager,
-    VehicleDocumentsController,
+    TypesVehicleDocumentsController,
 )
 from lib.exceptions import *
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtWidgets import QDialog, QMessageBox, QListWidgetItem
-from views.forms_py.vehicle_document import Ui_frm_vehicle_document
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QDialog, QMessageBox
+from views.forms_py.type_vehicle_document import Ui_frm_type_vehicle_document
 
 
-class frm_vehicle_document(QDialog):
+class frm_type_vehicle_document(QDialog):
 
     data_update = pyqtSignal()
 
@@ -16,12 +16,12 @@ class frm_vehicle_document(QDialog):
         super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(self)
-        self.vehicle_documents = VehicleDocumentsController()
+        self.vehicle_documents = TypesVehicleDocumentsController()
 
         self.frm = form
         self.edit = edit
         self.vehicle_document_id = vehicle_document_id
-        self.ui = Ui_frm_vehicle_document()
+        self.ui = Ui_frm_type_vehicle_document()
         self.ui.setupUi(self)
 
         # Events
@@ -34,7 +34,7 @@ class frm_vehicle_document(QDialog):
             # Rename the save button
             self.ui.btn_save.setText("Guardar")
             # Get vehicle_document to edit
-            vehicle_document = self.vehicle_documents.get_vehicle_document(
+            vehicle_document = self.vehicle_documents.get_type_vehicle_document(
                 self.auth_manager.token, vehicle_document_id
             )
             # Fill in the fields
@@ -67,7 +67,7 @@ class frm_vehicle_document(QDialog):
             )
             if answer == QMessageBox.StandardButton.Yes:
                 vehicle_document = self.collect_rol_data()
-                response = self.vehicle_documents.update_vehicle_document(
+                response = self.vehicle_documents.update_type_vehicle_document(
                     self.auth_manager.token,
                     vehicle_document,
                 )
@@ -90,7 +90,7 @@ class frm_vehicle_document(QDialog):
             if answer == QMessageBox.StandardButton.Yes:
                 # Add vehicle_document
                 vehicle_document = self.collect_rol_data()
-                response = self.vehicle_documents.add_vehicle_document(
+                response = self.vehicle_documents.add_type_vehicle_document(
                     self.auth_manager.token,
                     vehicle_document,
                 )
