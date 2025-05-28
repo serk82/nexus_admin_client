@@ -116,6 +116,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>txt_name</tabstop>
+  <tabstop>btn_close</tabstop>
+  <tabstop>btn_save</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

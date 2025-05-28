@@ -4,7 +4,8 @@ from .files_controller import FilesController
 from .inspections_controller import InspectionsController
 from .permissions_controller import PermissionsController
 from .roles_controller import RolesController
+from .types_vehicle_documents_controller import TypesVehicleDocumentsController
 from .users_controller import UsersController
 from .vehicles_controller import VehiclesController
-from .types_vehicle_documents_controller import TypesVehicleDocumentsController
+from .vehicle_documents_controller import VehicleDocumentsController
 from .workorders_controller import WorkOrdersController

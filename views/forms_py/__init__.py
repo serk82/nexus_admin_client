@@ -13,5 +13,6 @@ from .type_vehicle_document import Ui_frm_type_vehicle_document
 from .types_vehicle_documents import Ui_frm_types_vehicle_documents
 from .user import Ui_frm_user
 from .vehicle import Ui_frm_vehicle
+from .vehicle_document import Ui_frm_vehicle_document
 from .vehicles import Ui_frm_vehicles
 from .workorder import Ui_frm_workorder

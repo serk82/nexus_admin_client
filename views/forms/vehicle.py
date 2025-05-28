@@ -4,6 +4,7 @@ from controllers import (
     FilesController,
     InspectionsController,
     VehiclesController,
+    VehicleDocumentsController,
     WorkOrdersController,
 )
 from datetime import date, datetime
@@ -36,6 +37,7 @@ class frm_vehicle(QDialog):
         self.files_controller = FilesController()
         self.inspections_controller = InspectionsController()
         self.vehicles_controller = VehiclesController()
+        self.vehicle_documents_controlles = VehicleDocumentsController()
         self.workorders_controller = WorkOrdersController()
         self.frm_users = form
         self.edit = edit
@@ -60,6 +62,7 @@ class frm_vehicle(QDialog):
 
         self.configuration_tableviews()
         self.configuration_based_on_inspections()
+        self.configuration_based_on_vehicle_documents()
         self.configuration_based_on_workorders()
 
         # Events
@@ -94,6 +97,7 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
+        self.ui.btn_add_vehicle_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))
@@ -139,6 +143,16 @@ class frm_vehicle(QDialog):
         if document:
             QMessageBox.information(self, " ", document)
 
+    def add_vehicle_document(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_vehicle_document
+
+        self.form = frm_vehicle_document(
+            self, self.auth_manager, False, None, self.id, self.company_id
+        )
+        self.form.data_update_vehicle_documents.connect(self.on_load_vehicle_documents)
+        self.form.exec()
+
     def add_workorder(self):
         self.auth_manager.is_token_expired(self)
         from views.forms import frm_workorder
@@ -183,9 +197,11 @@ class frm_vehicle(QDialog):
                 with open(file_path, "wb") as f:
                     f.write(response)
                 self.image_pixmap = QPixmap(str(file_path))
-                self.ui.lbl_image.setPixmap(self.image_pixmap.scaled(
-                100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio
-            ))
+                self.ui.lbl_image.setPixmap(
+                    self.image_pixmap.scaled(
+                        100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio
+                    )
+                )
             except Exception as e:
                 QMessageBox.critical(
                     self,
@@ -316,6 +332,24 @@ class frm_vehicle(QDialog):
         self.ui.tvw_inspections.setColumnWidth(11, 75)
         self.ui.tvw_inspections.setColumnWidth(12, 75)
 
+    def configuration_based_on_vehicle_documents(self):
+        self.model_vehicle_documents = QStandardItemModel()
+        # Add model on table view
+        self.ui.tvw_vehicle_documents.setModel(self.model_vehicle_documents)
+        self.model_vehicle_documents.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Tipo de documento",
+                "Nombre",
+            ]
+        )
+        self.ui.tvw_vehicle_documents.setColumnHidden(0, True)
+        # Set height and width of columns
+        self.ui.tvw_vehicle_documents.setColumnWidth(1, 300)
+        self.ui.tvw_vehicle_documents.horizontalHeader().setSectionResizeMode(
+            2, QHeaderView.ResizeMode.Stretch
+        )
+
     def configuration_based_on_workorders(self):
         self.model_workorders = QStandardItemModel()
         # Add model on table view
@@ -339,12 +373,19 @@ class frm_vehicle(QDialog):
     def configuration_tableviews(self):
         # Hide index of rows
         self.ui.tvw_inspections.verticalHeader().setVisible(False)
+        self.ui.tvw_vehicle_documents.verticalHeader().setVisible(False)
         self.ui.tvw_workorders.verticalHeader().setVisible(False)
         # Sets the table to not be directly editable
         self.ui.tvw_inspections.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
+        self.ui.tvw_vehicle_documents.setEditTriggers(
+            QTableView.EditTrigger.NoEditTriggers
+        )
         self.ui.tvw_workorders.setEditTriggers(QTableView.EditTrigger.NoEditTriggers)
         # Sets that multiple lines can't be selected
         self.ui.tvw_inspections.setSelectionMode(
+            QTableView.SelectionMode.SingleSelection
+        )
+        self.ui.tvw_vehicle_documents.setSelectionMode(
             QTableView.SelectionMode.SingleSelection
         )
         self.ui.tvw_workorders.setSelectionMode(
@@ -353,12 +394,17 @@ class frm_vehicle(QDialog):
         self.ui.tvw_inspections.setSelectionBehavior(
             QTableView.SelectionBehavior.SelectRows
         )
+        self.ui.tvw_vehicle_documents.setSelectionBehavior(
+            QTableView.SelectionBehavior.SelectRows
+        )
         self.ui.tvw_workorders.setSelectionBehavior(
             QTableView.SelectionBehavior.SelectRows
         )
         self.ui.tvw_inspections.resizeColumnsToContents()
+        self.ui.tvw_vehicle_documents.resizeColumnsToContents()
         self.ui.tvw_workorders.resizeColumnsToContents()
         self.ui.tvw_inspections.setAlternatingRowColors(True)
+        self.ui.tvw_vehicle_documents.setAlternatingRowColors(True)
         self.ui.tvw_workorders.setAlternatingRowColors(True)
 
     def delete_inspection(self):
@@ -784,6 +830,15 @@ class frm_vehicle(QDialog):
         self.hilo.finished.connect(self.load_inspections)
         self.hilo.start()
 
+    def on_load_vehicle_documents(self):
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(self.get_vehicle_documents)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.load_vehicle_documents)
+        self.hilo.start()
+
     def on_load_workorders(self):
         self.setEnabled(False)
         self.loading_dialog = LoadingDialog(self)
@@ -879,6 +934,13 @@ class frm_vehicle(QDialog):
 
     def get_inspections(self):
         self.inspections_controller = InspectionsController()
+        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
+        self.inspections = self.inspections_controller.get_inspections(
+            self.auth_manager.token, self.id
+        )
+
+    def get_vehicle_documents(self):
+        self.vehicle_documents_controlles = VehicleDocumentsController()
         self.model_inspections.removeRows(0, self.model_inspections.rowCount())
         self.inspections = self.inspections_controller.get_inspections(
             self.auth_manager.token, self.id

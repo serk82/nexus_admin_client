@@ -46,6 +46,8 @@ class Ui_frm_type_vehicle_document(object):
 
         self.retranslateUi(frm_type_vehicle_document)
         QtCore.QMetaObject.connectSlotsByName(frm_type_vehicle_document)
+        frm_type_vehicle_document.setTabOrder(self.txt_name, self.btn_close)
+        frm_type_vehicle_document.setTabOrder(self.btn_close, self.btn_save)
 
     def retranslateUi(self, frm_type_vehicle_document):
         _translate = QtCore.QCoreApplication.translate

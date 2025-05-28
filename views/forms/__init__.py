@@ -14,5 +14,6 @@ from .types_vehicle_documents import frm_types_vehicle_documents
 from .update import frm_update
 from .user import frm_user
 from .vehicle import frm_vehicle
+from .vehicle_document import frm_vehicle_document
 from .vehicles import frm_vehicles
 from .workorder import frm_workorder
