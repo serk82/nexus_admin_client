@@ -9,8 +9,6 @@ from .permission import Ui_frm_permission
 from .permissions import Ui_frm_permissions
 from .role import Ui_frm_role
 from .table_view import Ui_frm_table_view
-from .type_vehicle_document import Ui_frm_type_vehicle_document
-from .types_vehicle_documents import Ui_frm_types_vehicle_documents
 from .user import Ui_frm_user
 from .vehicle import Ui_frm_vehicle
 from .vehicle_document import Ui_frm_vehicle_document

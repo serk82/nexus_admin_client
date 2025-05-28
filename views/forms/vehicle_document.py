@@ -1,6 +1,5 @@
 from controllers import (
     AuthManager,
-    TypesVehicleDocumentsController,
     VehicleDocumentsController,
 )
 from lib.exceptions import *
@@ -25,7 +24,6 @@ class frm_vehicle_document(QDialog):
         super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(self)
-        self.types_vehicle_documents = TypesVehicleDocumentsController()
         self.vehicle_documents = VehicleDocumentsController()
 
         self.frm = form
@@ -40,14 +38,6 @@ class frm_vehicle_document(QDialog):
         self.ui.btn_close.clicked.connect(self.close)
         self.ui.btn_save.clicked.connect(self.save)
 
-        types_vehicle_documents = (
-            self.types_vehicle_documents.get_types_vehicle_documents(
-                self.auth_manager.token
-            )
-        )
-        for index, role in enumerate(types_vehicle_documents):
-            self.ui.cbx_type_vehicle_document.addItem(role["name"])
-            self.ui.cbx_type_vehicle_document.setItemData(index, role["id"])
 
         if edit:
             # Rename window title

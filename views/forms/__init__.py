@@ -9,8 +9,6 @@ from .password import frm_password
 from .permissions import frm_permissions
 from .role import frm_role
 from .table_view import frm_table_view
-from .type_vehicle_document import frm_type_vehicle_document
-from .types_vehicle_documents import frm_types_vehicle_documents
 from .update import frm_update
 from .user import frm_user
 from .vehicle import frm_vehicle
