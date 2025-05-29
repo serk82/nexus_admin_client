@@ -128,6 +128,13 @@ class frm_vehicle(QDialog):
         if "error" in response:
             raise Exception(response.get("error"))
         self.id = response.get("vehicle_id")
+        self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
+        response = self.files_controller.upload_image(
+            self.path_image_tmp, self.path_subfolder_image
+        )
+        if "error" in response:
+            raise Exception(response.get("error"))
+        self.path_image_tmp.unlink()
 
     def add_inspection(self):
         self.auth_manager.is_token_expired(self)
