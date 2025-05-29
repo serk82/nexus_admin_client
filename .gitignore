@@ -6,6 +6,7 @@ venv/
 *.env
 *.key
 scripts/
+tmp/
 test.py
 informe.pdf
 app.py

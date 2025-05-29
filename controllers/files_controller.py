@@ -1,4 +1,5 @@
 import requests
+from pathlib import Path
 from lib.config import API_HOST, API_PORT
 
 
@@ -78,3 +79,13 @@ class FilesController:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
+
+    def upload_image(self, file_path: Path, subfolder: str):
+        url = f"http://{API_HOST}:{API_PORT}/files/"
+        try:
+            with open(file_path, "rb") as f:
+                files = {"file": ("image.jpg", f)}
+                data = {"subfolder": subfolder}
+                return requests.post(url, files=files, data=data)
+        except Exception as e:
+            return {"error": f"No se pudo subir el archivo:\n{e}"}

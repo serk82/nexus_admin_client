@@ -1,4 +1,4 @@
-import requests
+import requests, sys
 from controllers import (
     AuthManager,
     FilesController,
@@ -13,7 +13,7 @@ from lib.exceptions import *
 from lib.methods import *
 from lib.task_thread import *
 from pathlib import Path
-import sys
+from shutil import copyfile
 from PyQt6.QtCore import pyqtSignal, QDate
 from PyQt6.QtGui import QStandardItemModel, QStandardItem, QPixmap
 from PyQt6.QtWidgets import (
@@ -53,7 +53,9 @@ class frm_vehicle(QDialog):
         self.date_last_workorder = None
         self.date_from_workorder = None
         self.date_to_workorder = None
-        self.path_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
+        self.path_image = None
+        self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp" / "image.jpg"
+        self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
 
@@ -183,23 +185,15 @@ class frm_vehicle(QDialog):
             self, "Selecciona una imagen JPG", "", "Archivos JPG (*.jpg)"
         )
         if image:
-            path = Path(image)
-            self.upload_image(path, self.path_image)
-
-            response = self.files_controller.get_file(
-                self.auth_manager.token,
-                self.path_image,
-                "image.jpg",
-            )
+            self.path_image = Path(image)
             try:
-                file_path = Path(sys.argv[0]).resolve().parent / "tmp" / "image.jpg"
-                QMessageBox.information(self, " ", str(file_path))
-                with open(file_path, "wb") as f:
-                    f.write(response)
-                self.image_pixmap = QPixmap(str(file_path))
+                copyfile(self.path_image, self.path_image_tmp)
+                self.image_pixmap = QPixmap(str(self.path_image_tmp))
                 self.ui.lbl_image.setPixmap(
                     self.image_pixmap.scaled(
-                        100, 100, aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio
+                        self.ui.lbl_image.size(),
+                        Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                        Qt.TransformationMode.SmoothTransformation,
                     )
                 )
             except Exception as e:
@@ -450,6 +444,10 @@ class frm_vehicle(QDialog):
             QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         )
         if answer == QMessageBox.StandardButton.Yes:
+            if self.path_image_tmp:
+                if self.path_image_tmp.exists():
+                    self.path_image_tmp.unlink()
+                    self.ui.lbl_image.clear()
             if self.is_adding:
                 self.is_adding = False
                 self.close()
@@ -861,6 +859,12 @@ class frm_vehicle(QDialog):
 
     def save(self):
         vehicle = self.collect_vehicle_data()
+        response = self.files_controller.upload_image(
+            self.path_image_tmp, self.path_subfolder_image
+        )
+        if "error" in response:
+            raise Exception(response.get("error"))
+        self.path_image_tmp.unlink()
         response = self.vehicles_controller.update_vehicle(
             self.auth_manager.token, vehicle
         )
@@ -1011,21 +1015,3 @@ class frm_vehicle(QDialog):
                 date.strftime(self.date_to_workorder, "%Y-%m-%d"),
                 self.ui.txt_search.text(),
             )
-
-    def upload_image(self, file_path: Path, subfolder: str):
-        url = f"http://{API_HOST}:{API_PORT}/files/"
-
-        try:
-            with open(file_path, "rb") as f:
-                files = {"file": ("image.jpg", f)}
-                data = {"subfolder": subfolder}
-                response = requests.post(url, files=files, data=data)
-
-            if not response.ok:
-                QMessageBox.critical(
-                    self,
-                    "Error",
-                    f"Error del servidor: {response.status_code}\n{response.text}",
-                )
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"No se pudo subir el archivo:\n{e}")
