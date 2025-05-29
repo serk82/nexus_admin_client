@@ -124,22 +124,23 @@
           <layout class="QGridLayout" name="gridLayout_10">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_3">
-             <item row="2" column="0">
-              <widget class="QCheckBox" name="chb_deactivate">
-               <property name="text">
-                <string>Desactivar vehículo</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QPushButton" name="btn_image">
-               <property name="text">
-                <string>Cambiar imagen</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
+             <property name="verticalSpacing">
+              <number>6</number>
+             </property>
+             <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
               <widget class="QLabel" name="lbl_image">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>250</width>
+                 <height>250</height>
+                </size>
+               </property>
                <property name="maximumSize">
                 <size>
                  <width>250</width>
@@ -148,6 +149,48 @@
                </property>
                <property name="text">
                 <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+              <widget class="QCheckBox" name="chb_deactivate">
+               <property name="text">
+                <string>Desactivar vehículo</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+              <widget class="QLabel" name="lbl_dragdrop_image">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>200</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid lightgrey;
+background: rgb(191, 228, 241)</string>
+               </property>
+               <property name="text">
+                <string>Arrastra la imagen aqui</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -1657,7 +1700,6 @@ background: rgb(191, 228, 241)</string>
   <tabstop>tab_file</tabstop>
   <tabstop>tvw_inspections</tabstop>
   <tabstop>btn_edit_inspection</tabstop>
-  <tabstop>btn_image</tabstop>
  </tabstops>
  <resources/>
  <connections/>

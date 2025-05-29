@@ -70,7 +70,6 @@ class frm_vehicle(QDialog):
         # Events
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
         self.ui.btn_close.clicked.connect(self.close)
-        self.ui.btn_image.clicked.connect(self.change_image)
         self.ui.chb_tachograph_expiry.stateChanged.connect(self.check_tachograph_expery)
         self.ui.chb_itv_expiry.stateChanged.connect(self.check_itv_expery)
         self.ui.chb_inspection_km.stateChanged.connect(self.check_inspection_km)
@@ -866,12 +865,13 @@ class frm_vehicle(QDialog):
 
     def save(self):
         vehicle = self.collect_vehicle_data()
-        response = self.files_controller.upload_image(
-            self.path_image_tmp, self.path_subfolder_image
-        )
-        if "error" in response:
-            raise Exception(response.get("error"))
-        self.path_image_tmp.unlink()
+        if self.path_image_tmp.exists():
+            response = self.files_controller.upload_image(
+                self.path_image_tmp, self.path_subfolder_image
+            )
+            if "error" in response:
+                raise Exception(response.get("error"))
+            self.path_image_tmp.unlink()
         response = self.vehicles_controller.update_vehicle(
             self.auth_manager.token, vehicle
         )
@@ -903,7 +903,7 @@ class frm_vehicle(QDialog):
             3,
             True if self.auth_manager.has_permission("VDV") and not enabled else False,
         )
-        self.ui.btn_image.setEnabled(enabled)
+        self.ui.lbl_dragdrop_image.setEnabled(enabled)
         self.ui.btn_save.setEnabled(enabled)
         text_fields = [
             self.ui.txt_alias,
