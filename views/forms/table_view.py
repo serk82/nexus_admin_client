@@ -153,12 +153,14 @@ class frm_table_view(QDialog):
                         QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
                     )
                     if answer == QMessageBox.StandardButton.Yes:
-                            if self.companies_controller.delete_company(self.auth_manager.token, selected_id):
-                                self.on_update()
-                            else:
-                                QMessageBox.warning(
-                                    self, " ", "No se ha eliminado la empresa."
-                                )
+                        if self.companies_controller.delete_company(
+                            self.auth_manager.token, selected_id
+                        ):
+                            self.on_update()
+                        else:
+                            QMessageBox.warning(
+                                self, " ", "No se ha eliminado la empresa."
+                            )
                 case "users":
                     answer = QMessageBox.question(
                         self,
@@ -168,7 +170,12 @@ class frm_table_view(QDialog):
                     )
                     if answer == QMessageBox.StandardButton.Yes:
                         try:
-                            self.users_controller.delete_user(int(selected_id))
+                            self.users_controller.delete_user(
+                                self.auth_manager.token, int(selected_id)
+                            )
+                            QMessageBox.information(
+                                self, " ", "Usuario eliminado correctamente."
+                            )
                             self.on_update()
                         except DeleteError as e:
                             QMessageBox.warning(self, " ", str(e))
