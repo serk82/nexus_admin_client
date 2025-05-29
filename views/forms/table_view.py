@@ -49,6 +49,7 @@ class frm_table_view(QDialog):
         self.ui.btn_add.clicked.connect(self.add)
         self.ui.btn_edit.clicked.connect(self.edit)
         self.ui.btn_delete.clicked.connect(self.delete)
+        self.ui.table_view.doubleClicked.connect(self.edit)
 
     def configuration_based_on_table(self):
 
