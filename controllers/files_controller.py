@@ -26,7 +26,7 @@ class FilesController:
             else:
                 return {"error": f"Error inesperado: {response.status_code}"}
         except requests.exceptions.RequestException as e:
-            return {"message": str(e)}
+            return {"error": str(e)}
         except requests.exceptions.Timeout:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
@@ -50,7 +50,7 @@ class FilesController:
             else:
                 return {"error": f"Error inesperado: {response.status_code}"}
         except requests.exceptions.RequestException as e:
-            return {"message": str(e)}
+            return {"error": str(e)}
         except requests.exceptions.Timeout:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
@@ -74,17 +74,17 @@ class FilesController:
             else:
                 return {"error": f"Error inesperado: {response.status_code}"}
         except requests.exceptions.RequestException as e:
-            return {"message": str(e)}
+            return {"error": str(e)}
         except requests.exceptions.Timeout:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def upload_image(self, file_path: Path, subfolder: str):
+    def upload_image(self, file_path: Path, subfolder: str, name: str):
         url = f"http://{API_HOST}:{API_PORT}/files/"
         try:
             with open(file_path, "rb") as f:
-                files = {"file": ("image.jpg", f)}
+                files = {"file": (f"{name}.jpg", f)}
                 data = {"subfolder": subfolder}
                 return requests.post(url, files=files, data=data)
         except Exception as e:
