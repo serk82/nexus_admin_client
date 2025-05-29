@@ -11,8 +11,9 @@ from PyQt6.QtWidgets import (
 class AuthManager:
     def __init__(self):
         self.token = None
-        self.role_id = None
+        self.user_id = None
         self.username = None
+        self.role_id = None
 
     def is_token_expired(self, window=None):
         if not self.token:
@@ -51,8 +52,9 @@ class AuthManager:
             if response.status_code == 200:
                 login = response.json()
                 self.token = login['token']
-                self.role_id = int(login['role_id'])
+                self.user_id = int(login['id'])
                 self.username = username
+                self.role_id = int(login['role_id'])
                 return True
             else:
                 return False

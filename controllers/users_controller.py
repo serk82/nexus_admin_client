@@ -49,7 +49,7 @@ class UsersController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def get_company_id_from_user(self, token, user_id):
+    def get_companies_from_user(self, token, user_id):
         url = f"http://{API_HOST}:{API_PORT}/users/{user_id}/companies"
         headers = {"Authorization": f"Bearer {token}"}
         try:

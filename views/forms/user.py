@@ -111,7 +111,7 @@ class frm_user(QDialog):
             # Set the role in the combobox
             self.ui.cmb_role.setCurrentText(role_name)
             # Set companies from user
-            self.user_companies = self.users_controller.get_company_id_from_user(
+            self.user_companies = self.users_controller.get_companies_from_user(
                 self.auth_manager.token, self.id
             )
             for row_twd in range(self.ui.twd_companies.rowCount()):
