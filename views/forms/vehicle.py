@@ -54,9 +54,7 @@ class frm_vehicle(QDialog):
         self.date_from_workorder = None
         self.date_to_workorder = None
         self.path_image = None
-        self.path_image_tmp = (
-            Path(sys.argv[0]).resolve().parent / "tmp"
-        )
+        self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
@@ -103,6 +101,7 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
+        self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
         self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
         self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventPdf
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
@@ -502,7 +501,7 @@ class frm_vehicle(QDialog):
                         "El archivo no es una imagen válido.\n"
                         "Por favor, sube un archivo de imagen.",
                     )
-    
+
     def dropEventPdf(self, event):
         urls = event.mimeData().urls()
         if urls:
@@ -519,7 +518,14 @@ class frm_vehicle(QDialog):
                     or str(file_path).endswith(".JPEG")
                 ):
                     try:
-                        self.copy_file(file_path)
+                        pass
+                        # pos_global = event.position().toPoint()
+                        # pos_local = self.mapFromGlobal(pos_global)
+                        # widget = self.childAt(pos_local)
+                        # print(widget.objectName())
+                        # if self.objectName() == "lbl_dragdrop_green_card":
+                        #     print("paso")
+                        #     self.files_controller.upload_file(self.auth_manager.token, file_path, self.path_subfolder_image, )
                     except Exception as e:
                         QMessageBox.critical(
                             self,
