@@ -929,12 +929,12 @@ class frm_vehicle(QDialog):
                 file_name = f"{self.id}.jpeg"
             elif self.path_image_tmp.name.endswith(".JPEG"):
                 file_name = f"{self.id}.JPEG"
-            response = self.files_controller.upload_file(
-                self.path_image_tmp, self.path_subfolder_image, file_name
-            )
-            if "error" in response:
-                raise Exception(response.get("error"))
-            self.path_image_tmp.unlink()
+            if any(self.path_image_tmp.iterdir()):
+                response = self.files_controller.upload_file(
+                    self.path_image_tmp, self.path_subfolder_image, file_name
+                )
+                if "error" in response:
+                    raise Exception(response.get("error"))
         response = self.vehicles_controller.update_vehicle(
             self.auth_manager.token, vehicle
         )
