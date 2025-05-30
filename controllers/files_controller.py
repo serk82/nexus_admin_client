@@ -34,7 +34,7 @@ class FilesController:
 
     def get_file(self, token, subfolder, filename):
         url = (
-            f"http://{API_HOST}:{API_PORT}/files/files/{filename}?subfolder={subfolder}"
+            f"http://{API_HOST}:{API_PORT}/files/{filename}?subfolder={subfolder}"
         )
         headers = {"Authorization": f"Bearer {token}"}
         try:
@@ -80,11 +80,11 @@ class FilesController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def upload_image(self, file_path: Path, subfolder: str, name: str):
+    def upload_file(self, file_path: Path, subfolder: str, name: str):
         url = f"http://{API_HOST}:{API_PORT}/files/"
         try:
             with open(file_path, "rb") as f:
-                files = {"file": (f"{name}.jpg", f)}
+                files = {"file": (name, f)}
                 data = {"subfolder": subfolder}
                 return requests.post(url, files=files, data=data)
         except Exception as e:

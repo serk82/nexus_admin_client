@@ -1,4 +1,4 @@
-import requests, sys
+import shutil, sys
 from controllers import (
     AuthManager,
     FilesController,
@@ -55,7 +55,7 @@ class frm_vehicle(QDialog):
         self.date_to_workorder = None
         self.path_image = None
         self.path_image_tmp = (
-            Path(sys.argv[0]).resolve().parent / "tmp" / f"{self.id}.jpg"
+            Path(sys.argv[0]).resolve().parent / "tmp"
         )
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.ui = Ui_frm_vehicle()
@@ -195,7 +195,7 @@ class frm_vehicle(QDialog):
         self.path_image = Path(path_image)
         try:
             copyfile(self.path_image, self.path_image_tmp)
-            self.set_image()
+            self.set_image(self.path_image_tmp, None)
         except Exception as e:
             QMessageBox.critical(
                 self,
@@ -417,10 +417,12 @@ class frm_vehicle(QDialog):
             QMessageBox.information(self, " ", "No se ha elegido ningún registro.")
 
     def delete_temporary_image(self):
-        if self.path_image_tmp:
-            if self.path_image_tmp.exists():
-                self.path_image_tmp.unlink()
-                self.ui.lbl_image.clear()
+        if self.path_image_tmp.exists() and self.path_image_tmp.is_dir():
+            for item in self.path_image_tmp.iterdir():
+                if item.is_file() or item.is_symlink():
+                    item.unlink()
+                elif item.is_dir():
+                    shutil.rmtree(item)
 
     def delete_workorder(self):
         self.auth_manager.is_token_expired(self)
@@ -580,20 +582,22 @@ class frm_vehicle(QDialog):
         )
         if "error" in self.vehicle:
             raise Exception(self.vehicle.get("error"))
-        response = self.files_controller.get_file(
+        response = self.files_controller.get_files(
             self.auth_manager.token,
             self.path_subfolder_image,
-            f"{self.id}.jpg",
         )
         if "error" in response:
             raise Exception(self.vehicle.get("error"))
-        try:
-            print(response)
-            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / f"{self.id}.jpg"
-            with open(file_path, "wb") as f:
-                f.write(response)
-        except Exception as e:
-            print(f"No se pudo abrir el archivo:\n{e}")
+        if response:
+            response = self.files_controller.get_file(
+                self.auth_manager.token,
+                self.path_subfolder_image,
+                response[0],
+            )
+            try:
+                self.set_image(None, response)
+            except Exception as e:
+                print(f"No se pudo abrir el archivo:\n{e}")
 
         self.last_inspection = self.inspections_controller.get_last_inspection(
             self.auth_manager.token, self.id
@@ -912,8 +916,21 @@ class frm_vehicle(QDialog):
     def save(self):
         vehicle = self.collect_vehicle_data()
         if self.path_image_tmp.exists():
-            response = self.files_controller.upload_image(
-                self.path_image_tmp, self.path_subfolder_image, str(self.id)
+            file_name = None
+            if self.path_image_tmp.name.endswith(".png"):
+                file_name = f"{self.id}.png"
+            elif self.path_image_tmp.name.endswith(".PNG"):
+                file_name = f"{self.id}.PNG"
+            elif self.path_image_tmp.name.endswith(".jpg"):
+                file_name = f"{self.id}.jpg"
+            elif self.path_image_tmp.name.endswith(".JPG"):
+                file_name = f"{self.id}.JPG"
+            elif self.path_image_tmp.name.endswith(".jpeg"):
+                file_name = f"{self.id}.jpeg"
+            elif self.path_image_tmp.name.endswith(".JPEG"):
+                file_name = f"{self.id}.JPEG"
+            response = self.files_controller.upload_file(
+                self.path_image_tmp, self.path_subfolder_image, file_name
             )
             if "error" in response:
                 raise Exception(response.get("error"))
@@ -924,15 +941,26 @@ class frm_vehicle(QDialog):
         if "error" in response:
             raise Exception(response.get("error"))
 
-    def set_image(self):
-        self.image_pixmap = QPixmap(str(self.path_image_tmp))
-        self.ui.lbl_image.setPixmap(
-            self.image_pixmap.scaled(
-                self.ui.lbl_image.size(),
-                Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                Qt.TransformationMode.SmoothTransformation,
+    def set_image(self, path_image, image):
+        if path_image:
+            self.image_pixmap = QPixmap(str(path_image))
+            self.ui.lbl_image.setPixmap(
+                self.image_pixmap.scaled(
+                    self.ui.lbl_image.size(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
             )
-        )
+        if image:
+            self.image_pixmap = QPixmap()
+            self.image_pixmap.loadFromData(image)
+            self.ui.lbl_image.setPixmap(
+                self.image_pixmap.scaled(
+                    self.ui.lbl_image.size(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
 
     def set_form_fields_state(self, enabled: bool):
         self.windowTitle = "Editar vehículo" if self.edit else "Añadir vehículo"
