@@ -31,6 +31,7 @@ class FilesController:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
+        
 
     def get_file(self, token, subfolder, filename):
         url = (
@@ -80,22 +81,28 @@ class FilesController:
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
 
-    def upload_file(self, file_path: Path, subfolder: str, name: str):
+    def upload_file(self, token, file_path: Path, subfolder: str, name: str):
         url = f"http://{API_HOST}:{API_PORT}/files/"
+        headers = {"Authorization": f"Bearer {token}"}
         try:
             with open(file_path, "rb") as f:
                 files = {"file": (name, f)}
                 data = {"subfolder": subfolder}
-                return requests.post(url, files=files, data=data)
+                response = requests.post(url, headers=headers, files=files, data=data)
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 409:
+                return {"error": response.json().get("detail")}
         except Exception as e:
             return {"error": f"No se pudo subir el archivo:\n{e}"}
 
-    def upload_image_file(self, file_path: Path, subfolder: str, name: str):
+    def upload_image_file(self, token, file_path: Path, subfolder: str, name: str):
         url = f"http://{API_HOST}:{API_PORT}/files/image"
+        headers = {"Authorization": f"Bearer {token}"}
         try:
             with open(file_path, "rb") as f:
                 files = {"file": (name, f)}
                 data = {"subfolder": subfolder}
-                return requests.post(url, files=files, data=data)
+                return requests.post(url, headers=headers, files=files, data=data)
         except Exception as e:
             return {"error": f"No se pudo subir el archivo:\n{e}"}

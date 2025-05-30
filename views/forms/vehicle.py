@@ -80,7 +80,7 @@ class frm_vehicle(QDialog):
         self.ui.sbx_inspection_hours.valueChanged.connect(self.get_next_kms_inspection)
         self.ui.lbl_dragdrop_image.setAcceptDrops(True)
         self.ui.lbl_dragdrop_image.dragEnterEvent = self.dragEnterEvent
-        self.ui.lbl_dragdrop_image.dropEvent = self.dropEvent
+        self.ui.lbl_dragdrop_image.dropEvent = self.dropEventImage
 
         # Buttons Tab Events
         self.ui.tab_file.tabBar().tabBarClicked.connect(self.update_tab)
@@ -103,6 +103,8 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
+        self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventPdf
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
@@ -190,7 +192,7 @@ class frm_vehicle(QDialog):
             self.ui.date_to.date().day(),
         )
 
-    def copy_image(self, path_image: str):
+    def copy_file(self, path_image: str):
         self.auth_manager.is_token_expired(self)
         self.path_image = Path(path_image)
         try:
@@ -472,7 +474,7 @@ class frm_vehicle(QDialog):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
 
-    def dropEvent(self, event):
+    def dropEventImage(self, event):
         urls = event.mimeData().urls()
         if urls:
             file_path = Path(urls[0].toLocalFile())
@@ -486,7 +488,7 @@ class frm_vehicle(QDialog):
                     or str(file_path).endswith(".JPEG")
                 ):
                     try:
-                        self.copy_image(file_path)
+                        self.copy_file(file_path)
                     except Exception as e:
                         QMessageBox.critical(
                             self,
@@ -499,6 +501,37 @@ class frm_vehicle(QDialog):
                         " ",
                         "El archivo no es una imagen válido.\n"
                         "Por favor, sube un archivo de imagen.",
+                    )
+    
+    def dropEventPdf(self, event):
+        urls = event.mimeData().urls()
+        if urls:
+            file_path = Path(urls[0].toLocalFile())
+            if file_path.is_file():
+                if (
+                    str(file_path).endswith(".pdf")
+                    or str(file_path).endswith(".PDF")
+                    or str(file_path).endswith(".png")
+                    or str(file_path).endswith(".PNG")
+                    or str(file_path).endswith(".jpg")
+                    or str(file_path).endswith(".JPG")
+                    or str(file_path).endswith(".jpeg")
+                    or str(file_path).endswith(".JPEG")
+                ):
+                    try:
+                        self.copy_file(file_path)
+                    except Exception as e:
+                        QMessageBox.critical(
+                            self,
+                            "Error",
+                            f"No se pudo subir el archivo:\n{e}",
+                        )
+                else:
+                    QMessageBox.information(
+                        self,
+                        " ",
+                        "El archivo no es un documento válido.\n"
+                        "Por favor, sube un archivo PDF o de imagen.",
                     )
 
     def edit_inspection(self):
@@ -932,11 +965,6 @@ class frm_vehicle(QDialog):
             elif path_tmp_image.name.endswith(".JPEG"):
                 file_name = f"{self.id}.JPEG"
             if any(self.path_image_tmp.iterdir()):
-                print(self.path_image_tmp)
-                print(self.path_image.name)
-                print(path_tmp_image)
-                print(self.path_subfolder_image)
-                print(file_name)
                 response = self.files_controller.upload_image_file(
                     path_tmp_image, self.path_subfolder_image, file_name
                 )
