@@ -937,7 +937,7 @@ class frm_vehicle(QDialog):
                 print(path_tmp_image)
                 print(self.path_subfolder_image)
                 print(file_name)
-                response = self.files_controller.upload_file(
+                response = self.files_controller.upload_image_file(
                     path_tmp_image, self.path_subfolder_image, file_name
                 )
                 if "error" in response:

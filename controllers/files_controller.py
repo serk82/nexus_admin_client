@@ -89,3 +89,13 @@ class FilesController:
                 return requests.post(url, files=files, data=data)
         except Exception as e:
             return {"error": f"No se pudo subir el archivo:\n{e}"}
+
+    def upload_image_file(self, file_path: Path, subfolder: str, name: str):
+        url = f"http://{API_HOST}:{API_PORT}/files/image"
+        try:
+            with open(file_path, "rb") as f:
+                files = {"file": (name, f)}
+                data = {"subfolder": subfolder}
+                return requests.post(url, files=files, data=data)
+        except Exception as e:
+            return {"error": f"No se pudo subir el archivo:\n{e}"}
