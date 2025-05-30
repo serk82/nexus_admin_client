@@ -194,8 +194,9 @@ class frm_vehicle(QDialog):
         self.auth_manager.is_token_expired(self)
         self.path_image = Path(path_image)
         try:
-            copyfile(self.path_image, self.path_image_tmp)
-            self.set_image(self.path_image_tmp, None)
+            path_tmp_image = self.path_image_tmp / self.path_image.name
+            copyfile(self.path_image, path_tmp_image)
+            self.set_image(path_tmp_image, None)
         except Exception as e:
             QMessageBox.critical(
                 self,
@@ -915,23 +916,29 @@ class frm_vehicle(QDialog):
 
     def save(self):
         vehicle = self.collect_vehicle_data()
-        if self.path_image_tmp.exists():
+        if self.path_image_tmp.exists() and any(self.path_image_tmp.iterdir()):
+            path_tmp_image = self.path_image_tmp / self.path_image.name
             file_name = None
-            if self.path_image_tmp.name.endswith(".png"):
+            if path_tmp_image.name.endswith(".png"):
                 file_name = f"{self.id}.png"
-            elif self.path_image_tmp.name.endswith(".PNG"):
+            elif path_tmp_image.name.endswith(".PNG"):
                 file_name = f"{self.id}.PNG"
-            elif self.path_image_tmp.name.endswith(".jpg"):
+            elif path_tmp_image.name.endswith(".jpg"):
                 file_name = f"{self.id}.jpg"
-            elif self.path_image_tmp.name.endswith(".JPG"):
+            elif path_tmp_image.name.endswith(".JPG"):
                 file_name = f"{self.id}.JPG"
-            elif self.path_image_tmp.name.endswith(".jpeg"):
+            elif path_tmp_image.name.endswith(".jpeg"):
                 file_name = f"{self.id}.jpeg"
-            elif self.path_image_tmp.name.endswith(".JPEG"):
+            elif path_tmp_image.name.endswith(".JPEG"):
                 file_name = f"{self.id}.JPEG"
             if any(self.path_image_tmp.iterdir()):
+                print(self.path_image_tmp)
+                print(self.path_image.name)
+                print(path_tmp_image)
+                print(self.path_subfolder_image)
+                print(file_name)
                 response = self.files_controller.upload_file(
-                    self.path_image_tmp, self.path_subfolder_image, file_name
+                    path_tmp_image, self.path_subfolder_image, file_name
                 )
                 if "error" in response:
                     raise Exception(response.get("error"))
