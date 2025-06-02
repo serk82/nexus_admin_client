@@ -627,7 +627,7 @@ class frm_vehicle(QDialog):
             self.path_subfolder_image,
         )
         if "error" in response:
-            raise Exception(self.vehicle.get("error"))
+            raise Exception(response.get("error"))
         if response:
             response = self.files_controller.get_file(
                 self.auth_manager.token,
