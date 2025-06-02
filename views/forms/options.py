@@ -55,7 +55,7 @@ class frm_options(QDialog):
                         self.auth_manager.token, company_id
                     )
                 )
-        if self.user_companies:
+        if self.user_companies or self.auth_manager.role_id == 1:
             for company in self.user_companies:
                 item = QListWidgetItem(company.get("name"))
                 item.setData(Qt.ItemDataRole.UserRole, company.get("id"))
