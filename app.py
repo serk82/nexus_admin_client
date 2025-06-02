@@ -26,6 +26,5 @@ if __name__ == "__main__":
         update_form.exec()
     login = frm_login()
     login.show()
-    
 
     sys.exit(app.exec())
