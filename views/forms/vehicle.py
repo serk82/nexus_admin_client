@@ -66,6 +66,12 @@ class frm_vehicle(QDialog):
         self.configuration_based_on_inspections()
         self.configuration_based_on_vehicle_documents()
         self.configuration_based_on_workorders()
+        
+        #---------------------------- !!!!!!!!!!!!!!!!! Develop !!!!!!!!!!!!!!! ---------------------------#
+        
+        self.ui.tab_documents.setEnabled(False)        
+        
+        #---------------------------- !!!!!!!!!!!!!!!!! Develop !!!!!!!!!!!!!!! ---------------------------#
 
         # Events
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
