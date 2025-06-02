@@ -972,7 +972,7 @@ class frm_vehicle(QDialog):
                 file_name = f"{self.id}.JPEG"
             if any(self.path_image_tmp.iterdir()):
                 response = self.files_controller.upload_image_file(
-                    path_tmp_image, self.path_subfolder_image, file_name
+                    self.auth_manager.token, path_tmp_image, self.path_subfolder_image, file_name
                 )
                 if "error" in response:
                     raise Exception(response.get("error"))
