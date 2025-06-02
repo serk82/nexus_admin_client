@@ -56,7 +56,7 @@ class frm_workorder(QDialog):
             self.ui.txt_realized_by.setReadOnly(True)
             self.ui.txt_description.setReadOnly(True)
             self.ui.btn_view_document.setEnabled(
-                self.auth_manager.has_permission("VDV")
+                self.auth_manager.has_permission("VMV")
             )
             self.ui.btn_delete_document.setEnabled(
                 self.auth_manager.has_permission("DEV")
