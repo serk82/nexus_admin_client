@@ -47,8 +47,15 @@
     </property>
     <addaction name="action_about"/>
    </widget>
+   <widget class="QMenu" name="menu_Mi_Cuenta">
+    <property name="title">
+     <string>&amp;Configuración</string>
+    </property>
+    <addaction name="action_notification_settings"/>
+   </widget>
    <addaction name="menu_archive"/>
    <addaction name="menu_administration"/>
+   <addaction name="menu_Mi_Cuenta"/>
    <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -104,6 +111,11 @@
   <action name="action_change_company">
    <property name="text">
     <string>&amp;Cambiar de empresa</string>
+   </property>
+  </action>
+  <action name="action_notification_settings">
+   <property name="text">
+    <string>&amp;Notificaciones</string>
    </property>
   </action>
  </widget>
