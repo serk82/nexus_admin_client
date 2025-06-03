@@ -14,6 +14,7 @@ class AuthManager:
         self.user_id = None
         self.username = None
         self.role_id = None
+        self.permissions = None
 
     def is_token_expired(self, window=None):
         if not self.token:
@@ -31,18 +32,10 @@ class AuthManager:
             self.redirect_to_login(window)
 
     def has_permission(self, permission_code):
-        url = f"http://{API_HOST}:{API_PORT}/roles/{self.role_id}/permissions"
-        headers = {"Authorization": f"Bearer {self.token}"}
-        try:
-            response = requests.get(url, headers=headers)
-            if response.status_code == 200:
-                premissions = response.json()
-                for permission in premissions:
-                    if permission == permission_code or permission == "CT":
-                        return True
-                return False
-        except Exception as e:
-            QMessageBox.warning(None, "Error", f"Error de conexión: {str(e)}")
+        for permission in self.permissions:
+            if permission == permission_code or permission == "CT":
+                return True
+        return False
 
     def login(self, username, password):
         url = f"http://{API_HOST}:{API_PORT}/users/login/"
@@ -55,6 +48,7 @@ class AuthManager:
                 self.user_id = int(login['id'])
                 self.username = username
                 self.role_id = int(login['role_id'])
+                self.permissions = login['permissions']
                 return True
             else:
                 return False

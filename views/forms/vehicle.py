@@ -644,7 +644,6 @@ class frm_vehicle(QDialog):
     def load_edit(self):
         self.on_load_vehicle()
         self.disable_form_fields()
-        self.setWindowTitle(f"Vehículo {self.vehicle.get('alias')}")
 
     def on_save_clicked(self):
         self.auth_manager.is_token_expired(self)
@@ -727,6 +726,7 @@ class frm_vehicle(QDialog):
         self.on_task_finished()
 
     def load_vehicle(self):
+        self.setWindowTitle(f"Vehículo {self.vehicle.get('alias')}")
         self.company_id = self.vehicle.get("company_id")
         self.ui.txt_alias.setText(self.vehicle.get("alias"))
         self.ui.txt_chassis_number.setText(self.vehicle.get("chassis_number"))
