@@ -1111,9 +1111,9 @@ background: rgb(191, 228, 241)</string>
         </attribute>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
-          <widget class="QGroupBox" name="gbx_standart_documents">
+          <widget class="QGroupBox" name="gbx_basic_documents">
            <property name="title">
-            <string>Estandar</string>
+            <string>Básica</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_15">
             <item row="1" column="1">

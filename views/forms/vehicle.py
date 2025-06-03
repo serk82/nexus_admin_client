@@ -15,7 +15,7 @@ from lib.task_thread import *
 from pathlib import Path
 from shutil import copyfile
 from PyQt6.QtCore import pyqtSignal, QDate
-from PyQt6.QtGui import QStandardItemModel, QStandardItem, QPixmap
+from PyQt6.QtGui import QStandardItemModel, QStandardItem, QPixmap, QDragEnterEvent
 from PyQt6.QtWidgets import (
     QDialog,
     QMessageBox,
@@ -56,6 +56,7 @@ class frm_vehicle(QDialog):
         self.path_image = None
         self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
+        self.path_subfolder_basic_documents = f"{self.company_id}/vehicles/{self.id}/documents/basic"
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
 
@@ -70,6 +71,7 @@ class frm_vehicle(QDialog):
 
         # Events
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
+        self.ui.btn_save.clicked.connect(self.on_save_clicked)
         self.ui.btn_close.clicked.connect(self.close)
         self.ui.chb_tachograph_expiry.stateChanged.connect(self.check_tachograph_expery)
         self.ui.chb_itv_expiry.stateChanged.connect(self.check_itv_expery)
@@ -104,7 +106,7 @@ class frm_vehicle(QDialog):
         # Events for documentation
         self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
         self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
-        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventPdf
+        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(self.ui.lbl_dragdrop_green_card)
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
@@ -125,22 +127,6 @@ class frm_vehicle(QDialog):
             self.load_edit()
         else:
             self.load_add()
-
-    def add(self):
-        vehicle = self.collect_vehicle_data()
-        response = self.vehicles_controller.add_vehicle(
-            self.auth_manager.token, vehicle
-        )
-        if "error" in response:
-            raise Exception(response.get("error"))
-        self.id = response.get("vehicle_id")
-        self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        response = self.files_controller.upload_image(
-            self.path_image_tmp, self.path_subfolder_image, str(self.id)
-        )
-        if "error" in response:
-            raise Exception(response.get("error"))
-        self.path_image_tmp.unlink()
 
     def add_inspection(self):
         self.auth_manager.is_token_expired(self)
@@ -336,7 +322,7 @@ class frm_vehicle(QDialog):
         self.ui.tvw_aditional_coduments.setModel(self.model_vehicle_documents)
         self.model_vehicle_documents.setHorizontalHeaderLabels(
             [
-                "Nombre",
+                "Documentos",
             ]
         )
         # Set height and width of columns
@@ -503,43 +489,40 @@ class frm_vehicle(QDialog):
                         "Por favor, sube un archivo de imagen.",
                     )
 
-    def dropEventPdf(self, event):
-        urls = event.mimeData().urls()
-        if urls:
-            file_path = Path(urls[0].toLocalFile())
-            if file_path.is_file():
-                if (
-                    str(file_path).endswith(".pdf")
-                    or str(file_path).endswith(".PDF")
-                    or str(file_path).endswith(".png")
-                    or str(file_path).endswith(".PNG")
-                    or str(file_path).endswith(".jpg")
-                    or str(file_path).endswith(".JPG")
-                    or str(file_path).endswith(".jpeg")
-                    or str(file_path).endswith(".JPEG")
-                ):
-                    try:
-                        pass
-                        # pos_global = event.position().toPoint()
-                        # pos_local = self.mapFromGlobal(pos_global)
-                        # widget = self.childAt(pos_local)
-                        # print(widget.objectName())
-                        # if self.objectName() == "lbl_dragdrop_green_card":
-                        #     print("paso")
-                        #     self.files_controller.upload_file(self.auth_manager.token, file_path, self.path_subfolder_image, )
-                    except Exception as e:
-                        QMessageBox.critical(
+    def dropEventDocument(self, label: QLabel):
+        def handler(event: QDragEnterEvent):
+            urls = event.mimeData().urls()
+            if urls:
+                file_path = Path(urls[0].toLocalFile())
+                if file_path.is_file():
+                    if (
+                        str(file_path).endswith(".pdf")
+                        or str(file_path).endswith(".PDF")
+                        or str(file_path).endswith(".png")
+                        or str(file_path).endswith(".PNG")
+                        or str(file_path).endswith(".jpg")
+                        or str(file_path).endswith(".JPG")
+                        or str(file_path).endswith(".jpeg")
+                        or str(file_path).endswith(".JPEG")
+                    ):
+                        try:
+                            if label.objectName() == "lbl_dragdrop_green_card":
+                                extension = file_path.suffix
+                                self.files_controller.upload_or_replace_file(self.auth_manager.token, file_path, self.path_subfolder_basic_documents, f"Carta_Verde{extension}",)
+                        except Exception as e:
+                            QMessageBox.critical(
+                                self,
+                                "Error",
+                                f"No se pudo subir el archivo:\n{e}",
+                            )
+                    else:
+                        QMessageBox.information(
                             self,
-                            "Error",
-                            f"No se pudo subir el archivo:\n{e}",
+                            " ",
+                            "El archivo no es un documento válido.\n"
+                            "Por favor, sube un archivo PDF o de imagen.",
                         )
-                else:
-                    QMessageBox.information(
-                        self,
-                        " ",
-                        "El archivo no es un documento válido.\n"
-                        "Por favor, sube un archivo PDF o de imagen.",
-                    )
+        return handler
 
     def edit_inspection(self):
         self.auth_manager.is_token_expired(self)
@@ -656,44 +639,30 @@ class frm_vehicle(QDialog):
     def load_add(self):
         self.is_adding = True
         self.ui.btn_save.setEnabled(True)
-        self.ui.btn_save.clicked.connect(self.on_add_clicked)
         self.enable_form_fields()
 
     def load_edit(self):
         self.on_load_vehicle()
-        self.ui.btn_save.clicked.connect(self.on_save_clicked)
         self.disable_form_fields()
         self.setWindowTitle(f"Vehículo {self.vehicle.get('alias')}")
-
-    def on_add_clicked(self):
-        if not self.ui.txt_alias.text():
-            QMessageBox.warning(self, " ", "El campo 'Alias' no puede estar vacío!")
-            return
-        self.auth_manager.is_token_expired(self)
-        answer = QMessageBox.question(
-            self,
-            " ",
-            "Seguro quieres añadir el vehículo?",
-            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-        )
-        if answer == QMessageBox.StandardButton.Yes:
-            self.setEnabled(False)
-            self.loading_dialog = LoadingDialog(self)
-            self.loading_dialog.show()
-            self.hilo = TaskThread(self.add)
-            self.hilo.error.connect(self.handle_error)
-            self.hilo.finished.connect(self.on_task_finished)
-            self.hilo.start()
 
     def on_save_clicked(self):
         self.auth_manager.is_token_expired(self)
         if not self.ui.txt_alias.text():
             QMessageBox.warning(self, " ", "El campo 'Alias' no puede estar vacío!")
             return
-        answer = QMessageBox.question(
+        if self.edit:
+            answer = QMessageBox.question(
+                self,
+                " ",
+                "Seguro quieres guardar los cambios?",
+                QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            )
+        else:
+            answer = QMessageBox.question(
             self,
             " ",
-            "Seguro quieres guardar los cambios?",
+            "Seguro quieres añadir el vehículo?",
             QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         )
         if answer == QMessageBox.StandardButton.Yes:
@@ -710,13 +679,11 @@ class frm_vehicle(QDialog):
         if self.edit:
             self.setEnabled(True)
             self.disable_form_fields()
-            self.is_editing = False
         else:
             self.is_adding = False
-            self.is_editing = False
             self.edit = True
             self.load_edit()
-
+        self.is_editing = False
         self.data_update.emit()
 
     def load_inspections(self):
@@ -956,6 +923,18 @@ class frm_vehicle(QDialog):
 
     def save(self):
         vehicle = self.collect_vehicle_data()
+        if self.edit:
+            response = self.vehicles_controller.update_vehicle(
+                self.auth_manager.token, vehicle
+            )
+        else:
+            response = self.vehicles_controller.add_vehicle(
+            self.auth_manager.token, vehicle
+            )
+            self.id = response.get("vehicle_id")
+            self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
+        if "error" in response:
+            raise Exception(response.get("error"))
         if self.path_image_tmp.exists() and any(self.path_image_tmp.iterdir()):
             path_tmp_image = self.path_image_tmp / self.path_image.name
             file_name = None
@@ -972,16 +951,11 @@ class frm_vehicle(QDialog):
             elif path_tmp_image.name.endswith(".JPEG"):
                 file_name = f"{self.id}.JPEG"
             if any(self.path_image_tmp.iterdir()):
-                response = self.files_controller.upload_image_file(
+                response = self.files_controller.upload_or_replace_file(
                     self.auth_manager.token, path_tmp_image, self.path_subfolder_image, file_name
                 )
                 if "error" in response:
                     raise Exception(response.get("error"))
-        response = self.vehicles_controller.update_vehicle(
-            self.auth_manager.token, vehicle
-        )
-        if "error" in response:
-            raise Exception(response.get("error"))
 
     def set_image(self, path_image, image):
         if path_image:
@@ -1008,10 +982,6 @@ class frm_vehicle(QDialog):
         self.windowTitle = "Editar vehículo" if self.edit else "Añadir vehículo"
         self.ui.btn_edit.setText("Cancelar" if enabled else "Editar")
         self.ui.btn_save.setText("Guardar" if self.edit else "Añadir")
-        self.ui.btn_save.clicked.disconnect()
-        self.ui.btn_save.clicked.connect(
-            self.on_save_clicked if self.edit else self.on_add_clicked
-        )
         self.ui.btn_edit.disconnect()
         self.ui.btn_edit.clicked.connect(
             self.discard_changes if enabled else self.enable_form_fields

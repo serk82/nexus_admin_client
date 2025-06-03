@@ -96,8 +96,8 @@ class FilesController:
         except Exception as e:
             return {"error": f"No se pudo subir el archivo:\n{e}"}
 
-    def upload_image_file(self, token, file_path: Path, subfolder: str, name: str):
-        url = f"http://{API_HOST}:{API_PORT}/files/image"
+    def upload_or_replace_file(self, token, file_path: Path, subfolder: str, name: str):
+        url = f"http://{API_HOST}:{API_PORT}/files/replace"
         headers = {"Authorization": f"Bearer {token}"}
         try:
             with open(file_path, "rb") as f:
