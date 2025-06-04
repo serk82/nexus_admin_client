@@ -43,19 +43,23 @@ class frm_login(QWidget):
             )
         )
 
-        # Set version at label        
+        # Set version at label
         from views.forms import frm_update
-        self.ui.lbl_version.setText(f"versión {frm_update.get_local_version(self)['VERSION']}")
 
+        self.ui.lbl_version.setText(
+            f"versión {frm_update.get_local_version(self)['VERSION']}"
+        )
 
     def login(self):
-        from views.forms.options import frm_options
+        from views.forms import frm_options, frm_notifications
 
         username = self.ui.txt_username.text()
         password = self.ui.txt_password.text()
 
         auth_manager = AuthManager()
         if auth_manager.login(username, password):
+            self.form = frm_notifications(auth_manager)
+            self.form.exec()
             self.form = frm_options(auth_manager)
             self.form.show()
             self.close()

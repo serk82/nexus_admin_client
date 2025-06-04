@@ -38,19 +38,12 @@
     <property name="title">
      <string>&amp;Configuración</string>
     </property>
-    <widget class="QMenu" name="menu_Veh_culos">
-     <property name="title">
-      <string>&amp;Vehículos</string>
-     </property>
-     <addaction name="action_Tipos_de_documento"/>
-    </widget>
     <addaction name="separator"/>
     <addaction name="action_companies"/>
     <addaction name="action_permissions"/>
     <addaction name="action_roles"/>
     <addaction name="action_users"/>
-    <addaction name="separator"/>
-    <addaction name="menu_Veh_culos"/>
+    <addaction name="action_notifications"/>
    </widget>
    <widget class="QMenu" name="menu_Seguridad">
     <property name="title">
@@ -130,6 +123,11 @@
   <action name="action_Tipos_de_documento">
    <property name="text">
     <string>&amp;Tipos de documento</string>
+   </property>
+  </action>
+  <action name="action_notifications">
+   <property name="text">
+    <string>&amp;Notificaciones</string>
    </property>
   </action>
  </widget>

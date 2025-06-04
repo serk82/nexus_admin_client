@@ -27,8 +27,8 @@ class frm_options(QDialog):
         self.users_controller = UsersController()
         self.user_companies = []
 
+        self.setWindowTitle("Selecciona una actividad...")
         # Configurar la ventana para que no tenga bordes y sea transparente
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)  # Sin bordes
         self.setGeometry(400, 200, 400, 300)
 
         # Crear lista de opciones
@@ -37,31 +37,30 @@ class frm_options(QDialog):
 
         # self.listWidget.setGridSize(QSize(self.listWidget.width(), 25))
 
+        # Agregar opción de configuración
+        item = QListWidgetItem("CONFIGURACIÓN")
+        item.setData(Qt.ItemDataRole.UserRole, 0)
+        self.listWidget.addItem(item)
+
         if self.auth_manager.has_permission("CT"):
-            # Agregar opción de configuración
-            item = QListWidgetItem("CONFIGURACIÓN")
-            item.setData(Qt.ItemDataRole.UserRole, 0)
-            self.listWidget.addItem(item)
             self.user_companies = self.companies_controller.get_companies(
                 self.auth_manager.token
             )
         else:
-            companies_id = self.users_controller.get_companies_from_user(
+            self.user_companies = self.users_controller.get_companies_from_user(
                 self.auth_manager.token, self.auth_manager.user_id
             )
-            for company_id in companies_id:
-                self.user_companies.append(
-                    self.companies_controller.get_company(
-                        self.auth_manager.token, company_id
-                    )
-                )
         if self.user_companies or self.auth_manager.role_id == 1:
             for company in self.user_companies:
                 item = QListWidgetItem(company.get("name"))
-                item.setData(Qt.ItemDataRole.UserRole, company.get("id"))
+                item.setData(Qt.ItemDataRole.UserRole, str(company.get("id")))
                 self.listWidget.addItem(item)
         else:
-            QMessageBox.information(self, " ", "No tienes acceso a ninguna empresa. Ponte en contacto con el administrador.")
+            QMessageBox.information(
+                self,
+                " ",
+                "No tienes acceso a ninguna empresa. Ponte en contacto con el administrador.",
+            )
             sys.exit(0)
 
         self.listWidget.setCurrentRow(0)

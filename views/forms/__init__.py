@@ -5,6 +5,7 @@ from .inspection import frm_inspection
 from .login import frm_login
 from .main import frm_main
 from .notification_settings import frm_notification_settings
+from .notifications import frm_notifications
 from .options import frm_options
 from .password import frm_password
 from .permissions import frm_permissions

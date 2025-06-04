@@ -31,7 +31,9 @@ class frm_configuration(QMainWindow):
         self.ui.action_permissions.triggered.connect(self.permissions)
         self.ui.action_roles.triggered.connect(self.roles)
         self.ui.action_users.triggered.connect(self.users)
-        self.ui.action_Tipos_de_documento.triggered.connect(self.document_types)
+        self.ui.action_notifications.triggered.connect(self.notification_settings)
+
+        self.load_configuration()
 
     def backup(self):
         self.auth_manager.is_token_expired(self)
@@ -53,11 +55,23 @@ class frm_configuration(QMainWindow):
         self.auth_manager.is_token_expired(self)
         self.form = frm_table_view(self, self.auth_manager, "companies")
         self.form.exec()
-        
-    def document_types(self):
+
+    def load_configuration(self):
+        if not self.auth_manager.has_permission("CT"):
+            self.ui.action_companies.setVisible(False)
+            self.ui.action_permissions.setVisible(False)
+            self.ui.action_roles.setVisible(False)
+            self.ui.action_users.setVisible(False)
+            self.ui.action_Copia_de_seguridad.setVisible(False)
+            self.ui.menubar.removeAction(self.ui.menu_Seguridad.menuAction())
+
+    def notification_settings(self):
         self.auth_manager.is_token_expired(self)
-        from views.forms import frm_types_vehicle_documents
-        self.form = frm_types_vehicle_documents(self, self.auth_manager)
+        from views.forms import frm_notification_settings
+
+        self.form = frm_notification_settings(
+            self, self.auth_manager, self.auth_manager.user_id
+        )
         self.form.exec()
 
     def permissions(self):
