@@ -26,7 +26,7 @@ class UsersController:
             return {"error": "Tiempo de espera agotado"}
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
-        
+
     def delete_user(self, token, user_id):
         url = f"http://{API_HOST}:{API_PORT}/users/{user_id}"
         headers = {"Authorization": f"Bearer {token}"}
@@ -118,6 +118,29 @@ class UsersController:
         url = f"http://{API_HOST}:{API_PORT}/users/{user.get('id')}"
         headers = {"Authorization": f"Bearer {token}"}
         data = {"user": user, "companies": companies}
+        try:
+            response = requests.put(url, json=data, headers=headers)
+            if response.status_code == 200:
+                return response.json()
+            elif response.status_code == 404:
+                return {"error": "Usuario no encontrado"}
+            elif response.status_code == 401:
+                return {"error": "No autorizado, token inválido o expirado"}
+            elif response.status_code == 422:
+                return {"error": "Datos inválidos enviados"}
+            else:
+                return {"error": f"Error inesperado: {response.status_code}"}
+        except requests.exceptions.RequestException as e:
+            return {"message": str(e)}
+        except requests.exceptions.Timeout:
+            return {"error": "Tiempo de espera agotado"}
+        except requests.exceptions.RequestException as e:
+            return {"error": str(e)}
+
+    def update_user_notifications(self, token, user_id: int, notifications: dict):
+        url = f"http://{API_HOST}:{API_PORT}/users/{user_id}/notifications"
+        headers = {"Authorization": f"Bearer {token}"}
+        data = {"user_id": user_id, "notifications": notifications}
         try:
             response = requests.put(url, json=data, headers=headers)
             if response.status_code == 200:
