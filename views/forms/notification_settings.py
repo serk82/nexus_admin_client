@@ -30,6 +30,12 @@ class frm_notification_settings(QDialog):
             or self.ui.sbx_itv_expiry.value() == 0
             else self.ui.sbx_itv_expiry.value()
         )
+        tachograph_expiry = (
+            None
+            if not self.ui.chb_tachograph_expiry.isChecked()
+            or self.ui.sbx_tachograph_expiry.value() == 0
+            else self.ui.sbx_tachograph_expiry.value()
+        )
         inspection_kms_expiry = (
             None
             if not self.ui.chb_inspection_kms_expiry.isChecked()
@@ -38,6 +44,7 @@ class frm_notification_settings(QDialog):
         )
         return {
             "itv_expiry": itv_expiry,
+            "tachograph_expiry": tachograph_expiry,
             "inspection_kms_expiry": inspection_kms_expiry,
         }
 
@@ -77,13 +84,21 @@ class frm_notification_settings(QDialog):
             raise Exception(response.get("error"))
 
     def load_data(self):
-        user = self.users_controller.get_user_by_id(self.auth_manager.token, self.user_id)
+        user = self.users_controller.get_user_by_id(
+            self.auth_manager.token, self.user_id
+        )
         if user.get("notification_itv_expiry") is None:
             self.ui.chb_itv_expiry.setChecked(False)
             self.ui.sbx_itv_expiry.setValue(0)
         else:
             self.ui.chb_itv_expiry.setChecked(True)
             self.ui.sbx_itv_expiry.setValue(user.get("notification_itv_expiry"))
+        if user.get("notification_tachograph_expiry") is None:
+            self.ui.chb_tachograph_expiry.setChecked(False)
+            self.ui.sbx_tachograph_expiry.setValue(0)
+        else:
+            self.ui.chb_tachograph_expiry.setChecked(True)
+            self.ui.sbx_tachograph_expiry.setValue(user.get("notification_tachograph_expiry"))
         if user.get("notification_inspection_kms_expiry") is None:
             self.ui.chb_inspection_kms_expiry.setChecked(False)
             self.ui.sbx_inspection_kms_expiry.setValue(0)
