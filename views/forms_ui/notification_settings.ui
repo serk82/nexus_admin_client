@@ -108,7 +108,14 @@
       <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QSpinBox" name="sbx_inspection_kms_expiry"/>
+         <widget class="QSpinBox" name="sbx_inspection_kms_expiry">
+          <property name="maximum">
+           <number>999999</number>
+          </property>
+          <property name="singleStep">
+           <number>100</number>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="lbl_inspection_kms_expiry">

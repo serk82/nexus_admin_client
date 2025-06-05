@@ -43,13 +43,11 @@ class frm_configuration(QMainWindow):
         self.form.exec()
 
     def close_session(self):
-        result = question_no_yes(self, "Estás seguro de cerrar la sesión?")
+        from .login import frm_login
 
-        if result == QMessageBox.StandardButton.Yes:
-            self.is_logged_out = True
-            QApplication.quit()
-            subprocess.Popen([sys.executable, "nexus_admin_client/main.py"])
-            sys.exit()
+        self.form = frm_login()
+        self.form.show()
+        self.close()
 
     def companies(self):
         self.auth_manager.is_token_expired(self)

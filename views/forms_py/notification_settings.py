@@ -52,6 +52,8 @@ class Ui_frm_notification_settings(object):
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.sbx_inspection_kms_expiry = QtWidgets.QSpinBox(parent=self.gbx_notification_settings)
+        self.sbx_inspection_kms_expiry.setMaximum(999999)
+        self.sbx_inspection_kms_expiry.setSingleStep(100)
         self.sbx_inspection_kms_expiry.setObjectName("sbx_inspection_kms_expiry")
         self.horizontalLayout_3.addWidget(self.sbx_inspection_kms_expiry)
         self.lbl_inspection_kms_expiry = QtWidgets.QLabel(parent=self.gbx_notification_settings)
