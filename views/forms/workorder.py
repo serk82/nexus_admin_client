@@ -79,6 +79,7 @@ class frm_workorder(QDialog):
         if "error" in response:
             raise Exception(response.get("error"))
         self.workorder_id = response.get("workorder_id")
+        self.path = f"{self.company_id}/vehicles/{self.vehicle_id}/workorders/{self.workorder_id}"
 
     def cleanup_tmp(self):
         tmp_dir = Path(sys.argv[0]).resolve().parent / "tmp"
@@ -173,7 +174,6 @@ class frm_workorder(QDialog):
                     form = frm_document_name(self, self.auth_manager, file_path.suffix)
                     form.document_name.connect(self.set_document_name)
                     form.exec()
-                    print(self.document_name)
                     if self.document_name:
                         try:
                             if self.exist_document(file_path.name):
