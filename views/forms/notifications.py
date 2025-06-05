@@ -34,7 +34,6 @@ class frm_notifications(QDialog):
         self.user = self.users_controller.get_user_by_id(
             self.auth_manager.token, self.auth_manager.user_id
         )
-        print(self.user)
         self.user_notification_itv_expiry = self.user.get("notification_itv_expiry")
         self.user_notification_tachograph_expiry = self.user.get(
             "notification_tachograph_expiry"
@@ -191,8 +190,6 @@ class frm_notifications(QDialog):
 
     def check_tachograph(self, vehicle):
         if not vehicle.get("deactivate"):
-            print(self.user_notification_tachograph_expiry)
-            print(vehicle.get("tachograph_expiry"))
             if (
                 self.user_notification_tachograph_expiry is not None
                 and vehicle.get("tachograph_expiry") is not None

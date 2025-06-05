@@ -27,8 +27,9 @@ class frm_login(QWidget):
         btn_layout = QHBoxLayout()
         btn_layout.setObjectName("btn_layout")
 
+        # Events
         self.ui.btn_login.clicked.connect(self.login)
-
+        self.ui.txt_password.returnPressed.connect(self.login)
         self.ui.btn_exit.clicked.connect(self.close)
 
         # Crear el QLabel para el logo
@@ -49,6 +50,11 @@ class frm_login(QWidget):
         self.ui.lbl_version.setText(
             f"versión {frm_update.get_local_version(self)['VERSION']}"
         )
+
+        # Tab Order
+        self.setTabOrder(self.ui.txt_username, self.ui.txt_password)
+        self.setTabOrder(self.ui.txt_password, self.ui.btn_login)
+        self.ui.txt_username.setFocus()
 
     def login(self):
         from views.forms import frm_options, frm_notifications
