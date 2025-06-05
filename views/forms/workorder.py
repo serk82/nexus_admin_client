@@ -7,6 +7,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QMessageBox, QHeaderView, QTableView
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6.QtCore import pyqtSignal
+from views.forms import frm_document_name
 from views.forms_py import Ui_frm_workorder
 
 
@@ -41,6 +42,7 @@ class frm_workorder(QDialog):
         self.workorder_id = workorder_id
         self.path = f"{self.company_id}/vehicles/{self.vehicle_id}/workorders/{self.workorder_id}"
         self.edit = edit
+        self.document_name = None
 
         self.configuration_based_on_documents()
 
@@ -168,26 +170,38 @@ class frm_workorder(QDialog):
                     or str(file_path).endswith(".jpeg")
                     or str(file_path).endswith(".JPEG")
                 ):
-                    try:
-                        if self.exist_document(file_path.name):
-                            QMessageBox.warning(
-                                self,
-                                " ",
-                                f"El documento '{file_path.name}' ya existe.",
+                    form = frm_document_name(self, self.auth_manager, file_path.suffix)
+                    form.document_name.connect(self.set_document_name)
+                    form.exec()
+                    print(self.document_name)
+                    if self.document_name:
+                        try:
+                            if self.exist_document(file_path.name):
+                                QMessageBox.warning(
+                                    self,
+                                    " ",
+                                    f"El documento '{file_path.name}' ya existe.",
+                                )
+                                return
+                            self.files_controller.upload_file(
+                                self.auth_manager.token,
+                                file_path,
+                                self.path,
+                                self.document_name,
                             )
-                            return
-                        self.upload_file(file_path, self.path)
-                        self.model_documents.appendRow(
-                            [
-                                QStandardItem(file_path.name),
-                            ]
-                        )
-                    except Exception as e:
-                        QMessageBox.critical(
-                            self,
-                            "Error",
-                            f"No se pudo subir el archivo:\n{e}",
-                        )
+                            self.model_documents.appendRow(
+                                [
+                                    QStandardItem(self.document_name),
+                                ]
+                            )
+                        except Exception as e:
+                            QMessageBox.critical(
+                                self,
+                                "Error",
+                                f"No se pudo subir el archivo:\n{e}",
+                            )
+                        finally:
+                            self.document_name = None
                 else:
                     QMessageBox.information(
                         self,
@@ -386,20 +400,5 @@ class frm_workorder(QDialog):
         workorder = self.collect_workorder_data()
         self.workorders_controller.update_workorder(self.auth_manager.token, workorder)
 
-    def upload_file(self, file_path: Path, subfolder: str):
-        url = f"http://{API_HOST}:{API_PORT}/files/"
-        
-        try:
-            with open(file_path, "rb") as f:
-                files = {"file": (file_path.name, f)}
-                data = {"subfolder": subfolder}
-                response = requests.post(url, files=files, data=data)
-
-            if not response.ok:
-                QMessageBox.critical(
-                    self,
-                    "Error",
-                    f"Error del servidor: {response.status_code}\n{response.text}",
-                )
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"No se pudo subir el archivo:\n{e}")
+    def set_document_name(self, name):
+        self.document_name = name
