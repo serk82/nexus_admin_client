@@ -29,6 +29,7 @@ class frm_notifications(QDialog):
         self.users_controller = UsersController()
         self.vehicles_controller = VehiclesController()
         self.today = datetime.now().date()
+        self.all_current_kms = get_kms_vehicles()
 
         self.user = self.users_controller.get_user_by_id(
             self.auth_manager.token, self.auth_manager.user_id
@@ -114,7 +115,7 @@ class frm_notifications(QDialog):
                 if self.today >= limit_date:
                     days_remainig = target_date.date() - self.today
                     itv_expiry_item = QStandardItem(
-                        f"Caducidad ITV: {target_date.date()}"
+                        f"Caducidad ITV: {target_date.date().strftime("%d/%m/%Y")}"
                     )
                     days_remainig_item = QStandardItem()
                     if days_remainig.days < 0:
@@ -142,7 +143,11 @@ class frm_notifications(QDialog):
                 self.user_notification_inspection_kms_expiry is not None
                 and vehicle.get("inspection_km") is not None
             ):
-                current_kms = get_kms_vehicle(vehicle.get("license_plate"))
+                current_kms = None
+                for current_kms_vehicle in self.all_current_kms.findall("GRUA"):
+                    if current_kms_vehicle.find("MATRICULA").text == vehicle.get("license_plate"):
+                        current_kms = current_kms_vehicle.find("KMS").text
+                        break
                 next_inspection = self.get_next_kms_inspection(
                     vehicle.get("id"), vehicle.get("inspection_km")
                 )
