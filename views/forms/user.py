@@ -118,7 +118,7 @@ class frm_user(QDialog):
                 qframe = self.ui.twd_companies.cellWidget(row_twd, 2)
                 column_company = self.ui.twd_companies.item(row_twd, 0)
                 for row_user_company in self.user_companies:
-                    if int(column_company.text()) == row_user_company:
+                    if int(column_company.text()) == row_user_company.get("id"):
                         checkbox = qframe.findChild(QCheckBox)
                         checkbox.setChecked(True)
 
@@ -204,7 +204,9 @@ class frm_user(QDialog):
             if answer == QMessageBox.StandardButton.Yes:
                 user = self.collect_user_data()
                 companies = self.collect_user_companies()
-                response = self.users_controller.add_user(self.auth_manager.token, user, companies)
+                response = self.users_controller.add_user(
+                    self.auth_manager.token, user, companies
+                )
                 if response and "error" not in response:
                     self.data_update.emit()
                     QMessageBox.information(

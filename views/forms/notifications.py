@@ -115,7 +115,7 @@ class frm_notifications(QDialog):
                 if self.today >= limit_date:
                     days_remainig = target_date.date() - self.today
                     itv_expiry_item = QStandardItem(
-                        f"Caducidad ITV: {target_date.date().strftime("%d/%m/%Y")}"
+                        f"Caducidad ITV: {target_date.date().strftime('%d/%m/%Y')}"
                     )
                     days_remainig_item = QStandardItem()
                     if days_remainig.days < 0:
