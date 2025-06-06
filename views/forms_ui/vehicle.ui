@@ -1206,16 +1206,6 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QCheckBox" name="chb_registration_certificate">
-              <property name="text">
-               <string>Permiso Circulación</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
             <item row="4" column="2">
              <widget class="QLabel" name="lbl_dragdrop_green_card">
               <property name="sizePolicy">
@@ -1261,16 +1251,6 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QCheckBox" name="chb_insurance_policy">
-              <property name="text">
-               <string>Póliza Seguro</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="1">
              <widget class="QPushButton" name="btn_view_transport_card">
               <property name="text">
@@ -1313,26 +1293,6 @@ background: rgb(191, 228, 241)</string>
               </property>
               <property name="margin">
                <number>0</number>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="chb_technical_specifications">
-              <property name="text">
-               <string>Ficha Técnica</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="chb_tachograph_inspection">
-              <property name="text">
-               <string>Revisión Tacógrafo</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1457,26 +1417,6 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QCheckBox" name="chb_transport_card">
-              <property name="text">
-               <string>Tarjeta Transporte</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QCheckBox" name="chb_green_card">
-              <property name="text">
-               <string>Carta Verde</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
             <item row="5" column="1">
              <widget class="QPushButton" name="btn_view_insurance_policy">
               <property name="text">
@@ -1488,16 +1428,6 @@ background: rgb(191, 228, 241)</string>
              <widget class="QPushButton" name="btn_view_registration_certificate">
               <property name="text">
                <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QCheckBox" name="chb_insurance_receipt">
-              <property name="text">
-               <string>Recibo Seguro	</string>
-              </property>
-              <property name="checkable">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -1547,6 +1477,97 @@ background: rgb(191, 228, 241)</string>
              <widget class="QPushButton" name="btn_delete_insurance_receipt">
               <property name="text">
                <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lbl_registration_certificate">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Permiso Circulación</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lbl_technical_specifications">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Ficha Técnica</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="lbl_tachograph_inspection">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Revisión Tacógrafo</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lbl_transport_card">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Tarjeta Transporte</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="lbl_green_card">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Carta Verde</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="lbl_insurance_policy">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Póliza Seguro</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="lbl_insurance_receipt">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Recibo Seguro</string>
               </property>
              </widget>
             </item>

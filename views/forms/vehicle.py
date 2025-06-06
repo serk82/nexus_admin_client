@@ -34,18 +34,28 @@ class frm_vehicle(QDialog):
         super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(self)
+
+        # Controllers variables
         self.files_controller = FilesController()
         self.inspections_controller = InspectionsController()
         self.vehicles_controller = VehiclesController()
         self.vehicle_documents_controlles = VehicleDocumentsController()
         self.workorders_controller = WorkOrdersController()
+
+        # General variables
         self.frm_users = form
         self.edit = edit
         self.id = id
         self.company_id = company_id
         self.vehicle = None
+        self.is_adding = False
+        self.is_editing = False
+
+        # Inspection variables
         self.inspections = None
         self.last_inspection = None
+
+        # Workorders variables
         self.workorders = None
         self.first_workorder = None
         self.last_workorder = None
@@ -53,24 +63,29 @@ class frm_vehicle(QDialog):
         self.date_last_workorder = None
         self.date_from_workorder = None
         self.date_to_workorder = None
+
+        # Documents variables
+        self.basic_documents = None
+
+        # Vehicle Image variables
         self.path_image = None
         self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.path_subfolder_basic_documents = (
             f"{self.company_id}/vehicles/{self.id}/documents/basic"
         )
+
+        # Form construct
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
 
-        self.is_adding = False
-        self.is_editing = False
-
+        # Tableviews configuration
         self.configuration_tableviews()
         self.configuration_based_on_inspections()
         self.configuration_based_on_vehicle_documents()
         self.configuration_based_on_workorders()
 
-        # Events
+        # Events for vehicle
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
         self.ui.btn_save.clicked.connect(self.on_save_clicked)
         self.ui.btn_close.clicked.connect(self.close)
@@ -83,8 +98,6 @@ class frm_vehicle(QDialog):
         self.ui.lbl_dragdrop_image.setAcceptDrops(True)
         self.ui.lbl_dragdrop_image.dragEnterEvent = self.dragEnterEvent
         self.ui.lbl_dragdrop_image.dropEvent = self.dropEventImage
-
-        # Buttons Tab Events
         self.ui.tab_file.tabBar().tabBarClicked.connect(self.update_tab)
 
         # Events for workorders
@@ -110,6 +123,9 @@ class frm_vehicle(QDialog):
         self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(
             self.ui.lbl_dragdrop_green_card
         )
+        self.ui.btn_delete_green_card.clicked.connect(
+            lambda: self.delete_basic_document("Carta Verde.pdf")
+        )
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
@@ -126,6 +142,7 @@ class frm_vehicle(QDialog):
                 self.ui.btn_edit_workorder.setEnabled(False)
         self.ui.btn_delete_workorder.setEnabled(self.auth_manager.has_permission("DMV"))
 
+        # Load form addition or edition
         if edit:
             self.load_edit()
         else:
@@ -390,6 +407,24 @@ class frm_vehicle(QDialog):
                 f"No se pudo abrir el archivo:\n{e}",
             )
 
+    def delete_basic_document(self, document: str):
+        answer = QMessageBox.question(
+            self,
+            "Eliminar documento",
+            f"Seguro quieres eliminar el documento '{document}'?",
+            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+        )
+        if answer == QMessageBox.StandardButton.Yes:
+            response = self.files_controller.delete_file(
+                self.auth_manager.token, self.path_subfolder_basic_documents, document
+            )
+            if "error" in response:
+                QMessageBox.information(
+                    self,
+                    "Eliminar documento",
+                    f"No se puede eliminar el documento: {response.get('error')}",
+                )
+
     def delete_inspection(self):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_inspection_id()
@@ -498,25 +533,30 @@ class frm_vehicle(QDialog):
             if urls:
                 file_path = Path(urls[0].toLocalFile())
                 if file_path.is_file():
-                    if (
-                        str(file_path).endswith(".pdf")
-                        or str(file_path).endswith(".PDF")
-                        or str(file_path).endswith(".png")
-                        or str(file_path).endswith(".PNG")
-                        or str(file_path).endswith(".jpg")
-                        or str(file_path).endswith(".JPG")
-                        or str(file_path).endswith(".jpeg")
-                        or str(file_path).endswith(".JPEG")
+                    if str(file_path).endswith(".pdf") or str(file_path).endswith(
+                        ".PDF"
                     ):
                         try:
                             if label.objectName() == "lbl_dragdrop_green_card":
+                                self.files_controller.upload_or_replace_file(
+                                    self.auth_manager.token,
+                                    file_path,
+                                    self.path_subfolder_basic_documents,
+                                    f"Carta Verde.pdf",
+                                )
+                                return
+                            if (
+                                label.objectName()
+                                == "lbl_dragdrop_registration_certificate"
+                            ):
                                 extension = file_path.suffix
                                 self.files_controller.upload_or_replace_file(
                                     self.auth_manager.token,
                                     file_path,
                                     self.path_subfolder_basic_documents,
-                                    f"Carta_Verde{extension}",
+                                    f"Permiso Circulación{extension}",
                                 )
+                                return
                         except Exception as e:
                             QMessageBox.critical(
                                 self,
@@ -528,7 +568,7 @@ class frm_vehicle(QDialog):
                             self,
                             " ",
                             "El archivo no es un documento válido.\n"
-                            "Por favor, sube un archivo PDF o de imagen.",
+                            "Por favor, sube un archivo PDF.",
                         )
 
         return handler
@@ -565,6 +605,38 @@ class frm_vehicle(QDialog):
     def enable_form_fields(self):
         self.set_form_fields_state(True)
         self.is_editing = True if self.edit else False
+
+    def get_filtered_workorders(self):
+        # Empty the list of workorders
+        self.workorders = None
+        # Instantiate the controller
+        self.workorders_controller = WorkOrdersController()
+        # Remove all rows from the model
+        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
+        # Get the first workorder
+        self.first_workorder = self.workorders_controller.get_first_workorder(
+            self.auth_manager.token, self.id
+        )
+        if self.first_workorder is not None:
+            self.workorders = self.workorders_controller.get_workorders(
+                self.auth_manager.token,
+                self.id,
+                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
+                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
+                self.ui.txt_search.text(),
+            )
+
+    def get_documents(self):
+        self.basic_documents = self.files_controller.get_files(
+            self.auth_manager.token, self.path_subfolder_basic_documents
+        )
+
+    def get_inspections(self):
+        self.inspections_controller = InspectionsController()
+        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
+        self.inspections = self.inspections_controller.get_inspections(
+            self.auth_manager.token, self.id
+        )
 
     def get_last_date_inspection(self):
         last_inspection = ""
@@ -639,33 +711,6 @@ class frm_vehicle(QDialog):
             self.auth_manager.token, self.id
         )
 
-    def get_filtered_workorders(self):
-        # Empty the list of workorders
-        self.workorders = None
-        # Instantiate the controller
-        self.workorders_controller = WorkOrdersController()
-        # Remove all rows from the model
-        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
-        # Get the first workorder
-        self.first_workorder = self.workorders_controller.get_first_workorder(
-            self.auth_manager.token, self.id
-        )
-        if self.first_workorder is not None:
-            self.workorders = self.workorders_controller.get_workorders(
-                self.auth_manager.token,
-                self.id,
-                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
-                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
-                self.ui.txt_search.text(),
-            )
-
-    def get_inspections(self):
-        self.inspections_controller = InspectionsController()
-        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
-        self.inspections = self.inspections_controller.get_inspections(
-            self.auth_manager.token, self.id
-        )
-
     def get_vehicle_documents(self):
         self.vehicle_documents_controlles = VehicleDocumentsController()
         self.model_inspections.removeRows(0, self.model_inspections.rowCount())
@@ -725,6 +770,12 @@ class frm_vehicle(QDialog):
         self.is_adding = True
         self.ui.btn_save.setEnabled(True)
         self.enable_form_fields()
+
+    def load_documents(self):
+        greren_card = "Carta Verde.pdf" in self.basic_documents
+        self.ui.lbl_green_card.setText("Carta Verde ")
+        self.ui.btn_view_green_card.setEnabled(greren_card)
+        self.on_task_finished()
 
     def load_edit(self):
         self.on_load_vehicle()
@@ -918,6 +969,15 @@ class frm_vehicle(QDialog):
             for row in range(self.model_workorders.rowCount()):
                 self.ui.tvw_workorders.resizeRowToContents(row)
         self.on_task_finished()
+
+    def on_load_documents(self):
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(self.get_documents)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.load_documents)
+        self.hilo.start()
 
     def on_load_filtered_workorders(self):
         self.setEnabled(False)
@@ -1122,9 +1182,12 @@ class frm_vehicle(QDialog):
             )
 
     def update_tab(self, index):
+        self.auth_manager.is_token_expired(self)
         if index == 0:
             self.on_load_vehicle()
         if index == 1:
             self.on_load_inspections()
         if index == 2:
             self.on_load_workorders()
+        if index == 3:
+            self.on_load_documents()
