@@ -56,7 +56,9 @@ class frm_vehicle(QDialog):
         self.path_image = None
         self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        self.path_subfolder_basic_documents = f"{self.company_id}/vehicles/{self.id}/documents/basic"
+        self.path_subfolder_basic_documents = (
+            f"{self.company_id}/vehicles/{self.id}/documents/basic"
+        )
         self.ui = Ui_frm_vehicle()
         self.ui.setupUi(self)
 
@@ -67,7 +69,6 @@ class frm_vehicle(QDialog):
         self.configuration_based_on_inspections()
         self.configuration_based_on_vehicle_documents()
         self.configuration_based_on_workorders()
-        
 
         # Events
         self.ui.btn_edit.clicked.connect(self.enable_form_fields)
@@ -106,7 +107,9 @@ class frm_vehicle(QDialog):
         # Events for documentation
         self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
         self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
-        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(self.ui.lbl_dragdrop_green_card)
+        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_green_card
+        )
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
@@ -177,20 +180,6 @@ class frm_vehicle(QDialog):
             self.ui.date_to.date().month(),
             self.ui.date_to.date().day(),
         )
-
-    def copy_file(self, path_image: str):
-        self.auth_manager.is_token_expired(self)
-        self.path_image = Path(path_image)
-        try:
-            path_tmp_image = self.path_image_tmp / self.path_image.name
-            copyfile(self.path_image, path_tmp_image)
-            self.set_image(path_tmp_image, None)
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                " ",
-                f"No se pudo abrir el archivo:\n{e}",
-            )
 
     def check_inspection_hours(self):
         self.ui.sbx_inspection_hours.setVisible(
@@ -387,6 +376,20 @@ class frm_vehicle(QDialog):
         self.ui.tvw_aditional_coduments.setAlternatingRowColors(True)
         self.ui.tvw_workorders.setAlternatingRowColors(True)
 
+    def copy_file(self, path_image: str):
+        self.auth_manager.is_token_expired(self)
+        self.path_image = Path(path_image)
+        try:
+            path_tmp_image = self.path_image_tmp / self.path_image.name
+            copyfile(self.path_image, path_tmp_image)
+            self.set_image(path_tmp_image, None)
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                " ",
+                f"No se pudo abrir el archivo:\n{e}",
+            )
+
     def delete_inspection(self):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_inspection_id()
@@ -508,7 +511,12 @@ class frm_vehicle(QDialog):
                         try:
                             if label.objectName() == "lbl_dragdrop_green_card":
                                 extension = file_path.suffix
-                                self.files_controller.upload_or_replace_file(self.auth_manager.token, file_path, self.path_subfolder_basic_documents, f"Carta_Verde{extension}",)
+                                self.files_controller.upload_or_replace_file(
+                                    self.auth_manager.token,
+                                    file_path,
+                                    self.path_subfolder_basic_documents,
+                                    f"Carta_Verde{extension}",
+                                )
                         except Exception as e:
                             QMessageBox.critical(
                                 self,
@@ -522,6 +530,7 @@ class frm_vehicle(QDialog):
                             "El archivo no es un documento válido.\n"
                             "Por favor, sube un archivo PDF o de imagen.",
                         )
+
         return handler
 
     def edit_inspection(self):
@@ -630,6 +639,82 @@ class frm_vehicle(QDialog):
             self.auth_manager.token, self.id
         )
 
+    def get_filtered_workorders(self):
+        # Empty the list of workorders
+        self.workorders = None
+        # Instantiate the controller
+        self.workorders_controller = WorkOrdersController()
+        # Remove all rows from the model
+        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
+        # Get the first workorder
+        self.first_workorder = self.workorders_controller.get_first_workorder(
+            self.auth_manager.token, self.id
+        )
+        if self.first_workorder is not None:
+            self.workorders = self.workorders_controller.get_workorders(
+                self.auth_manager.token,
+                self.id,
+                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
+                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
+                self.ui.txt_search.text(),
+            )
+
+    def get_inspections(self):
+        self.inspections_controller = InspectionsController()
+        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
+        self.inspections = self.inspections_controller.get_inspections(
+            self.auth_manager.token, self.id
+        )
+
+    def get_vehicle_documents(self):
+        self.vehicle_documents_controlles = VehicleDocumentsController()
+        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
+        self.inspections = self.inspections_controller.get_inspections(
+            self.auth_manager.token, self.id
+        )
+
+    def get_workorders(self):
+        # Empty the list of workorders
+        self.workorders = None
+        # Instantiate the controller
+        self.workorders_controller = WorkOrdersController()
+        # Remove all rows from the model
+        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
+        # Get the first workorder
+        self.first_workorder = self.workorders_controller.get_first_workorder(
+            self.auth_manager.token, self.id
+        )
+        # If the first workorder is not None, convert it to a datetime object
+        if self.first_workorder is not None:
+            self.date_first_workorder = datetime.strptime(
+                self.first_workorder.get("date"), "%Y-%m-%d"
+            ).date()
+            self.date_from_workorder = self.date_first_workorder
+        else:
+            self.date_first_workorder = date.today()
+            self.date_from_workorder = date.today()
+        # Get the last workorder
+        self.last_workorder = self.workorders_controller.get_last_workorder(
+            self.auth_manager.token, self.id
+        )
+        # If the last workorder is not None, convert it to a datetime object
+        if self.last_workorder is not None:
+            self.date_last_workorder = datetime.strptime(
+                self.last_workorder.get("date"), "%Y-%m-%d"
+            ).date()
+            self.date_to_workorder = self.date_last_workorder
+        else:
+            self.date_last_workorder = date.today()
+            self.date_to_workorder = date.today()
+        if self.first_workorder is not None:
+            self.workorders = self.workorders_controller.get_workorders(
+                self.auth_manager.token,
+                self.id,
+                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
+                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
+                self.ui.txt_search.text(),
+            )
+
     def handle_error(self, error_message):
         self.loading_dialog.close()
         QMessageBox.warning(self, " ", error_message)
@@ -644,39 +729,6 @@ class frm_vehicle(QDialog):
     def load_edit(self):
         self.on_load_vehicle()
         self.disable_form_fields()
-
-    def on_save_clicked(self):
-        self.auth_manager.is_token_expired(self)
-        if not self.ui.txt_alias.text():
-            QMessageBox.warning(self, " ", "El campo 'Alias' no puede estar vacío!")
-            return
-        if self.edit:
-            answer = QMessageBox.question(
-                self,
-                " ",
-                "Seguro quieres guardar los cambios?",
-                QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-            )
-        else:
-            answer = QMessageBox.question(
-            self,
-            " ",
-            "Seguro quieres añadir el vehículo?",
-            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-        )
-        if answer == QMessageBox.StandardButton.Yes:
-            self.setEnabled(False)
-            self.loading_dialog = LoadingDialog(self)
-            self.loading_dialog.show()
-            self.hilo = TaskThread(self.save)
-            self.hilo.error.connect(self.handle_error)
-            self.hilo.finished.connect(self.load_vehicle)
-            self.hilo.start()
-
-    def on_task_finished(self):
-        self.loading_dialog.close()
-        self.setEnabled(True)
-        self.data_update.emit()
 
     def load_inspections(self):
         for item in self.inspections:
@@ -867,13 +919,13 @@ class frm_vehicle(QDialog):
                 self.ui.tvw_workorders.resizeRowToContents(row)
         self.on_task_finished()
 
-    def on_load_vehicle(self):
+    def on_load_filtered_workorders(self):
         self.setEnabled(False)
         self.loading_dialog = LoadingDialog(self)
         self.loading_dialog.show()
-        self.hilo = TaskThread(self.get_vehicle)
+        self.hilo = TaskThread(self.get_filtered_workorders)
         self.hilo.error.connect(self.handle_error)
-        self.hilo.finished.connect(self.load_vehicle)
+        self.hilo.finished.connect(self.load_workorders)
         self.hilo.start()
 
     def on_load_inspections(self):
@@ -883,6 +935,15 @@ class frm_vehicle(QDialog):
         self.hilo = TaskThread(self.get_inspections)
         self.hilo.error.connect(self.handle_error)
         self.hilo.finished.connect(self.load_inspections)
+        self.hilo.start()
+
+    def on_load_vehicle(self):
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(self.get_vehicle)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.load_vehicle)
         self.hilo.start()
 
     def on_load_vehicle_documents(self):
@@ -903,14 +964,38 @@ class frm_vehicle(QDialog):
         self.hilo.finished.connect(self.load_workorders)
         self.hilo.start()
 
-    def on_load_filtered_workorders(self):
-        self.setEnabled(False)
-        self.loading_dialog = LoadingDialog(self)
-        self.loading_dialog.show()
-        self.hilo = TaskThread(self.get_filtered_workorders)
-        self.hilo.error.connect(self.handle_error)
-        self.hilo.finished.connect(self.load_workorders)
-        self.hilo.start()
+    def on_save_clicked(self):
+        self.auth_manager.is_token_expired(self)
+        if not self.ui.txt_alias.text():
+            QMessageBox.warning(self, " ", "El campo 'Alias' no puede estar vacío!")
+            return
+        if self.edit:
+            answer = QMessageBox.question(
+                self,
+                " ",
+                "Seguro quieres guardar los cambios?",
+                QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            )
+        else:
+            answer = QMessageBox.question(
+                self,
+                " ",
+                "Seguro quieres añadir el vehículo?",
+                QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+            )
+        if answer == QMessageBox.StandardButton.Yes:
+            self.setEnabled(False)
+            self.loading_dialog = LoadingDialog(self)
+            self.loading_dialog.show()
+            self.hilo = TaskThread(self.save)
+            self.hilo.error.connect(self.handle_error)
+            self.hilo.finished.connect(self.load_vehicle)
+            self.hilo.start()
+
+    def on_task_finished(self):
+        self.loading_dialog.close()
+        self.setEnabled(True)
+        self.data_update.emit()
 
     def remove_filters(self):
         self.ui.date_from.setDate(self.date_first_workorder)
@@ -926,7 +1011,7 @@ class frm_vehicle(QDialog):
             )
         else:
             response = self.vehicles_controller.add_vehicle(
-            self.auth_manager.token, vehicle
+                self.auth_manager.token, vehicle
             )
         if "error" in response:
             raise Exception(response.get("error"))
@@ -950,31 +1035,13 @@ class frm_vehicle(QDialog):
                 file_name = f"{self.id}.JPEG"
             if any(self.path_image_tmp.iterdir()):
                 response = self.files_controller.upload_or_replace_file(
-                    self.auth_manager.token, path_tmp_image, self.path_subfolder_image, file_name
+                    self.auth_manager.token,
+                    path_tmp_image,
+                    self.path_subfolder_image,
+                    file_name,
                 )
                 if "error" in response:
                     raise Exception(response.get("error"))
-
-    def set_image(self, path_image, image):
-        if path_image:
-            self.image_pixmap = QPixmap(str(path_image))
-            self.ui.lbl_image.setPixmap(
-                self.image_pixmap.scaled(
-                    self.ui.lbl_image.size(),
-                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                    Qt.TransformationMode.SmoothTransformation,
-                )
-            )
-        if image:
-            self.image_pixmap = QPixmap()
-            self.image_pixmap.loadFromData(image)
-            self.ui.lbl_image.setPixmap(
-                self.image_pixmap.scaled(
-                    self.ui.lbl_image.size(),
-                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                    Qt.TransformationMode.SmoothTransformation,
-                )
-            )
 
     def set_form_fields_state(self, enabled: bool):
         self.windowTitle = "Editar vehículo" if self.edit else "Añadir vehículo"
@@ -1033,19 +1100,26 @@ class frm_vehicle(QDialog):
 
         self.ui.chb_deactivate.setEnabled(enabled)
 
-    def get_inspections(self):
-        self.inspections_controller = InspectionsController()
-        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
-        self.inspections = self.inspections_controller.get_inspections(
-            self.auth_manager.token, self.id
-        )
-
-    def get_vehicle_documents(self):
-        self.vehicle_documents_controlles = VehicleDocumentsController()
-        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
-        self.inspections = self.inspections_controller.get_inspections(
-            self.auth_manager.token, self.id
-        )
+    def set_image(self, path_image, image):
+        if path_image:
+            self.image_pixmap = QPixmap(str(path_image))
+            self.ui.lbl_image.setPixmap(
+                self.image_pixmap.scaled(
+                    self.ui.lbl_image.size(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
+        if image:
+            self.image_pixmap = QPixmap()
+            self.image_pixmap.loadFromData(image)
+            self.ui.lbl_image.setPixmap(
+                self.image_pixmap.scaled(
+                    self.ui.lbl_image.size(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
 
     def update_tab(self, index):
         if index == 0:
@@ -1054,65 +1128,3 @@ class frm_vehicle(QDialog):
             self.on_load_inspections()
         if index == 2:
             self.on_load_workorders()
-
-    def get_filtered_workorders(self):
-        # Empty the list of workorders
-        self.workorders = None
-        # Instantiate the controller
-        self.workorders_controller = WorkOrdersController()
-        # Remove all rows from the model
-        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
-        # Get the first workorder
-        self.first_workorder = self.workorders_controller.get_first_workorder(
-            self.auth_manager.token, self.id
-        )
-        if self.first_workorder is not None:
-            self.workorders = self.workorders_controller.get_workorders(
-                self.auth_manager.token,
-                self.id,
-                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
-                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
-                self.ui.txt_search.text(),
-            )
-
-    def get_workorders(self):
-        # Empty the list of workorders
-        self.workorders = None
-        # Instantiate the controller
-        self.workorders_controller = WorkOrdersController()
-        # Remove all rows from the model
-        self.model_workorders.removeRows(0, self.model_workorders.rowCount())
-        # Get the first workorder
-        self.first_workorder = self.workorders_controller.get_first_workorder(
-            self.auth_manager.token, self.id
-        )
-        # If the first workorder is not None, convert it to a datetime object
-        if self.first_workorder is not None:
-            self.date_first_workorder = datetime.strptime(
-                self.first_workorder.get("date"), "%Y-%m-%d"
-            ).date()
-            self.date_from_workorder = self.date_first_workorder
-        else:
-            self.date_first_workorder = date.today()
-            self.date_from_workorder = date.today()
-        # Get the last workorder
-        self.last_workorder = self.workorders_controller.get_last_workorder(
-            self.auth_manager.token, self.id
-        )
-        # If the last workorder is not None, convert it to a datetime object
-        if self.last_workorder is not None:
-            self.date_last_workorder = datetime.strptime(
-                self.last_workorder.get("date"), "%Y-%m-%d"
-            ).date()
-            self.date_to_workorder = self.date_last_workorder
-        else:
-            self.date_last_workorder = date.today()
-            self.date_to_workorder = date.today()
-        if self.first_workorder is not None:
-            self.workorders = self.workorders_controller.get_workorders(
-                self.auth_manager.token,
-                self.id,
-                date.strftime(self.date_from_workorder, "%Y-%m-%d"),
-                date.strftime(self.date_to_workorder, "%Y-%m-%d"),
-                self.ui.txt_search.text(),
-            )
