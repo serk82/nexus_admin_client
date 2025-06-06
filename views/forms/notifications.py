@@ -54,7 +54,7 @@ class frm_notifications(QDialog):
         self.ui = Ui_frm_notifications()
         self.ui.setupUi(self)
 
-        self.setFixedWidth(700)
+        self.setFixedWidth(750)
 
         # Events
         self.ui.btn_close.clicked.connect(self.close)
@@ -75,7 +75,7 @@ class frm_notifications(QDialog):
         self.ui.tvw_notifications.setSelectionMode(
             QAbstractItemView.SelectionMode.NoSelection
         )
-        self.ui.tvw_notifications.setColumnWidth(0, 300)
+        self.ui.tvw_notifications.setColumnWidth(0, 350)
         self.ui.tvw_notifications.setColumnWidth(1, 300)
         self.ui.tvw_notifications.expandAll()
 

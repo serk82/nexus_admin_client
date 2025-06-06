@@ -670,19 +670,12 @@ class frm_vehicle(QDialog):
             self.loading_dialog.show()
             self.hilo = TaskThread(self.save)
             self.hilo.error.connect(self.handle_error)
-            self.hilo.finished.connect(self.on_task_finished)
+            self.hilo.finished.connect(self.load_vehicle)
             self.hilo.start()
 
     def on_task_finished(self):
         self.loading_dialog.close()
-        if self.edit:
-            self.setEnabled(True)
-            self.disable_form_fields()
-        else:
-            self.is_adding = False
-            self.edit = True
-            self.load_edit()
-        self.is_editing = False
+        self.setEnabled(True)
         self.data_update.emit()
 
     def load_inspections(self):
@@ -794,7 +787,11 @@ class frm_vehicle(QDialog):
         self.ui.chb_deactivate.setChecked(
             True if self.vehicle.get("deactivate") else False
         )
+        self.is_adding = False
+        self.edit = True
+        self.is_editing = False
         self.on_task_finished()
+        self.disable_form_fields()
 
     def load_workorders(self):
         # Set first and last workorder
@@ -931,10 +928,11 @@ class frm_vehicle(QDialog):
             response = self.vehicles_controller.add_vehicle(
             self.auth_manager.token, vehicle
             )
-            self.id = response.get("vehicle_id")
-            self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         if "error" in response:
             raise Exception(response.get("error"))
+        self.vehicle = response.get("vehicle")
+        self.id = self.vehicle.get("id")
+        self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         if self.path_image_tmp.exists() and any(self.path_image_tmp.iterdir()):
             path_tmp_image = self.path_image_tmp / self.path_image.name
             file_name = None
