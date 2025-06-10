@@ -1,4 +1,4 @@
-import shutil, sys
+import shutil, sys, webbrowser
 from controllers import (
     AuthManager,
     FilesController,
@@ -118,13 +118,31 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
+        # Green card
         self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
         self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
         self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(
             self.ui.lbl_dragdrop_green_card
         )
+        self.ui.btn_view_green_card.clicked.connect(
+            lambda: self.view_document("Carta Verde.pdf")
+        )
         self.ui.btn_delete_green_card.clicked.connect(
             lambda: self.delete_basic_document("Carta Verde.pdf")
+        )
+        # Technical specifications
+        self.ui.lbl_dragdrop_technical_specifications.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_technical_specifications.dragEnterEvent = (
+            self.dragEnterEvent
+        )
+        self.ui.lbl_dragdrop_technical_specifications.dropEvent = (
+            self.dropEventDocument(self.ui.lbl_dragdrop_technical_specifications)
+        )
+        self.ui.btn_view_technical_specifications.clicked.connect(
+            lambda: self.view_document("Ficha Técnica.pdf")
+        )
+        self.ui.btn_delete_technical_specifications.clicked.connect(
+            lambda: self.delete_basic_document("Ficha Técnica.pdf")
         )
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
@@ -424,6 +442,8 @@ class frm_vehicle(QDialog):
                     "Eliminar documento",
                     f"No se puede eliminar el documento: {response.get('error')}",
                 )
+                return
+            self.load_documents()
 
     def delete_inspection(self):
         self.auth_manager.is_token_expired(self)
@@ -547,14 +567,14 @@ class frm_vehicle(QDialog):
                                 return
                             if (
                                 label.objectName()
-                                == "lbl_dragdrop_registration_certificate"
+                                == "lbl_dragdrop_technical_specifications"
                             ):
                                 extension = file_path.suffix
                                 self.files_controller.upload_or_replace_file(
                                     self.auth_manager.token,
                                     file_path,
                                     self.path_subfolder_basic_documents,
-                                    f"Permiso Circulación{extension}",
+                                    f"Ficha Técnica{extension}",
                                 )
                                 return
                         except Exception as e:
@@ -563,6 +583,8 @@ class frm_vehicle(QDialog):
                                 "Error",
                                 f"No se pudo subir el archivo:\n{e}",
                             )
+                        finally:
+                            self.load_documents()
                     else:
                         QMessageBox.information(
                             self,
@@ -772,9 +794,21 @@ class frm_vehicle(QDialog):
         self.enable_form_fields()
 
     def load_documents(self):
-        greren_card = "Carta Verde.pdf" in self.basic_documents
-        self.ui.lbl_green_card.setText("Carta Verde ")
-        self.ui.btn_view_green_card.setEnabled(greren_card)
+        self.get_documents()
+        # Load technical specifications
+        technical_specifications = "Ficha Técnica.pdf" in self.basic_documents
+        self.ui.lbl_technical_specifications.setText(
+            "Ficha Técnica ✔" if technical_specifications else "Ficha Técnica ✘"
+        )
+        self.ui.btn_view_technical_specifications.setEnabled(technical_specifications)
+        self.ui.btn_delete_technical_specifications.setEnabled(technical_specifications)
+        # Load green card
+        green_card = "Carta Verde.pdf" in self.basic_documents
+        self.ui.lbl_green_card.setText(
+            "Carta Verde ✔" if green_card else "Carta Verde ✘"
+        )
+        self.ui.btn_view_green_card.setEnabled(green_card)
+        self.ui.btn_delete_green_card.setEnabled(green_card)
         self.on_task_finished()
 
     def load_edit(self):
@@ -1191,3 +1225,22 @@ class frm_vehicle(QDialog):
             self.on_load_workorders()
         if index == 3:
             self.on_load_documents()
+
+    def view_document(self, document):
+        self.auth_manager.is_token_expired(self)
+        response = self.files_controller.get_file(
+            self.auth_manager.token,
+            self.path_subfolder_basic_documents,
+            document,
+        )
+        try:
+            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
+            with open(file_path, "wb") as f:
+                f.write(response)
+            webbrowser.open(str(file_path))
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                " ",
+                f"No se pudo abrir el archivo:\n{e}",
+            )
