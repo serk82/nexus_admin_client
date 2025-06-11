@@ -1116,59 +1116,20 @@ background: rgb(191, 228, 241)</string>
             <string>Básica</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_15">
-            <item row="1" column="1">
-             <widget class="QPushButton" name="btn_view_technical_specifications">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="lbl_dragdrop_technical_specifications">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+            <item row="5" column="0">
+             <widget class="QLabel" name="lbl_insurance_policy">
               <property name="minimumSize">
                <size>
-                <width>200</width>
-                <height>40</height>
+                <width>170</width>
+                <height>0</height>
                </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">border: 1px solid lightgrey;
-background: rgb(191, 228, 241)</string>
               </property>
               <property name="text">
-               <string>Arrastra el archivo aqui</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-              <property name="margin">
-               <number>0</number>
+               <string>Póliza Seguro</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QPushButton" name="btn_view_green_card">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="2">
+            <item row="6" column="3">
              <widget class="QLabel" name="lbl_dragdrop_insurance_receipt">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1206,142 +1167,7 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="2">
-             <widget class="QLabel" name="lbl_dragdrop_green_card">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">border: 1px solid lightgrey;
-background: rgb(191, 228, 241)</string>
-              </property>
-              <property name="text">
-               <string>Arrastra el archivo aqui</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="btn_view_tachograph_inspection">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QPushButton" name="btn_view_transport_card">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="2">
-             <widget class="QLabel" name="lbl_dragdrop_insurance_policy">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">border: 1px solid lightgrey;
-background: rgb(191, 228, 241)</string>
-              </property>
-              <property name="text">
-               <string>Arrastra el archivo aqui</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QPushButton" name="btn_view_insurance_receipt">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="lbl_dragdrop_registration_certificate">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>200</width>
-                <height>40</height>
-               </size>
-              </property>
-              <property name="acceptDrops">
-               <bool>true</bool>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">border: 1px solid lightgrey;
-background: rgb(191, 228, 241)</string>
-              </property>
-              <property name="text">
-               <string>Arrastra el archivo aqui</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-              <property name="margin">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
+            <item row="3" column="3">
              <widget class="QLabel" name="lbl_dragdrop_transport_card">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1379,7 +1205,125 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="2">
+            <item row="3" column="0">
+             <widget class="QLabel" name="lbl_transport_card">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Tarjeta Transporte</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="lbl_insurance_receipt">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Recibo Seguro</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3">
+             <widget class="QLabel" name="lbl_dragdrop_green_card">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border: 1px solid lightgrey;
+background: rgb(191, 228, 241)</string>
+              </property>
+              <property name="text">
+               <string>Arrastra el archivo aqui</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="btn_view_technical_specifications">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QPushButton" name="btn_view_registration_certificate">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="lbl_technical_specifications">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Ficha Técnica</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="btn_view_tachograph_inspection">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="btn_view_green_card">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lbl_registration_certificate">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Permiso Circulación</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
              <widget class="QLabel" name="lbl_dragdrop_tachograph_inspection">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1417,95 +1361,6 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
-             <widget class="QPushButton" name="btn_view_insurance_policy">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="btn_view_registration_certificate">
-              <property name="text">
-               <string>Ver</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QPushButton" name="btn_delete_registration_certificate">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3">
-             <widget class="QPushButton" name="btn_delete_technical_specifications">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="btn_delete_tachograph_inspection">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="3">
-             <widget class="QPushButton" name="btn_delete_transport_card">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="3">
-             <widget class="QPushButton" name="btn_delete_green_card">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="3">
-             <widget class="QPushButton" name="btn_delete_insurance_policy">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="3">
-             <widget class="QPushButton" name="btn_delete_insurance_receipt">
-              <property name="text">
-               <string>Eliminar</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lbl_registration_certificate">
-              <property name="minimumSize">
-               <size>
-                <width>170</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Permiso Circulación</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lbl_technical_specifications">
-              <property name="minimumSize">
-               <size>
-                <width>170</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Ficha Técnica</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="lbl_tachograph_inspection">
               <property name="minimumSize">
@@ -1519,16 +1374,41 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="lbl_transport_card">
+            <item row="1" column="3">
+             <widget class="QLabel" name="lbl_dragdrop_technical_specifications">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
-                <width>170</width>
-                <height>0</height>
+                <width>200</width>
+                <height>40</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border: 1px solid lightgrey;
+background: rgb(191, 228, 241)</string>
+              </property>
               <property name="text">
-               <string>Tarjeta Transporte</string>
+               <string>Arrastra el archivo aqui</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -1545,29 +1425,149 @@ background: rgb(191, 228, 241)</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="lbl_insurance_policy">
-              <property name="minimumSize">
-               <size>
-                <width>170</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="btn_view_insurance_policy">
               <property name="text">
-               <string>Póliza Seguro</string>
+               <string>Ver</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="lbl_insurance_receipt">
+            <item row="6" column="1">
+             <widget class="QPushButton" name="btn_view_insurance_receipt">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QPushButton" name="btn_view_transport_card">
+              <property name="text">
+               <string>Ver</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="3">
+             <widget class="QLabel" name="lbl_dragdrop_insurance_policy">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
-                <width>170</width>
-                <height>0</height>
+                <width>200</width>
+                <height>40</height>
                </size>
               </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border: 1px solid lightgrey;
+background: rgb(191, 228, 241)</string>
+              </property>
               <property name="text">
-               <string>Recibo Seguro</string>
+               <string>Arrastra el archivo aqui</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="lbl_dragdrop_registration_certificate">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>200</width>
+                <height>40</height>
+               </size>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">border: 1px solid lightgrey;
+background: rgb(191, 228, 241)</string>
+              </property>
+              <property name="text">
+               <string>Arrastra el archivo aqui</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QPushButton" name="btn_delete_registration_certificate">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPushButton" name="btn_delete_technical_specifications">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QPushButton" name="btn_delete_tachograph_inspection">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QPushButton" name="btn_delete_transport_card">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QPushButton" name="btn_delete_green_card">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QPushButton" name="btn_delete_insurance_policy">
+              <property name="text">
+               <string>Eliminar</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="2">
+             <widget class="QPushButton" name="btn_delete_insurance_receipt">
+              <property name="text">
+               <string>Eliminar</string>
               </property>
              </widget>
             </item>

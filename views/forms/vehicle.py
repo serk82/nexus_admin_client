@@ -118,17 +118,19 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_inspection.clicked.connect(self.delete_inspection)
 
         # Events for documentation
-        # Green card
-        self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
-        self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
-        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(
-            self.ui.lbl_dragdrop_green_card
+        # Registration certificate
+        self.ui.lbl_dragdrop_registration_certificate.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_registration_certificate.dragEnterEvent = (
+            self.dragEnterEvent
         )
-        self.ui.btn_view_green_card.clicked.connect(
-            lambda: self.view_document("Carta Verde.pdf")
+        self.ui.lbl_dragdrop_registration_certificate.dropEvent = (
+            self.dropEventDocument(self.ui.lbl_dragdrop_registration_certificate)
         )
-        self.ui.btn_delete_green_card.clicked.connect(
-            lambda: self.delete_basic_document("Carta Verde.pdf")
+        self.ui.btn_view_registration_certificate.clicked.connect(
+            lambda: self.view_document("Permiso Circulación.pdf")
+        )
+        self.ui.btn_delete_registration_certificate.clicked.connect(
+            lambda: self.delete_basic_document("Permiso Circulación.pdf")
         )
         # Technical specifications
         self.ui.lbl_dragdrop_technical_specifications.setAcceptDrops(True)
@@ -144,6 +146,68 @@ class frm_vehicle(QDialog):
         self.ui.btn_delete_technical_specifications.clicked.connect(
             lambda: self.delete_basic_document("Ficha Técnica.pdf")
         )
+        # Tachograph inspection
+        self.ui.lbl_dragdrop_tachograph_inspection.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_tachograph_inspection.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_tachograph_inspection.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_tachograph_inspection
+        )
+        self.ui.btn_view_tachograph_inspection.clicked.connect(
+            lambda: self.view_document("Revisión Tacógrafo.pdf")
+        )
+        self.ui.btn_delete_tachograph_inspection.clicked.connect(
+            lambda: self.delete_basic_document("Revisión Tacógrafo.pdf")
+        )
+        # Transport card
+        self.ui.lbl_dragdrop_transport_card.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_transport_card.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_transport_card.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_transport_card
+        )
+        self.ui.btn_view_transport_card.clicked.connect(
+            lambda: self.view_document("Tarjeta Transporte.pdf")
+        )
+        self.ui.btn_delete_transport_card.clicked.connect(
+            lambda: self.delete_basic_document("Tarjeta Transporte.pdf")
+        )
+        # Green card
+        self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_green_card.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_green_card.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_green_card
+        )
+        self.ui.btn_view_green_card.clicked.connect(
+            lambda: self.view_document("Carta Verde.pdf")
+        )
+        self.ui.btn_delete_green_card.clicked.connect(
+            lambda: self.delete_basic_document("Carta Verde.pdf")
+        )
+        # Insurance policy
+        self.ui.lbl_dragdrop_insurance_policy.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_insurance_policy.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_insurance_policy.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_insurance_policy
+        )
+        self.ui.btn_view_insurance_policy.clicked.connect(
+            lambda: self.view_document("Póliza Seguro.pdf")
+        )
+        self.ui.btn_delete_insurance_policy.clicked.connect(
+            lambda: self.delete_basic_document("Póliza Seguro.pdf")
+        )
+        # Insurance receipt
+        self.ui.lbl_dragdrop_insurance_receipt.setAcceptDrops(True)
+        self.ui.lbl_dragdrop_insurance_receipt.dragEnterEvent = self.dragEnterEvent
+        self.ui.lbl_dragdrop_insurance_receipt.dropEvent = self.dropEventDocument(
+            self.ui.lbl_dragdrop_insurance_receipt
+        )
+        self.ui.btn_view_insurance_receipt.clicked.connect(
+            lambda: self.view_document("Recibo Seguro.pdf")
+        )
+        self.ui.btn_delete_insurance_receipt.clicked.connect(
+            lambda: self.delete_basic_document("Recibo Seguro.pdf")
+        )
+
+        # Event aditional documents
         self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
 
         # Check permissions
@@ -550,48 +614,46 @@ class frm_vehicle(QDialog):
     def dropEventDocument(self, label: QLabel):
         def handler(event: QDragEnterEvent):
             urls = event.mimeData().urls()
-            if urls:
-                file_path = Path(urls[0].toLocalFile())
-                if file_path.is_file():
-                    if str(file_path).endswith(".pdf") or str(file_path).endswith(
-                        ".PDF"
-                    ):
-                        try:
-                            if label.objectName() == "lbl_dragdrop_green_card":
-                                self.files_controller.upload_or_replace_file(
-                                    self.auth_manager.token,
-                                    file_path,
-                                    self.path_subfolder_basic_documents,
-                                    f"Carta Verde.pdf",
-                                )
-                                return
-                            if (
-                                label.objectName()
-                                == "lbl_dragdrop_technical_specifications"
-                            ):
-                                extension = file_path.suffix
-                                self.files_controller.upload_or_replace_file(
-                                    self.auth_manager.token,
-                                    file_path,
-                                    self.path_subfolder_basic_documents,
-                                    f"Ficha Técnica{extension}",
-                                )
-                                return
-                        except Exception as e:
-                            QMessageBox.critical(
-                                self,
-                                "Error",
-                                f"No se pudo subir el archivo:\n{e}",
-                            )
-                        finally:
-                            self.load_documents()
-                    else:
-                        QMessageBox.information(
-                            self,
-                            " ",
-                            "El archivo no es un documento válido.\n"
-                            "Por favor, sube un archivo PDF.",
-                        )
+            if not urls:
+                return
+
+            file_path = Path(urls[0].toLocalFile())
+            if not file_path.is_file() or file_path.suffix.lower() != ".pdf":
+                QMessageBox.information(
+                    self,
+                    "Archivo no válido",
+                    "El archivo no es un documento PDF válido.\n"
+                    "Por favor, sube un archivo PDF.",
+                )
+                return
+
+            label_to_filename = {
+                "lbl_dragdrop_registration_certificate": "Permiso Circulación.pdf",
+                "lbl_dragdrop_technical_specifications": "Ficha Técnica.pdf",
+                "lbl_dragdrop_tachograph_inspection": "Revisión Tacógrafo.pdf",
+                "lbl_dragdrop_transport_card": "Tarjeta Transporte.pdf",
+                "lbl_dragdrop_green_card": "Carta Verde.pdf",
+                "lbl_dragdrop_insurance_policy": "Póliza Seguro.pdf",
+                "lbl_dragdrop_insurance_receipt": "Recibo Seguro.pdf",
+            }
+
+            filename = label_to_filename.get(label.objectName())
+            if not filename:
+                return
+
+            try:
+                self.files_controller.upload_or_replace_file(
+                    self.auth_manager.token,
+                    file_path,
+                    self.path_subfolder_basic_documents,
+                    filename,
+                )
+            except Exception as e:
+                QMessageBox.critical(
+                    self, "Error", f"No se pudo subir el archivo:\n{e}"
+                )
+            finally:
+                self.load_documents()
 
         return handler
 
@@ -795,6 +857,15 @@ class frm_vehicle(QDialog):
 
     def load_documents(self):
         self.get_documents()
+        # Load registration_certificate
+        registration_certificate = "Permiso Circulación.pdf" in self.basic_documents
+        self.ui.lbl_registration_certificate.setText(
+            "Permiso Circulación ✔"
+            if registration_certificate
+            else "Permiso Circulación ✘"
+        )
+        self.ui.btn_view_registration_certificate.setEnabled(registration_certificate)
+        self.ui.btn_delete_registration_certificate.setEnabled(registration_certificate)
         # Load technical specifications
         technical_specifications = "Ficha Técnica.pdf" in self.basic_documents
         self.ui.lbl_technical_specifications.setText(
@@ -802,6 +873,20 @@ class frm_vehicle(QDialog):
         )
         self.ui.btn_view_technical_specifications.setEnabled(technical_specifications)
         self.ui.btn_delete_technical_specifications.setEnabled(technical_specifications)
+        # Load tachograph inspection
+        tachograph_inspection = "Revisión Tacógrafo.pdf" in self.basic_documents
+        self.ui.lbl_tachograph_inspection.setText(
+            "Revisión Tacógrafo ✔" if tachograph_inspection else "Revisión Tacógrafo ✘"
+        )
+        self.ui.btn_view_tachograph_inspection.setEnabled(tachograph_inspection)
+        self.ui.btn_delete_tachograph_inspection.setEnabled(tachograph_inspection)
+        # Load transport card
+        transport_card = "Tarjeta Transporte.pdf" in self.basic_documents
+        self.ui.lbl_transport_card.setText(
+            "Tarjeta Transporte ✔" if transport_card else "Tarjeta Transporte ✘"
+        )
+        self.ui.btn_view_transport_card.setEnabled(transport_card)
+        self.ui.btn_delete_transport_card.setEnabled(transport_card)
         # Load green card
         green_card = "Carta Verde.pdf" in self.basic_documents
         self.ui.lbl_green_card.setText(
@@ -809,6 +894,20 @@ class frm_vehicle(QDialog):
         )
         self.ui.btn_view_green_card.setEnabled(green_card)
         self.ui.btn_delete_green_card.setEnabled(green_card)
+        # Load insurance policy
+        insurance_policy = "Póliza Seguro.pdf" in self.basic_documents
+        self.ui.lbl_insurance_policy.setText(
+            "Póliza Seguro ✔" if insurance_policy else "Póliza Seguro ✘"
+        )
+        self.ui.btn_view_insurance_policy.setEnabled(insurance_policy)
+        self.ui.btn_delete_insurance_policy.setEnabled(insurance_policy)
+        # Load insuracne receipt
+        insurance_receipt = "Recibo Seguro.pdf" in self.basic_documents
+        self.ui.lbl_insurance_receipt.setText(
+            "Recibo Seguro ✔" if insurance_receipt else "Recibo Seguro ✘"
+        )
+        self.ui.btn_view_insurance_receipt.setEnabled(insurance_receipt)
+        self.ui.btn_delete_insurance_receipt.setEnabled(insurance_receipt)
         self.on_task_finished()
 
     def load_edit(self):
