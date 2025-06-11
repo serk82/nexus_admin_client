@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'views/forms_ui/vehicle_document.ui'
+# Form implementation generated from reading ui file 'views/forms_ui/aditional_document.ui'
 #
 # Created by: PyQt6 UI code generator 6.9.0
 #
@@ -9,20 +9,20 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_frm_vehicle_document(object):
-    def setupUi(self, frm_vehicle_document):
-        frm_vehicle_document.setObjectName("frm_vehicle_document")
-        frm_vehicle_document.resize(400, 300)
-        self.gridLayout = QtWidgets.QGridLayout(frm_vehicle_document)
+class Ui_frm_aditional_document(object):
+    def setupUi(self, frm_aditional_document):
+        frm_aditional_document.setObjectName("frm_aditional_document")
+        frm_aditional_document.resize(400, 300)
+        self.gridLayout = QtWidgets.QGridLayout(frm_aditional_document)
         self.gridLayout.setObjectName("gridLayout")
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setLabelAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.formLayout.setFormAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.formLayout.setObjectName("formLayout")
-        self.lbl_name = QtWidgets.QLabel(parent=frm_vehicle_document)
+        self.lbl_name = QtWidgets.QLabel(parent=frm_aditional_document)
         self.lbl_name.setObjectName("lbl_name")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.lbl_name)
-        self.txt_name = QtWidgets.QLineEdit(parent=frm_vehicle_document)
+        self.txt_name = QtWidgets.QLineEdit(parent=frm_aditional_document)
         self.txt_name.setObjectName("txt_name")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.txt_name)
         self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 1)
@@ -30,7 +30,7 @@ class Ui_frm_vehicle_document(object):
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem)
-        self.lbl_dragdrop = QtWidgets.QLabel(parent=frm_vehicle_document)
+        self.lbl_dragdrop = QtWidgets.QLabel(parent=frm_aditional_document)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Fixed, QtWidgets.QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -46,7 +46,7 @@ class Ui_frm_vehicle_document(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem1)
         self.gridLayout.addLayout(self.horizontalLayout_4, 1, 0, 1, 1)
-        self.lbl_path = QtWidgets.QLabel(parent=frm_vehicle_document)
+        self.lbl_path = QtWidgets.QLabel(parent=frm_aditional_document)
         self.lbl_path.setText("")
         self.lbl_path.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.lbl_path.setWordWrap(True)
@@ -56,27 +56,27 @@ class Ui_frm_vehicle_document(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
-        self.btn_close = QtWidgets.QPushButton(parent=frm_vehicle_document)
+        self.btn_close = QtWidgets.QPushButton(parent=frm_aditional_document)
         self.btn_close.setObjectName("btn_close")
         self.horizontalLayout.addWidget(self.btn_close)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
-        self.btn_save = QtWidgets.QPushButton(parent=frm_vehicle_document)
+        self.btn_save = QtWidgets.QPushButton(parent=frm_aditional_document)
         self.btn_save.setObjectName("btn_save")
         self.horizontalLayout.addWidget(self.btn_save)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem4)
         self.gridLayout.addLayout(self.horizontalLayout, 3, 0, 1, 1)
 
-        self.retranslateUi(frm_vehicle_document)
-        QtCore.QMetaObject.connectSlotsByName(frm_vehicle_document)
-        frm_vehicle_document.setTabOrder(self.txt_name, self.btn_close)
-        frm_vehicle_document.setTabOrder(self.btn_close, self.btn_save)
+        self.retranslateUi(frm_aditional_document)
+        QtCore.QMetaObject.connectSlotsByName(frm_aditional_document)
+        frm_aditional_document.setTabOrder(self.txt_name, self.btn_close)
+        frm_aditional_document.setTabOrder(self.btn_close, self.btn_save)
 
-    def retranslateUi(self, frm_vehicle_document):
+    def retranslateUi(self, frm_aditional_document):
         _translate = QtCore.QCoreApplication.translate
-        frm_vehicle_document.setWindowTitle(_translate("frm_vehicle_document", "Documento de vehículo"))
-        self.lbl_name.setText(_translate("frm_vehicle_document", "Nombre"))
-        self.lbl_dragdrop.setText(_translate("frm_vehicle_document", "Arrastra y suelta el archivo en esta área"))
-        self.btn_close.setText(_translate("frm_vehicle_document", "Cerrar"))
-        self.btn_save.setText(_translate("frm_vehicle_document", "Guardar"))
+        frm_aditional_document.setWindowTitle(_translate("frm_aditional_document", "Documento de vehículo"))
+        self.lbl_name.setText(_translate("frm_aditional_document", "Nombre"))
+        self.lbl_dragdrop.setText(_translate("frm_aditional_document", "Arrastra y suelta el archivo en esta área"))
+        self.btn_close.setText(_translate("frm_aditional_document", "Cerrar"))
+        self.btn_save.setText(_translate("frm_aditional_document", "Guardar"))

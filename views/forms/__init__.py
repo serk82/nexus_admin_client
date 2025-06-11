@@ -1,3 +1,4 @@
+from .aditional_document import frm_aditional_document
 from .backup import frm_backup
 from .company import frm_company
 from .configuration import frm_configuration
@@ -15,6 +16,5 @@ from .table_view import frm_table_view
 from .update import frm_update
 from .user import frm_user
 from .vehicle import frm_vehicle
-from .vehicle_document import frm_vehicle_document
 from .vehicles import frm_vehicles
 from .workorder import frm_workorder

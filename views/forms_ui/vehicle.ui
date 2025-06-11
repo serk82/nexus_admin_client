@@ -1656,7 +1656,7 @@ background: rgb(191, 228, 241)</string>
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_4">
+               <widget class="QPushButton" name="btn_delete_aditional_document">
                 <property name="text">
                  <string>Eliminar</string>
                 </property>

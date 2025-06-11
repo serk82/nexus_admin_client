@@ -74,6 +74,9 @@ class frm_vehicle(QDialog):
         self.path_subfolder_basic_documents = (
             f"{self.company_id}/vehicles/{self.id}/documents/basic"
         )
+        self.path_subfolder_aditional_documents = (
+            f"{self.company_id}/vehicles/{self.id}/documents/aditional"
+        )
 
         # Form construct
         self.ui = Ui_frm_vehicle()
@@ -127,7 +130,7 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_registration_certificate)
         )
         self.ui.btn_view_registration_certificate.clicked.connect(
-            lambda: self.view_document("Permiso Circulación.pdf")
+            lambda: self.view_basic_document("Permiso Circulación.pdf")
         )
         self.ui.btn_delete_registration_certificate.clicked.connect(
             lambda: self.delete_basic_document("Permiso Circulación.pdf")
@@ -141,7 +144,7 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_technical_specifications)
         )
         self.ui.btn_view_technical_specifications.clicked.connect(
-            lambda: self.view_document("Ficha Técnica.pdf")
+            lambda: self.view_basic_document("Ficha Técnica.pdf")
         )
         self.ui.btn_delete_technical_specifications.clicked.connect(
             lambda: self.delete_basic_document("Ficha Técnica.pdf")
@@ -153,7 +156,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_tachograph_inspection
         )
         self.ui.btn_view_tachograph_inspection.clicked.connect(
-            lambda: self.view_document("Revisión Tacógrafo.pdf")
+            lambda: self.view_basic_document("Revisión Tacógrafo.pdf")
         )
         self.ui.btn_delete_tachograph_inspection.clicked.connect(
             lambda: self.delete_basic_document("Revisión Tacógrafo.pdf")
@@ -165,7 +168,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_transport_card
         )
         self.ui.btn_view_transport_card.clicked.connect(
-            lambda: self.view_document("Tarjeta Transporte.pdf")
+            lambda: self.view_basic_document("Tarjeta Transporte.pdf")
         )
         self.ui.btn_delete_transport_card.clicked.connect(
             lambda: self.delete_basic_document("Tarjeta Transporte.pdf")
@@ -177,7 +180,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_green_card
         )
         self.ui.btn_view_green_card.clicked.connect(
-            lambda: self.view_document("Carta Verde.pdf")
+            lambda: self.view_basic_document("Carta Verde.pdf")
         )
         self.ui.btn_delete_green_card.clicked.connect(
             lambda: self.delete_basic_document("Carta Verde.pdf")
@@ -189,7 +192,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_policy
         )
         self.ui.btn_view_insurance_policy.clicked.connect(
-            lambda: self.view_document("Póliza Seguro.pdf")
+            lambda: self.view_basic_document("Póliza Seguro.pdf")
         )
         self.ui.btn_delete_insurance_policy.clicked.connect(
             lambda: self.delete_basic_document("Póliza Seguro.pdf")
@@ -201,14 +204,30 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_receipt
         )
         self.ui.btn_view_insurance_receipt.clicked.connect(
-            lambda: self.view_document("Recibo Seguro.pdf")
+            lambda: self.view_basic_document("Recibo Seguro.pdf")
         )
         self.ui.btn_delete_insurance_receipt.clicked.connect(
             lambda: self.delete_basic_document("Recibo Seguro.pdf")
         )
 
         # Event aditional documents
-        self.ui.btn_add_aditional_document.clicked.connect(self.add_vehicle_document)
+        self.ui.btn_view_aditional_document.clicked.connect(
+            lambda: self.view_aditional_document(
+                self.get_selected_aditional_document_id()
+            )
+        )
+        self.ui.tvw_aditional_coduments.doubleClicked.connect(
+            lambda: self.view_aditional_document(
+                self.get_selected_aditional_document_id()
+            )
+        )
+        self.ui.btn_add_aditional_document.clicked.connect(self.add_aditional_document)
+        self.ui.btn_edit_aditional_document.clicked.connect(
+            self.edit_aditional_document
+        )
+        self.ui.btn_delete_aditional_document.clicked.connect(
+            self.delete_aditional_document
+        )
 
         # Check permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))
@@ -246,14 +265,14 @@ class frm_vehicle(QDialog):
         if document:
             QMessageBox.information(self, " ", document)
 
-    def add_vehicle_document(self):
+    def add_aditional_document(self):
         self.auth_manager.is_token_expired(self)
-        from views.forms import frm_vehicle_document
+        from views.forms import frm_aditional_document
 
-        self.form = frm_vehicle_document(
-            self, self.auth_manager, False, None, self.id, self.company_id
+        self.form = frm_aditional_document(
+            self, self.auth_manager, False, self.id, self.company_id, None
         )
-        self.form.data_update_vehicle_documents.connect(self.on_load_vehicle_documents)
+        self.form.data_update_documents.connect(self.on_load_documents)
         self.form.exec()
 
     def add_workorder(self):
@@ -405,10 +424,10 @@ class frm_vehicle(QDialog):
         self.ui.tvw_inspections.setColumnWidth(12, 75)
 
     def configuration_based_on_vehicle_documents(self):
-        self.model_vehicle_documents = QStandardItemModel()
+        self.model_aditional_documents = QStandardItemModel()
         # Add model on table view
-        self.ui.tvw_aditional_coduments.setModel(self.model_vehicle_documents)
-        self.model_vehicle_documents.setHorizontalHeaderLabels(
+        self.ui.tvw_aditional_coduments.setModel(self.model_aditional_documents)
+        self.model_aditional_documents.setHorizontalHeaderLabels(
             [
                 "Documentos",
             ]
@@ -488,6 +507,29 @@ class frm_vehicle(QDialog):
                 " ",
                 f"No se pudo abrir el archivo:\n{e}",
             )
+
+    def delete_aditional_document(self):
+        document = self.get_selected_aditional_document_id()
+        answer = QMessageBox.question(
+            self,
+            "Eliminar documento",
+            f"Seguro quieres eliminar el documento '{document}'?",
+            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+        )
+        if answer == QMessageBox.StandardButton.Yes:
+            response = self.files_controller.delete_file(
+                self.auth_manager.token,
+                self.path_subfolder_aditional_documents,
+                document,
+            )
+            if "error" in response:
+                QMessageBox.information(
+                    self,
+                    "Eliminar documento",
+                    f"No se puede eliminar el documento: {response.get('error')}",
+                )
+                return
+            self.load_documents()
 
     def delete_basic_document(self, document: str):
         answer = QMessageBox.question(
@@ -657,6 +699,18 @@ class frm_vehicle(QDialog):
 
         return handler
 
+    def edit_aditional_document(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_aditional_document
+
+        document = self.get_selected_aditional_document_id()
+        if document:
+            self.form = frm_aditional_document(
+                self, self.auth_manager, True, self.id, self.company_id, document
+            )
+            self.form.data_update_documents.connect(self.on_load_documents)
+            self.form.exec()
+
     def edit_inspection(self):
         self.auth_manager.is_token_expired(self)
         if self.auth_manager.has_permission("ERV"):
@@ -711,6 +765,9 @@ class frm_vehicle(QDialog):
             )
 
     def get_documents(self):
+        self.model_aditional_documents.removeRows(
+            0, self.model_aditional_documents.rowCount()
+        )
         self.basic_documents = self.files_controller.get_files(
             self.auth_manager.token, self.path_subfolder_basic_documents
         )
@@ -746,6 +803,17 @@ class frm_vehicle(QDialog):
             else ""
         )
         return next_inspection
+
+    def get_selected_aditional_document_id(self):
+        selected_index = (
+            self.ui.tvw_aditional_coduments.selectionModel().selectedIndexes()
+        )
+        if selected_index:
+            row = selected_index[0].row()
+            column = selected_index[0].column()
+            return self.ui.tvw_aditional_coduments.model().index(row, column).data()
+        else:
+            return None
 
     def get_selected_inspection_id(self):
         selected_index = self.ui.tvw_inspections.selectionModel().selectedIndexes()
@@ -792,13 +860,6 @@ class frm_vehicle(QDialog):
             self.auth_manager.token, self.id
         )
         self.last_workorder = self.workorders_controller.get_last_workorder(
-            self.auth_manager.token, self.id
-        )
-
-    def get_vehicle_documents(self):
-        self.vehicle_documents_controlles = VehicleDocumentsController()
-        self.model_inspections.removeRows(0, self.model_inspections.rowCount())
-        self.inspections = self.inspections_controller.get_inspections(
             self.auth_manager.token, self.id
         )
 
@@ -908,6 +969,15 @@ class frm_vehicle(QDialog):
         )
         self.ui.btn_view_insurance_receipt.setEnabled(insurance_receipt)
         self.ui.btn_delete_insurance_receipt.setEnabled(insurance_receipt)
+
+        # Load aditional documents
+        aditonal_documents = self.files_controller.get_files(
+            self.auth_manager.token, self.path_subfolder_aditional_documents
+        )
+        for document in aditonal_documents:
+            row = [QStandardItem(document)]
+            self.model_aditional_documents.appendRow(row)
+
         self.on_task_finished()
 
     def load_edit(self):
@@ -1325,7 +1395,26 @@ class frm_vehicle(QDialog):
         if index == 3:
             self.on_load_documents()
 
-    def view_document(self, document):
+    def view_aditional_document(self, document):
+        self.auth_manager.is_token_expired(self)
+        response = self.files_controller.get_file(
+            self.auth_manager.token,
+            self.path_subfolder_aditional_documents,
+            document,
+        )
+        try:
+            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
+            with open(file_path, "wb") as f:
+                f.write(response)
+            webbrowser.open(str(file_path))
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                " ",
+                f"No se pudo abrir el archivo:\n{e}",
+            )
+
+    def view_basic_document(self, document):
         self.auth_manager.is_token_expired(self)
         response = self.files_controller.get_file(
             self.auth_manager.token,

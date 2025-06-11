@@ -176,11 +176,11 @@ class frm_workorder(QDialog):
                     form.exec()
                     if self.document_name:
                         try:
-                            if self.exist_document(file_path.name):
+                            if self.exist_document(self.document_name):
                                 QMessageBox.warning(
                                     self,
                                     " ",
-                                    f"El documento '{file_path.name}' ya existe.",
+                                    f"El documento '{self.document_name}' ya existe.",
                                 )
                                 return
                             self.files_controller.upload_file(
@@ -190,9 +190,7 @@ class frm_workorder(QDialog):
                                 self.document_name,
                             )
                             self.model_documents.appendRow(
-                                [
-                                    QStandardItem(self.document_name),
-                                ]
+                                [QStandardItem(self.document_name)]
                             )
                         except Exception as e:
                             QMessageBox.critical(
