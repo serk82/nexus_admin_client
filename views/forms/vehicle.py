@@ -1031,17 +1031,13 @@ class frm_vehicle(QDialog):
         if self.auth_manager.has_permission("ADV"):
             self.ui.btn_add_aditional_document.setEnabled(aditional_documents)
         if self.auth_manager.has_permission("EDV"):
-            self.ui.lbl_dragdrop_registration_certificate.setEnabled(
-                registration_certificate
-            )
-            self.ui.lbl_dragdrop_registration_certificate.setEnabled(
-                technical_specifications
-            )
-            self.ui.lbl_dragdrop_tachograph_inspection.setEnabled(tachograph_inspection)
-            self.ui.lbl_dragdrop_transport_card.setEnabled(transport_card)
-            self.ui.lbl_dragdrop_green_card.setEnabled(green_card)
-            self.ui.lbl_dragdrop_insurance_policy.setEnabled(insurance_policy)
-            self.ui.lbl_dragdrop_insurance_receipt.setEnabled(insurance_receipt)
+            self.ui.lbl_dragdrop_registration_certificate.setEnabled(True)
+            self.ui.lbl_dragdrop_technical_specifications.setEnabled(True)
+            self.ui.lbl_dragdrop_tachograph_inspection.setEnabled(True)
+            self.ui.lbl_dragdrop_transport_card.setEnabled(True)
+            self.ui.lbl_dragdrop_green_card.setEnabled(True)
+            self.ui.lbl_dragdrop_insurance_policy.setEnabled(True)
+            self.ui.lbl_dragdrop_insurance_receipt.setEnabled(True)
             self.ui.btn_edit_aditional_document.setEnabled(aditional_documents)
         if self.auth_manager.has_permission("DDV"):
             self.ui.btn_delete_registration_certificate.setEnabled(
