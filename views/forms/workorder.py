@@ -3,6 +3,7 @@ from controllers import AuthManager, WorkOrdersController, FilesController
 from datetime import date, datetime
 from lib.config import API_HOST, API_PORT
 from lib.decorators import track_user_activity
+from lib.methods import *
 from lib.task_thread import *
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QMessageBox, QHeaderView, QTableView
@@ -83,24 +84,9 @@ class frm_workorder(QDialog):
         self.workorder_id = response.get("workorder_id")
         self.path = f"{self.company_id}/vehicles/{self.vehicle_id}/workorders/{self.workorder_id}"
 
-    def cleanup_tmp(self):
-        tmp_dir = Path(sys.argv[0]).resolve().parent / "tmp"
-        if tmp_dir.exists() and tmp_dir.is_dir():
-            for f in tmp_dir.iterdir():
-                try:
-                    if f.is_file():
-                        f.unlink()
-                except Exception as e:
-                    QMessageBox.critical(
-                        self,
-                        " ",
-                        f"No se pudo eliminar el archivo temporal:\n{e}",
-                    )
-
     # Llama a esto al cerrar
     def closeEvent(self, event):
-        self.cleanup_tmp()
-        event.accept()
+        delete_temporary_folder()
 
     def collect_workorder_data(self):
         return {
