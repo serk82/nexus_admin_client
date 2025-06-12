@@ -86,9 +86,8 @@ class FilesController:
         try:
             with open(file_path, "rb") as f:
                 files = {"file": (name, f)}
-                data = {"subfolder": subfolder}
-                old_name = {"old_name": old_name}
-                response = requests.post(url, headers=headers, files=files, data=data, old_name=old_name)
+                data = {"subfolder": subfolder, "old_name": old_name}
+                response = requests.post(url, headers=headers, files=files, data=data)
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 409:

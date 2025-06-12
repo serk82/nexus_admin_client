@@ -230,18 +230,73 @@ class frm_vehicle(QDialog):
         )
 
         # Check permissions
+        # Vehicle permissions
         self.ui.btn_edit.setEnabled(self.auth_manager.has_permission("EV"))
+        # Inspection permissions
         self.ui.btn_add_inspection.setEnabled(self.auth_manager.has_permission("ARV"))
         self.ui.btn_edit_inspection.setEnabled(self.auth_manager.has_permission("ERV"))
         self.ui.btn_delete_inspection.setEnabled(
             self.auth_manager.has_permission("DRV")
         )
+        # Workorders permissions
         self.ui.btn_add_workorder.setEnabled(self.auth_manager.has_permission("AMV"))
         if not self.auth_manager.has_permission("EMV"):
             self.ui.btn_edit_workorder.setText("Ver")
             if not self.auth_manager.has_permission("VMV"):
                 self.ui.btn_edit_workorder.setEnabled(False)
         self.ui.btn_delete_workorder.setEnabled(self.auth_manager.has_permission("DMV"))
+        # Documents permissions
+        self.ui.btn_add_aditional_document.setEnabled(
+            self.auth_manager.has_permission("ADV")
+        )
+        self.ui.btn_delete_registration_certificate.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_technical_specifications.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_tachograph_inspection.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_transport_card.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_green_card.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_insurance_policy.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_insurance_receipt.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.btn_delete_aditional_document.setEnabled(
+            self.auth_manager.has_permission("DDV")
+        )
+        self.ui.lbl_dragdrop_registration_certificate.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_technical_specifications.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_tachograph_inspection.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_transport_card.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_green_card.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_insurance_policy.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.lbl_dragdrop_insurance_receipt.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
+        self.ui.btn_edit_aditional_document.setEnabled(
+            self.auth_manager.has_permission("EDV")
+        )
 
         # Load form addition or edition
         if edit:
@@ -510,26 +565,27 @@ class frm_vehicle(QDialog):
 
     def delete_aditional_document(self):
         document = self.get_selected_aditional_document_id()
-        answer = QMessageBox.question(
-            self,
-            "Eliminar documento",
-            f"Seguro quieres eliminar el documento '{document}'?",
-            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
-        )
-        if answer == QMessageBox.StandardButton.Yes:
-            response = self.files_controller.delete_file(
-                self.auth_manager.token,
-                self.path_subfolder_aditional_documents,
-                document,
+        if document:
+            answer = QMessageBox.question(
+                self,
+                "Eliminar documento",
+                f"Seguro quieres eliminar el documento '{document}'?",
+                QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
             )
-            if "error" in response:
-                QMessageBox.information(
-                    self,
-                    "Eliminar documento",
-                    f"No se puede eliminar el documento: {response.get('error')}",
+            if answer == QMessageBox.StandardButton.Yes:
+                response = self.files_controller.delete_file(
+                    self.auth_manager.token,
+                    self.path_subfolder_aditional_documents,
+                    document,
                 )
-                return
-            self.load_documents()
+                if "error" in response:
+                    QMessageBox.information(
+                        self,
+                        "Eliminar documento",
+                        f"No se puede eliminar el documento: {response.get('error')}",
+                    )
+                    return
+                self.load_documents()
 
     def delete_basic_document(self, document: str):
         answer = QMessageBox.question(
@@ -926,58 +982,80 @@ class frm_vehicle(QDialog):
             else "Permiso Circulación ✘"
         )
         self.ui.btn_view_registration_certificate.setEnabled(registration_certificate)
-        self.ui.btn_delete_registration_certificate.setEnabled(registration_certificate)
         # Load technical specifications
         technical_specifications = "Ficha Técnica.pdf" in self.basic_documents
         self.ui.lbl_technical_specifications.setText(
             "Ficha Técnica ✔" if technical_specifications else "Ficha Técnica ✘"
         )
         self.ui.btn_view_technical_specifications.setEnabled(technical_specifications)
-        self.ui.btn_delete_technical_specifications.setEnabled(technical_specifications)
+
         # Load tachograph inspection
         tachograph_inspection = "Revisión Tacógrafo.pdf" in self.basic_documents
         self.ui.lbl_tachograph_inspection.setText(
             "Revisión Tacógrafo ✔" if tachograph_inspection else "Revisión Tacógrafo ✘"
         )
         self.ui.btn_view_tachograph_inspection.setEnabled(tachograph_inspection)
-        self.ui.btn_delete_tachograph_inspection.setEnabled(tachograph_inspection)
         # Load transport card
         transport_card = "Tarjeta Transporte.pdf" in self.basic_documents
         self.ui.lbl_transport_card.setText(
             "Tarjeta Transporte ✔" if transport_card else "Tarjeta Transporte ✘"
         )
         self.ui.btn_view_transport_card.setEnabled(transport_card)
-        self.ui.btn_delete_transport_card.setEnabled(transport_card)
         # Load green card
         green_card = "Carta Verde.pdf" in self.basic_documents
         self.ui.lbl_green_card.setText(
             "Carta Verde ✔" if green_card else "Carta Verde ✘"
         )
         self.ui.btn_view_green_card.setEnabled(green_card)
-        self.ui.btn_delete_green_card.setEnabled(green_card)
         # Load insurance policy
         insurance_policy = "Póliza Seguro.pdf" in self.basic_documents
         self.ui.lbl_insurance_policy.setText(
             "Póliza Seguro ✔" if insurance_policy else "Póliza Seguro ✘"
         )
         self.ui.btn_view_insurance_policy.setEnabled(insurance_policy)
-        self.ui.btn_delete_insurance_policy.setEnabled(insurance_policy)
         # Load insuracne receipt
         insurance_receipt = "Recibo Seguro.pdf" in self.basic_documents
         self.ui.lbl_insurance_receipt.setText(
             "Recibo Seguro ✔" if insurance_receipt else "Recibo Seguro ✘"
         )
         self.ui.btn_view_insurance_receipt.setEnabled(insurance_receipt)
-        self.ui.btn_delete_insurance_receipt.setEnabled(insurance_receipt)
 
         # Load aditional documents
-        aditonal_documents = self.files_controller.get_files(
+        response = self.files_controller.get_files(
             self.auth_manager.token, self.path_subfolder_aditional_documents
         )
-        for document in aditonal_documents:
+        for document in response:
             row = [QStandardItem(document)]
             self.model_aditional_documents.appendRow(row)
-
+        aditional_documents = True if response and "error" not in response else False
+        if self.auth_manager.has_permission("ADV"):
+            self.ui.btn_add_aditional_document.setEnabled(aditional_documents)
+        if self.auth_manager.has_permission("EDV"):
+            self.ui.lbl_dragdrop_registration_certificate.setEnabled(
+                registration_certificate
+            )
+            self.ui.lbl_dragdrop_registration_certificate.setEnabled(
+                technical_specifications
+            )
+            self.ui.lbl_dragdrop_tachograph_inspection.setEnabled(tachograph_inspection)
+            self.ui.lbl_dragdrop_transport_card.setEnabled(transport_card)
+            self.ui.lbl_dragdrop_green_card.setEnabled(green_card)
+            self.ui.lbl_dragdrop_insurance_policy.setEnabled(insurance_policy)
+            self.ui.lbl_dragdrop_insurance_receipt.setEnabled(insurance_receipt)
+            self.ui.btn_edit_aditional_document.setEnabled(aditional_documents)
+        if self.auth_manager.has_permission("DDV"):
+            self.ui.btn_delete_registration_certificate.setEnabled(
+                registration_certificate
+            )
+            self.ui.btn_delete_technical_specifications.setEnabled(
+                technical_specifications
+            )
+            self.ui.btn_delete_tachograph_inspection.setEnabled(tachograph_inspection)
+            self.ui.btn_delete_transport_card.setEnabled(transport_card)
+            self.ui.btn_delete_green_card.setEnabled(green_card)
+            self.ui.btn_delete_insurance_policy.setEnabled(insurance_policy)
+            self.ui.btn_delete_insurance_receipt.setEnabled(insurance_receipt)
+            self.ui.btn_delete_aditional_document.setEnabled(aditional_documents)
         self.on_task_finished()
 
     def load_edit(self):
@@ -1207,15 +1285,6 @@ class frm_vehicle(QDialog):
         self.hilo = TaskThread(self.get_vehicle)
         self.hilo.error.connect(self.handle_error)
         self.hilo.finished.connect(self.load_vehicle)
-        self.hilo.start()
-
-    def on_load_vehicle_documents(self):
-        self.setEnabled(False)
-        self.loading_dialog = LoadingDialog(self)
-        self.loading_dialog.show()
-        self.hilo = TaskThread(self.get_vehicle_documents)
-        self.hilo.error.connect(self.handle_error)
-        self.hilo.finished.connect(self.load_vehicle_documents)
         self.hilo.start()
 
     def on_load_workorders(self):
