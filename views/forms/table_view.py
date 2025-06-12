@@ -8,6 +8,7 @@ from controllers import (
     RolesController,
     UsersController,
 )
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from lib.task_thread import TaskThread, LoadingDialog
 from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox
@@ -15,6 +16,7 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from views.forms_py import Ui_frm_table_view
 
 
+@track_user_activity
 class frm_table_view(QDialog):
     def __init__(self, form, auth_manager: AuthManager, table, company_id=None):
         super().__init__(form)

@@ -3,12 +3,14 @@ from controllers import (
     RolesController,
     PermissionsController,
 )
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import QDialog, QMessageBox, QListWidgetItem
 from views.forms_py.role import Ui_frm_role
 
 
+@track_user_activity
 class frm_role(QDialog):
 
     data_update = pyqtSignal()

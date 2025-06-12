@@ -3,6 +3,7 @@ from controllers import (
     AuthManager,
     FilesController,
 )
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from pathlib import Path
 from shutil import copyfile
@@ -11,6 +12,7 @@ from PyQt6.QtWidgets import QDialog, QMessageBox
 from views.forms_py.aditional_document import Ui_frm_aditional_document
 
 
+@track_user_activity
 class frm_aditional_document(QDialog):
 
     data_update_documents = pyqtSignal()

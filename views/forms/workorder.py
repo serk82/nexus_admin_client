@@ -2,6 +2,7 @@ import requests, sys, webbrowser
 from controllers import AuthManager, WorkOrdersController, FilesController
 from datetime import date, datetime
 from lib.config import API_HOST, API_PORT
+from lib.decorators import track_user_activity
 from lib.task_thread import *
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QMessageBox, QHeaderView, QTableView
@@ -11,6 +12,7 @@ from views.forms import frm_document_name
 from views.forms_py import Ui_frm_workorder
 
 
+@track_user_activity
 class frm_workorder(QDialog):
 
     data_update_workorder = pyqtSignal()

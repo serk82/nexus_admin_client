@@ -1,6 +1,5 @@
-import os
-import platform
-from datetime import datetime
+import os, platform, sys
+from pathlib import Path
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
@@ -18,8 +17,9 @@ import subprocess
 
 
 def generate_pdf(filename: str, permissions: dict):
+    tmp_dir = str(Path(sys.argv[0]).resolve().parent / "tmp" / filename)
     doc = SimpleDocTemplate(
-        filename,
+        tmp_dir,
         pagesize=A4,
         rightMargin=2 * cm,
         leftMargin=2 * cm,
@@ -89,4 +89,4 @@ def generate_pdf(filename: str, permissions: dict):
     if platform.system() == "Windows":
         os.startfile(filename)
     else:  # Linux
-        subprocess.Popen(["evince", filename])
+        subprocess.Popen(["evince", tmp_dir])

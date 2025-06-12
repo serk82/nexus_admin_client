@@ -2,7 +2,9 @@ from controllers import (
     AuthManager,
     PermissionsController,
 )
+from lib.decorators import track_user_activity
 from lib.exceptions import *
+from lib.methods import *
 from lib.task_thread import TaskThread, LoadingDialog
 from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
@@ -10,6 +12,7 @@ from reports.permissions import generate_pdf
 from views.forms_py import Ui_frm_permissions
 
 
+@track_user_activity
 class frm_permissions(QDialog):
     def __init__(self, form, auth_manager: AuthManager):
         super().__init__(form)
@@ -40,6 +43,9 @@ class frm_permissions(QDialog):
         # Events
         self.ui.btn_close.clicked.connect(self.close)
         self.ui.btn_print.clicked.connect(self.print)
+
+    def closeEvent(self, event):
+        delete_temporary_folder()
 
     def configuration_based_on_table(self):
 
@@ -90,7 +96,7 @@ class frm_permissions(QDialog):
                 QStandardItem(permission.get("name")),
             ]
             self.model.appendRow(row)
-            
+
     def print(self):
         permissions = self.permissions_controller.get_permissions(
             self.auth_manager.token
@@ -100,7 +106,7 @@ class frm_permissions(QDialog):
             return
         filename = "informe.pdf"
         generate_pdf(filename, permissions)
-        
+
     def on_print(self):
         self.loading_dialog = LoadingDialog(self)
         self.loading_dialog.show()

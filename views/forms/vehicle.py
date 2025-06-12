@@ -9,6 +9,7 @@ from controllers import (
 )
 from datetime import date, datetime
 from lib.config import API_HOST, API_PORT
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from lib.methods import *
 from lib.task_thread import *
@@ -26,6 +27,7 @@ from PyQt6.QtWidgets import (
 from views.forms_py import Ui_frm_vehicle
 
 
+@track_user_activity
 class frm_vehicle(QDialog):
 
     data_update = pyqtSignal()
@@ -69,7 +71,7 @@ class frm_vehicle(QDialog):
 
         # Vehicle Image variables
         self.path_image = None
-        self.path_image_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
+        self.path_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
         self.path_subfolder_basic_documents = (
             f"{self.company_id}/vehicles/{self.id}/documents/basic"
@@ -375,7 +377,7 @@ class frm_vehicle(QDialog):
         )
 
     def closeEvent(self, event):
-        self.delete_temporary_image()
+        delete_temporary_folder()
         if self.is_adding:
             self.discard_changes(event)
         if self.is_editing:
@@ -553,7 +555,7 @@ class frm_vehicle(QDialog):
         self.auth_manager.is_token_expired(self)
         self.path_image = Path(path_image)
         try:
-            path_tmp_image = self.path_image_tmp / self.path_image.name
+            path_tmp_image = self.path_tmp / self.path_image.name
             copyfile(self.path_image, path_tmp_image)
             self.set_image(path_tmp_image, None)
         except Exception as e:
@@ -625,14 +627,6 @@ class frm_vehicle(QDialog):
         else:
             QMessageBox.information(self, " ", "No se ha elegido ningún registro.")
 
-    def delete_temporary_image(self):
-        if self.path_image_tmp.exists() and self.path_image_tmp.is_dir():
-            for item in self.path_image_tmp.iterdir():
-                if item.is_file() or item.is_symlink():
-                    item.unlink()
-                elif item.is_dir():
-                    shutil.rmtree(item)
-
     def delete_workorder(self):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_workorder_id()
@@ -662,7 +656,7 @@ class frm_vehicle(QDialog):
             QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
         )
         if answer == QMessageBox.StandardButton.Yes:
-            self.delete_temporary_image()
+            delete_temporary_folder()
             if self.is_adding:
                 self.is_adding = False
                 self.close()
@@ -1346,8 +1340,8 @@ class frm_vehicle(QDialog):
         self.vehicle = response.get("vehicle")
         self.id = self.vehicle.get("id")
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        if self.path_image_tmp.exists() and any(self.path_image_tmp.iterdir()):
-            path_tmp_image = self.path_image_tmp / self.path_image.name
+        if self.path_tmp.exists() and any(self.path_tmp.iterdir()):
+            path_tmp_image = self.path_tmp / self.path_image.name
             file_name = None
             if path_tmp_image.name.endswith(".png"):
                 file_name = f"{self.id}.png"
@@ -1361,7 +1355,7 @@ class frm_vehicle(QDialog):
                 file_name = f"{self.id}.jpeg"
             elif path_tmp_image.name.endswith(".JPEG"):
                 file_name = f"{self.id}.JPEG"
-            if any(self.path_image_tmp.iterdir()):
+            if any(self.path_tmp.iterdir()):
                 response = self.files_controller.upload_or_replace_file(
                     self.auth_manager.token,
                     path_tmp_image,

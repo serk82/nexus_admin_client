@@ -6,6 +6,7 @@ from controllers import (
 )
 from controllers import AuthManager
 from datetime import datetime, timedelta
+from lib.decorators import track_user_activity
 from lib.methods import *
 from PyQt6.QtGui import QStandardItemModel, QStandardItem, QColor
 from PyQt6.QtWidgets import (
@@ -16,6 +17,7 @@ from PyQt6.QtCore import Qt
 from views.forms_py import Ui_frm_notifications
 
 
+@track_user_activity
 class frm_notifications(QDialog):
 
     def __init__(self, auth_manager: AuthManager):

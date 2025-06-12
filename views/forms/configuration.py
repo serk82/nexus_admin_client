@@ -1,12 +1,12 @@
-import sys
-import subprocess
 from controllers import AuthManager
+from lib.decorators import track_user_activity
 from lib.methods import *
 from PyQt6.QtWidgets import QMainWindow, QMessageBox, QApplication
 from views.forms_py import Ui_frm_configuration
 from .table_view import frm_table_view
 
 
+@track_user_activity
 class frm_configuration(QMainWindow):
 
     def __init__(self, auth_manager: AuthManager):

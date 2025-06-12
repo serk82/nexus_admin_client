@@ -1,10 +1,12 @@
 from controllers import AuthManager, CompaniesController
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QDialog, QMessageBox
 from views.forms_py.company import Ui_frm_company
 
 
+@track_user_activity
 class frm_company(QDialog):
 
     data_update = pyqtSignal()
@@ -66,7 +68,7 @@ class frm_company(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        response['error'],
+                        response["error"],
                     )
         else:
             answer = QMessageBox.question(
@@ -88,7 +90,7 @@ class frm_company(QDialog):
                     QMessageBox.information(
                         self,
                         " ",
-                        response['error'],
+                        response["error"],
                     )
 
     def collect_company_data(self):

@@ -1,5 +1,6 @@
 from .vehicle import frm_vehicle
 from controllers import AuthManager, VehiclesController
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from lib.methods import get_kms_vehicles, get_format_miles
 from lib.task_thread import TaskThread, LoadingDialog
@@ -8,6 +9,7 @@ from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox, QHeaderView
 from views.forms_py import Ui_frm_vehicles
 
 
+@track_user_activity
 class frm_vehicles(QDialog):
 
     def __init__(self, form, auth_manager: AuthManager, company_id=None):

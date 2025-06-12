@@ -1,10 +1,12 @@
 from controllers import AuthManager, UsersController
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from lib.task_thread import LoadingDialog, TaskThread
 from PyQt6.QtWidgets import QDialog, QMessageBox
 from views.forms_py import Ui_frm_notification_settings
 
 
+@track_user_activity
 class frm_notification_settings(QDialog):
 
     def __init__(self, form, auth_manager: AuthManager, user_id: int):
@@ -98,7 +100,9 @@ class frm_notification_settings(QDialog):
             self.ui.sbx_tachograph_expiry.setValue(0)
         else:
             self.ui.chb_tachograph_expiry.setChecked(True)
-            self.ui.sbx_tachograph_expiry.setValue(user.get("notification_tachograph_expiry"))
+            self.ui.sbx_tachograph_expiry.setValue(
+                user.get("notification_tachograph_expiry")
+            )
         if user.get("notification_inspection_kms_expiry") is None:
             self.ui.chb_inspection_kms_expiry.setChecked(False)
             self.ui.sbx_inspection_kms_expiry.setValue(0)

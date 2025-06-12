@@ -2,6 +2,7 @@ import subprocess, shutil, platform
 from controllers import AuthManager
 from datetime import date
 from lib.config import API_HOST
+from lib.decorators import track_user_activity
 from lib.task_thread import TaskThread
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
@@ -9,6 +10,7 @@ from PyQt6.QtCore import QEventLoop
 from views.forms_py import Ui_frm_backup
 
 
+@track_user_activity
 class frm_backup(QDialog):
 
     def __init__(self, form, auth_manager: AuthManager):

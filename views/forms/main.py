@@ -1,10 +1,12 @@
 import os
 from controllers import AuthManager, CompaniesController
+from lib.decorators import track_user_activity
 from lib.methods import *
 from PyQt6.QtWidgets import QMainWindow, QLabel
 from views.forms_py import Ui_frm_main
 
 
+@track_user_activity
 class frm_main(QMainWindow):
 
     def __init__(self, auth_manager: AuthManager, company_id):
@@ -23,11 +25,9 @@ class frm_main(QMainWindow):
         self.ui.setupUi(self)
 
         self.lbl_user = QLabel()
-        self.lbl_user.setText(
-            f"Usuario: {self.auth_manager.username}"
-        )
+        self.lbl_user.setText(f"Usuario: {self.auth_manager.username}")
         self.ui.statusbar.addWidget(self.lbl_user)
-        
+
         VERSION_FILE = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "..", "__version__.py")
         )
@@ -55,6 +55,7 @@ class frm_main(QMainWindow):
     def vehicles(self):
         self.auth_manager.is_token_expired(self)
         from views.forms import frm_vehicles
+
         self.form = frm_vehicles(self, self.auth_manager, self.company.get("id"))
         self.form.exec()
 

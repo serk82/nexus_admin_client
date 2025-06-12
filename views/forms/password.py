@@ -1,9 +1,11 @@
 from controllers import AuthManager, UsersController
-from views.forms_py import Ui_frm_password
+from lib.decorators import track_user_activity
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QDialog, QMessageBox
+from views.forms_py import Ui_frm_password
 
 
+@track_user_activity
 class frm_password(QDialog):
 
     password = pyqtSignal(str)

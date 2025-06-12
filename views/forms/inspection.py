@@ -1,5 +1,6 @@
 from controllers import AuthManager, InspectionsController
 from datetime import date, datetime
+from lib.decorators import track_user_activity
 from lib.methods import *
 from lib.task_thread import *
 from PyQt6.QtCore import pyqtSignal
@@ -7,6 +8,7 @@ from PyQt6.QtWidgets import QDialog, QMessageBox
 from views.forms_py import Ui_frm_inspection
 
 
+@track_user_activity
 class frm_inspection(QDialog):
 
     data_update_inspections = pyqtSignal()

@@ -4,6 +4,7 @@ from controllers import (
     UsersController,
     CompaniesController,
 )
+from lib.decorators import track_user_activity
 from lib.exceptions import *
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import (
@@ -18,6 +19,7 @@ from PyQt6.QtWidgets import (
 from views.forms_py import Ui_frm_user
 
 
+@track_user_activity
 class frm_user(QDialog):
 
     data_update = pyqtSignal()

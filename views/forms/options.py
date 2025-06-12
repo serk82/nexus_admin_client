@@ -2,6 +2,7 @@ import sys
 from .main import frm_main
 from controllers import CompaniesController, UsersController
 from controllers import AuthManager
+from lib.decorators import track_user_activity
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -16,6 +17,7 @@ from PyQt6.QtWidgets import (
 from views.forms.configuration import frm_configuration
 
 
+@track_user_activity
 class frm_options(QDialog):
 
     def __init__(self, auth_manager: AuthManager):

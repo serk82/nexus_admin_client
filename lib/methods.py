@@ -49,3 +49,16 @@ def question_no_yes(self, message):
         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
     )
     return QMessageBox.StandardButton(result)
+
+
+def delete_temporary_folder():
+    import shutil, sys
+    from pathlib import Path
+
+    path_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
+    if path_tmp.exists() and path_tmp.is_dir():
+        for item in path_tmp.iterdir():
+            if item.is_file() or item.is_symlink():
+                item.unlink()
+            elif item.is_dir():
+                shutil.rmtree(item)
