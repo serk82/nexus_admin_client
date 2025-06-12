@@ -248,9 +248,7 @@ class frm_vehicle(QDialog):
                 self.ui.btn_edit_workorder.setEnabled(False)
         self.ui.btn_delete_workorder.setEnabled(self.auth_manager.has_permission("DMV"))
         # Documents permissions
-        self.ui.btn_add_aditional_document.setEnabled(
-            self.auth_manager.has_permission("ADV")
-        )
+        # Basic documents
         self.ui.btn_delete_registration_certificate.setEnabled(
             self.auth_manager.has_permission("DDV")
         )
@@ -270,9 +268,6 @@ class frm_vehicle(QDialog):
             self.auth_manager.has_permission("DDV")
         )
         self.ui.btn_delete_insurance_receipt.setEnabled(
-            self.auth_manager.has_permission("DDV")
-        )
-        self.ui.btn_delete_aditional_document.setEnabled(
             self.auth_manager.has_permission("DDV")
         )
         self.ui.lbl_dragdrop_registration_certificate.setEnabled(
@@ -296,8 +291,15 @@ class frm_vehicle(QDialog):
         self.ui.lbl_dragdrop_insurance_receipt.setEnabled(
             self.auth_manager.has_permission("EDV")
         )
+        # Aditional documents
+        self.ui.btn_add_aditional_document.setEnabled(
+            self.auth_manager.has_permission("ADV")
+        )
         self.ui.btn_edit_aditional_document.setEnabled(
             self.auth_manager.has_permission("EDV")
+        )
+        self.ui.btn_delete_aditional_document.setEnabled(
+            self.auth_manager.has_permission("DDV")
         )
 
         # Load form addition or edition
@@ -1021,9 +1023,8 @@ class frm_vehicle(QDialog):
         for document in response:
             row = [QStandardItem(document)]
             self.model_aditional_documents.appendRow(row)
-        aditional_documents = True if response and "error" not in response else False
         if self.auth_manager.has_permission("ADV"):
-            self.ui.btn_add_aditional_document.setEnabled(aditional_documents)
+            self.ui.btn_add_aditional_document.setEnabled(True)
         if self.auth_manager.has_permission("EDV"):
             self.ui.lbl_dragdrop_registration_certificate.setEnabled(True)
             self.ui.lbl_dragdrop_technical_specifications.setEnabled(True)
@@ -1032,7 +1033,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_green_card.setEnabled(True)
             self.ui.lbl_dragdrop_insurance_policy.setEnabled(True)
             self.ui.lbl_dragdrop_insurance_receipt.setEnabled(True)
-            self.ui.btn_edit_aditional_document.setEnabled(aditional_documents)
+            self.ui.btn_edit_aditional_document.setEnabled(True)
         if self.auth_manager.has_permission("DDV"):
             self.ui.btn_delete_registration_certificate.setEnabled(
                 registration_certificate
@@ -1045,7 +1046,7 @@ class frm_vehicle(QDialog):
             self.ui.btn_delete_green_card.setEnabled(green_card)
             self.ui.btn_delete_insurance_policy.setEnabled(insurance_policy)
             self.ui.btn_delete_insurance_receipt.setEnabled(insurance_receipt)
-            self.ui.btn_delete_aditional_document.setEnabled(aditional_documents)
+            self.ui.btn_delete_aditional_document.setEnabled(True)
         self.on_task_finished()
 
     def load_edit(self):
@@ -1456,22 +1457,23 @@ class frm_vehicle(QDialog):
 
     def view_aditional_document(self, document):
         self.auth_manager.is_token_expired(self)
-        response = self.files_controller.get_file(
-            self.auth_manager.token,
-            self.path_subfolder_aditional_documents,
-            document,
-        )
-        try:
-            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
-            with open(file_path, "wb") as f:
-                f.write(response)
-            webbrowser.open(str(file_path))
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                " ",
-                f"No se pudo abrir el archivo:\n{e}",
+        if document:
+            response = self.files_controller.get_file(
+                self.auth_manager.token,
+                self.path_subfolder_aditional_documents,
+                document,
             )
+            try:
+                file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
+                with open(file_path, "wb") as f:
+                    f.write(response)
+                webbrowser.open(str(file_path))
+            except Exception as e:
+                QMessageBox.critical(
+                    self,
+                    " ",
+                    f"No se pudo abrir el archivo:\n{e}",
+                )
 
     def view_basic_document(self, document):
         self.auth_manager.is_token_expired(self)
