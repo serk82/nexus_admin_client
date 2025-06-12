@@ -132,10 +132,10 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_registration_certificate)
         )
         self.ui.btn_view_registration_certificate.clicked.connect(
-            lambda: self.view_basic_document("Permiso Circulación.pdf")
+            lambda: self.view_basic_document("PERMISO CIRCULACIÓN.pdf")
         )
         self.ui.btn_delete_registration_certificate.clicked.connect(
-            lambda: self.delete_basic_document("Permiso Circulación.pdf")
+            lambda: self.delete_basic_document("PERMISO CIRCULACIÓN.pdf")
         )
         # Technical specifications
         self.ui.lbl_dragdrop_technical_specifications.setAcceptDrops(True)
@@ -146,10 +146,10 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_technical_specifications)
         )
         self.ui.btn_view_technical_specifications.clicked.connect(
-            lambda: self.view_basic_document("Ficha Técnica.pdf")
+            lambda: self.view_basic_document("FICHA TÉCNICA.pdf")
         )
         self.ui.btn_delete_technical_specifications.clicked.connect(
-            lambda: self.delete_basic_document("Ficha Técnica.pdf")
+            lambda: self.delete_basic_document("FICHA TÉCNICA.pdf")
         )
         # Tachograph inspection
         self.ui.lbl_dragdrop_tachograph_inspection.setAcceptDrops(True)
@@ -158,10 +158,10 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_tachograph_inspection
         )
         self.ui.btn_view_tachograph_inspection.clicked.connect(
-            lambda: self.view_basic_document("Revisión Tacógrafo.pdf")
+            lambda: self.view_basic_document("REVISIÓN TACÓGRAFO.pdf")
         )
         self.ui.btn_delete_tachograph_inspection.clicked.connect(
-            lambda: self.delete_basic_document("Revisión Tacógrafo.pdf")
+            lambda: self.delete_basic_document("REVISIÓN TACÓGRAFO.pdf")
         )
         # Transport card
         self.ui.lbl_dragdrop_transport_card.setAcceptDrops(True)
@@ -170,10 +170,10 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_transport_card
         )
         self.ui.btn_view_transport_card.clicked.connect(
-            lambda: self.view_basic_document("Tarjeta Transporte.pdf")
+            lambda: self.view_basic_document("TARJETA TRANSPORTE.pdf")
         )
         self.ui.btn_delete_transport_card.clicked.connect(
-            lambda: self.delete_basic_document("Tarjeta Transporte.pdf")
+            lambda: self.delete_basic_document("TARJETA TRANSPORTE.pdf")
         )
         # Green card
         self.ui.lbl_dragdrop_green_card.setAcceptDrops(True)
@@ -182,10 +182,10 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_green_card
         )
         self.ui.btn_view_green_card.clicked.connect(
-            lambda: self.view_basic_document("Carta Verde.pdf")
+            lambda: self.view_basic_document("CARTA VERDE.pdf")
         )
         self.ui.btn_delete_green_card.clicked.connect(
-            lambda: self.delete_basic_document("Carta Verde.pdf")
+            lambda: self.delete_basic_document("CARTA VERDE.pdf")
         )
         # Insurance policy
         self.ui.lbl_dragdrop_insurance_policy.setAcceptDrops(True)
@@ -194,10 +194,10 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_policy
         )
         self.ui.btn_view_insurance_policy.clicked.connect(
-            lambda: self.view_basic_document("Póliza Seguro.pdf")
+            lambda: self.view_basic_document("PÓLIZA SEGURO.pdf")
         )
         self.ui.btn_delete_insurance_policy.clicked.connect(
-            lambda: self.delete_basic_document("Póliza Seguro.pdf")
+            lambda: self.delete_basic_document("PÓLIZA SEGURO.pdf")
         )
         # Insurance receipt
         self.ui.lbl_dragdrop_insurance_receipt.setAcceptDrops(True)
@@ -206,10 +206,10 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_receipt
         )
         self.ui.btn_view_insurance_receipt.clicked.connect(
-            lambda: self.view_basic_document("Recibo Seguro.pdf")
+            lambda: self.view_basic_document("RECIBO SEGURO.pdf")
         )
         self.ui.btn_delete_insurance_receipt.clicked.connect(
-            lambda: self.delete_basic_document("Recibo Seguro.pdf")
+            lambda: self.delete_basic_document("RECIBO SEGURO.pdf")
         )
 
         # Event aditional documents
@@ -722,13 +722,13 @@ class frm_vehicle(QDialog):
                 return
 
             label_to_filename = {
-                "lbl_dragdrop_registration_certificate": "Permiso Circulación.pdf",
-                "lbl_dragdrop_technical_specifications": "Ficha Técnica.pdf",
-                "lbl_dragdrop_tachograph_inspection": "Revisión Tacógrafo.pdf",
-                "lbl_dragdrop_transport_card": "Tarjeta Transporte.pdf",
-                "lbl_dragdrop_green_card": "Carta Verde.pdf",
-                "lbl_dragdrop_insurance_policy": "Póliza Seguro.pdf",
-                "lbl_dragdrop_insurance_receipt": "Recibo Seguro.pdf",
+                "lbl_dragdrop_registration_certificate": "PERMISO CIRCULACIÓN.pdf",
+                "lbl_dragdrop_technical_specifications": "FICHA TÉCNICA.pdf",
+                "lbl_dragdrop_tachograph_inspection": "REVISIÓN TACÓGRAFO.pdf",
+                "lbl_dragdrop_transport_card": "TARJETA TRANSPORTE.pdf",
+                "lbl_dragdrop_green_card": "CARTA VERDE.pdf",
+                "lbl_dragdrop_insurance_policy": "PÓLIZA SEGURO.pdf",
+                "lbl_dragdrop_insurance_receipt": "RECIBO SEGURO.pdf",
             }
 
             filename = label_to_filename.get(label.objectName())
@@ -971,7 +971,7 @@ class frm_vehicle(QDialog):
     def load_documents(self):
         self.get_documents()
         # Load registration_certificate
-        registration_certificate = "Permiso Circulación.pdf" in self.basic_documents
+        registration_certificate = "PERMISO CIRCULACIÓN.pdf" in self.basic_documents
         self.ui.lbl_registration_certificate.setText(
             "Permiso Circulación ✔"
             if registration_certificate
@@ -979,38 +979,38 @@ class frm_vehicle(QDialog):
         )
         self.ui.btn_view_registration_certificate.setEnabled(registration_certificate)
         # Load technical specifications
-        technical_specifications = "Ficha Técnica.pdf" in self.basic_documents
+        technical_specifications = "FICHA TÉCNICA.pdf" in self.basic_documents
         self.ui.lbl_technical_specifications.setText(
             "Ficha Técnica ✔" if technical_specifications else "Ficha Técnica ✘"
         )
         self.ui.btn_view_technical_specifications.setEnabled(technical_specifications)
 
         # Load tachograph inspection
-        tachograph_inspection = "Revisión Tacógrafo.pdf" in self.basic_documents
+        tachograph_inspection = "REVISIÓN TACÓGRAFO.pdf" in self.basic_documents
         self.ui.lbl_tachograph_inspection.setText(
             "Revisión Tacógrafo ✔" if tachograph_inspection else "Revisión Tacógrafo ✘"
         )
         self.ui.btn_view_tachograph_inspection.setEnabled(tachograph_inspection)
         # Load transport card
-        transport_card = "Tarjeta Transporte.pdf" in self.basic_documents
+        transport_card = "TARJETA TRANSPORTE.pdf" in self.basic_documents
         self.ui.lbl_transport_card.setText(
             "Tarjeta Transporte ✔" if transport_card else "Tarjeta Transporte ✘"
         )
         self.ui.btn_view_transport_card.setEnabled(transport_card)
         # Load green card
-        green_card = "Carta Verde.pdf" in self.basic_documents
+        green_card = "CARTA VERDE.pdf" in self.basic_documents
         self.ui.lbl_green_card.setText(
             "Carta Verde ✔" if green_card else "Carta Verde ✘"
         )
         self.ui.btn_view_green_card.setEnabled(green_card)
         # Load insurance policy
-        insurance_policy = "Póliza Seguro.pdf" in self.basic_documents
+        insurance_policy = "PÓLIZA SEGURO.pdf" in self.basic_documents
         self.ui.lbl_insurance_policy.setText(
             "Póliza Seguro ✔" if insurance_policy else "Póliza Seguro ✘"
         )
         self.ui.btn_view_insurance_policy.setEnabled(insurance_policy)
         # Load insuracne receipt
-        insurance_receipt = "Recibo Seguro.pdf" in self.basic_documents
+        insurance_receipt = "RECIBO SEGURO.pdf" in self.basic_documents
         self.ui.lbl_insurance_receipt.setText(
             "Recibo Seguro ✔" if insurance_receipt else "Recibo Seguro ✘"
         )
