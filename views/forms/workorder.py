@@ -188,6 +188,7 @@ class frm_workorder(QDialog):
                             )
                         finally:
                             self.document_name = None
+                            self.load_documents()
                 else:
                     QMessageBox.information(
                         self,
