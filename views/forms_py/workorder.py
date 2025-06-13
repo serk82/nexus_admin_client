@@ -115,6 +115,13 @@ class Ui_frm_workorder(object):
 
         self.retranslateUi(frm_workorder)
         QtCore.QMetaObject.connectSlotsByName(frm_workorder)
+        frm_workorder.setTabOrder(self.date_workorder, self.txt_realized_by)
+        frm_workorder.setTabOrder(self.txt_realized_by, self.txt_description)
+        frm_workorder.setTabOrder(self.txt_description, self.btn_save)
+        frm_workorder.setTabOrder(self.btn_save, self.tvw_documents)
+        frm_workorder.setTabOrder(self.tvw_documents, self.btn_view_document)
+        frm_workorder.setTabOrder(self.btn_view_document, self.btn_delete_document)
+        frm_workorder.setTabOrder(self.btn_delete_document, self.btn_close)
 
     def retranslateUi(self, frm_workorder):
         _translate = QtCore.QCoreApplication.translate

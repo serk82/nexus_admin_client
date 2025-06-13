@@ -283,6 +283,16 @@ background: rgb(191, 228, 241)</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>date_workorder</tabstop>
+  <tabstop>txt_realized_by</tabstop>
+  <tabstop>txt_description</tabstop>
+  <tabstop>btn_save</tabstop>
+  <tabstop>tvw_documents</tabstop>
+  <tabstop>btn_view_document</tabstop>
+  <tabstop>btn_delete_document</tabstop>
+  <tabstop>btn_close</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
