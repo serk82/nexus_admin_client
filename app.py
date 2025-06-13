@@ -9,11 +9,15 @@ from views.forms import (
     frm_configuration,
     frm_main,
     frm_vehicles,
+    frm_notifications,
+    frm_options,
 )
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    
+    app.setApplicationName("Nexus-Admin")
+    app.setDesktopFileName("Nexus-Admin")
+
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     css_path = os.path.join(BASE_DIR, "lib", "styles.css")
 
