@@ -20,9 +20,10 @@ from views.forms_py import Ui_frm_notifications
 @track_user_activity
 class frm_notifications(QDialog):
 
-    def __init__(self, form, auth_manager: AuthManager):
+    def __init__(self, form, auth_manager: AuthManager, company_id=None):
         super().__init__(form)
         self.auth_manager = auth_manager
+        self.company_id = company_id
         self.auth_manager.is_token_expired(self)
 
         # Variables
@@ -82,13 +83,24 @@ class frm_notifications(QDialog):
         self.ui.tvw_notifications.expandAll()
 
     def load_notifications(self):
-        for company in self.companies:
-            company_item = QStandardItem(str(company.get("name")))
+        if self.company_id:
+            company = self.companies_controller.get_company(
+                self.auth_manager.token, self.company_id
+            )
+            company_item = QStandardItem(str(company["name"]))
             vehicle_items = self.check_vehicle(company)
             if vehicle_items:
                 for vehicle_item in vehicle_items:
                     company_item.appendRow([vehicle_item])
                 self.model.appendRow([company_item, QStandardItem("")])
+        else:
+            for company in self.companies:
+                company_item = QStandardItem(str(company.get("name")))
+                vehicle_items = self.check_vehicle(company)
+                if vehicle_items:
+                    for vehicle_item in vehicle_items:
+                        company_item.appendRow([vehicle_item])
+                    self.model.appendRow([company_item, QStandardItem("")])
 
     def check_vehicle(self, company):
         vehicles = self.vehicles_controller.get_vehicles(

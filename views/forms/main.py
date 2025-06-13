@@ -49,7 +49,7 @@ class frm_main(QMainWindow):
         self.auth_manager.is_token_expired(self)
         from views.forms import frm_notifications
 
-        self.form = frm_notifications(self, self.auth_manager)
+        self.form = frm_notifications(self, self.auth_manager, self.company.get("id"))
         self.form.exec()
 
     def options(self):
