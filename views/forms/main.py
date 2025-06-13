@@ -39,10 +39,18 @@ class frm_main(QMainWindow):
         self.ui.action_exit.triggered.connect(self.close)
         self.ui.action_close_session.triggered.connect(self.close_session)
         self.ui.action_vehicles.triggered.connect(self.vehicles)
+        self.ui.action_notificaciones.triggered.connect(self.notifications)
 
         # Check permissions
         self.ui.action_employees.setEnabled(self.auth_manager.has_permission("VE"))
         self.ui.action_vehicles.setEnabled(self.auth_manager.has_permission("VV"))
+
+    def notifications(self):
+        self.auth_manager.is_token_expired(self)
+        from views.forms import frm_notifications
+
+        self.form = frm_notifications(self, self.auth_manager)
+        self.form.exec()
 
     def options(self):
         self.auth_manager.is_token_expired(self)

@@ -64,10 +64,10 @@ class frm_login(QWidget):
 
         auth_manager = AuthManager()
         if auth_manager.login(username, password):
-            self.form = frm_notifications(auth_manager)
+            self.close()
+            self.form = frm_notifications(self, auth_manager)
             self.form.exec()
             self.form = frm_options(auth_manager)
             self.form.show()
-            self.close()
         else:
             QMessageBox.information(self, " ", "Usuario o contraseña incorrecto!")

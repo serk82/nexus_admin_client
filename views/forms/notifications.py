@@ -20,8 +20,8 @@ from views.forms_py import Ui_frm_notifications
 @track_user_activity
 class frm_notifications(QDialog):
 
-    def __init__(self, auth_manager: AuthManager):
-        super().__init__()
+    def __init__(self, form, auth_manager: AuthManager):
+        super().__init__(form)
         self.auth_manager = auth_manager
         self.auth_manager.is_token_expired(self)
 

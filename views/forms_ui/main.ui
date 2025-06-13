@@ -47,8 +47,15 @@
     </property>
     <addaction name="action_about"/>
    </widget>
+   <widget class="QMenu" name="menu_Ver">
+    <property name="title">
+     <string>&amp;Ver</string>
+    </property>
+    <addaction name="action_notificaciones"/>
+   </widget>
    <addaction name="menu_archive"/>
    <addaction name="menu_administration"/>
+   <addaction name="menu_Ver"/>
    <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -107,6 +114,11 @@
    </property>
   </action>
   <action name="action_notification_settings">
+   <property name="text">
+    <string>&amp;Notificaciones</string>
+   </property>
+  </action>
+  <action name="action_notificaciones">
    <property name="text">
     <string>&amp;Notificaciones</string>
    </property>
