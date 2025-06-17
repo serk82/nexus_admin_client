@@ -132,7 +132,7 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_registration_certificate)
         )
         self.ui.btn_view_registration_certificate.clicked.connect(
-            lambda: self.view_basic_document("PERMISO CIRCULACIÓN.pdf")
+            lambda: self.on_view_basic_document("PERMISO CIRCULACIÓN.pdf")
         )
         self.ui.btn_delete_registration_certificate.clicked.connect(
             lambda: self.delete_basic_document("PERMISO CIRCULACIÓN.pdf")
@@ -146,7 +146,7 @@ class frm_vehicle(QDialog):
             self.dropEventDocument(self.ui.lbl_dragdrop_technical_specifications)
         )
         self.ui.btn_view_technical_specifications.clicked.connect(
-            lambda: self.view_basic_document("FICHA TÉCNICA.pdf")
+            lambda: self.on_view_basic_document("FICHA TÉCNICA.pdf")
         )
         self.ui.btn_delete_technical_specifications.clicked.connect(
             lambda: self.delete_basic_document("FICHA TÉCNICA.pdf")
@@ -158,7 +158,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_tachograph_inspection
         )
         self.ui.btn_view_tachograph_inspection.clicked.connect(
-            lambda: self.view_basic_document("REVISIÓN TACÓGRAFO.pdf")
+            lambda: self.on_view_basic_document("REVISIÓN TACÓGRAFO.pdf")
         )
         self.ui.btn_delete_tachograph_inspection.clicked.connect(
             lambda: self.delete_basic_document("REVISIÓN TACÓGRAFO.pdf")
@@ -170,7 +170,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_transport_card
         )
         self.ui.btn_view_transport_card.clicked.connect(
-            lambda: self.view_basic_document("TARJETA TRANSPORTE.pdf")
+            lambda: self.on_view_basic_document("TARJETA TRANSPORTE.pdf")
         )
         self.ui.btn_delete_transport_card.clicked.connect(
             lambda: self.delete_basic_document("TARJETA TRANSPORTE.pdf")
@@ -182,7 +182,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_green_card
         )
         self.ui.btn_view_green_card.clicked.connect(
-            lambda: self.view_basic_document("CARTA VERDE.pdf")
+            lambda: self.on_view_basic_document("CARTA VERDE.pdf")
         )
         self.ui.btn_delete_green_card.clicked.connect(
             lambda: self.delete_basic_document("CARTA VERDE.pdf")
@@ -194,7 +194,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_policy
         )
         self.ui.btn_view_insurance_policy.clicked.connect(
-            lambda: self.view_basic_document("PÓLIZA SEGURO.pdf")
+            lambda: self.on_view_basic_document("PÓLIZA SEGURO.pdf")
         )
         self.ui.btn_delete_insurance_policy.clicked.connect(
             lambda: self.delete_basic_document("PÓLIZA SEGURO.pdf")
@@ -206,7 +206,7 @@ class frm_vehicle(QDialog):
             self.ui.lbl_dragdrop_insurance_receipt
         )
         self.ui.btn_view_insurance_receipt.clicked.connect(
-            lambda: self.view_basic_document("RECIBO SEGURO.pdf")
+            lambda: self.on_view_basic_document("RECIBO SEGURO.pdf")
         )
         self.ui.btn_delete_insurance_receipt.clicked.connect(
             lambda: self.delete_basic_document("RECIBO SEGURO.pdf")
@@ -214,12 +214,12 @@ class frm_vehicle(QDialog):
 
         # Event aditional documents
         self.ui.btn_view_aditional_document.clicked.connect(
-            lambda: self.view_aditional_document(
+            lambda: self.on_view_aditional_document(
                 self.get_selected_aditional_document_id()
             )
         )
         self.ui.tvw_aditional_coduments.doubleClicked.connect(
-            lambda: self.view_aditional_document(
+            lambda: self.on_view_aditional_document(
                 self.get_selected_aditional_document_id()
             )
         )
@@ -1242,6 +1242,9 @@ class frm_vehicle(QDialog):
                 self.ui.tvw_workorders.resizeRowToContents(row)
         self.on_task_finished()
 
+    def on_file_ready(self, file_path):
+        self.open_file(file_path)
+
     def on_load_documents(self):
         self.setEnabled(False)
         self.loading_dialog = LoadingDialog(self)
@@ -1319,6 +1322,37 @@ class frm_vehicle(QDialog):
         self.loading_dialog.close()
         self.setEnabled(True)
         self.data_update.emit()
+
+    def on_task_open_document_finished(self):
+        self.loading_dialog.close()
+        self.setEnabled(True)
+
+    def on_view_aditional_document(self, document: str):
+        self.auth_manager.is_token_expired(self)
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(lambda: self.view_aditional_document(document))
+        self.hilo.file_ready.connect(self.on_file_ready)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.on_task_open_document_finished)
+        self.hilo.start()
+
+    def on_view_basic_document(self, document: str):
+        self.auth_manager.is_token_expired(self)
+        self.setEnabled(False)
+        self.loading_dialog = LoadingDialog(self)
+        self.loading_dialog.show()
+        self.hilo = TaskThread(lambda: self.view_basic_document(document))
+        self.hilo.file_ready.connect(self.on_file_ready)
+        self.hilo.error.connect(self.handle_error)
+        self.hilo.finished.connect(self.on_task_open_document_finished)
+        self.hilo.start()
+
+    def open_file(self, file_path):
+        if str(file_path).lower().endswith((".pdf",)):
+            self.open_file_hilo = FileOpenThread(file_path)
+            self.open_file_hilo.start()
 
     def remove_filters(self):
         self.ui.date_from.setDate(self.date_first_workorder)
@@ -1463,17 +1497,10 @@ class frm_vehicle(QDialog):
                 self.path_subfolder_aditional_documents,
                 document,
             )
-            try:
-                file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
-                with open(file_path, "wb") as f:
-                    f.write(response)
-                webbrowser.open(str(file_path))
-            except Exception as e:
-                QMessageBox.critical(
-                    self,
-                    " ",
-                    f"No se pudo abrir el archivo:\n{e}",
-                )
+            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
+            with open(file_path, "wb") as f:
+                f.write(response)
+            return str(file_path)
 
     def view_basic_document(self, document):
         self.auth_manager.is_token_expired(self)
@@ -1482,14 +1509,7 @@ class frm_vehicle(QDialog):
             self.path_subfolder_basic_documents,
             document,
         )
-        try:
-            file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
-            with open(file_path, "wb") as f:
-                f.write(response)
-            webbrowser.open(str(file_path))
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                " ",
-                f"No se pudo abrir el archivo:\n{e}",
-            )
+        file_path = Path(sys.argv[0]).resolve().parent / "tmp" / document
+        with open(file_path, "wb") as f:
+            f.write(response)
+        return str(file_path)

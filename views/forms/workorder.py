@@ -52,8 +52,8 @@ class frm_workorder(QDialog):
         # Events
         self.ui.btn_close.clicked.connect(self.close)
         self.ui.btn_delete_document.clicked.connect(self.on_delete_document)
-        self.ui.btn_view_document.clicked.connect(self.open_document)
-        self.ui.tvw_documents.doubleClicked.connect(self.open_document)
+        self.ui.btn_view_document.clicked.connect(self.on_open_document)
+        self.ui.tvw_documents.doubleClicked.connect(self.on_open_document)
 
         # Check Permissions
         if not self.auth_manager.has_permission("EMV"):
@@ -299,12 +299,16 @@ class frm_workorder(QDialog):
             ]
         )
 
+    def on_file_ready(self, file_path):
+        self.open_file(file_path)
+
     def on_open_document(self):
         self.auth_manager.is_token_expired(self)
         self.setEnabled(False)
         self.loading_dialog = LoadingDialog(self)
         self.loading_dialog.show()
         self.hilo = TaskThread(self.open_document)
+        self.hilo.file_ready.connect(self.on_file_ready)
         self.hilo.error.connect(self.handle_error)
         self.hilo.finished.connect(self.on_task_open_document_finished)
         self.hilo.start()
@@ -349,38 +353,33 @@ class frm_workorder(QDialog):
     def open_document(self):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_document()
-        if selected_id is not None:
-            response = self.files_controller.get_file(
-                self.auth_manager.token,
-                self.path,
-                selected_id,
-            )
-            try:
-                file_path = Path(sys.argv[0]).resolve().parent / "tmp" / selected_id
-                with open(file_path, "wb") as f:
-                    f.write(response)
-                self.open_file(file_path)
-            except Exception as e:
-                QMessageBox.critical(
-                    self,
-                    " ",
-                    f"No se pudo abrir el archivo:\n{e}",
-                )
-        else:
-            QMessageBox.information(self, " ", "No se ha elegido ningún registro.")
+        if selected_id is None:
+            raise Exception("No se ha seleccionado ningún documento.")
+        response = self.files_controller.get_file(
+            self.auth_manager.token,
+            self.path,
+            selected_id,
+        )
+        file_path = Path(sys.argv[0]).resolve().parent / "tmp" / selected_id
+        with open(file_path, "wb") as f:
+            f.write(response)
+        return str(file_path)
 
     def open_file(self, file_path):
         if (
-            str(file_path).endswith(".pdf")
-            or str(file_path).endswith(".PDF")
-            or str(file_path).endswith(".png")
-            or str(file_path).endswith(".PNG")
-            or str(file_path).endswith(".jpg")
-            or str(file_path).endswith(".JPG")
-            or str(file_path).endswith(".jpeg")
-            or str(file_path).endswith(".JPEG")
+            str(file_path)
+            .lower()
+            .endswith(
+                (
+                    ".pdf",
+                    ".png",
+                    ".jpg",
+                    ".jpeg",
+                )
+            )
         ):
-            webbrowser.open(str(file_path))
+            self.open_file_hilo = FileOpenThread(file_path)
+            self.open_file_hilo.start()
 
     def save(self):
         workorder = self.collect_workorder_data()

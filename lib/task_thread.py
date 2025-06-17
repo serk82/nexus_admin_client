@@ -12,6 +12,7 @@ class TaskThread(QThread):
     working = pyqtSignal(str)  # Señal para mostrar el mensaje de trabajo
     finished = pyqtSignal()  # Señal para indicar que terminó el proceso
     error = pyqtSignal(str, str)  # Señal para capturar errores
+    file_ready = pyqtSignal(str)  # Señal para indicar que el archivo está listo
 
     def __init__(self, task):
         super().__init__()
@@ -19,8 +20,20 @@ class TaskThread(QThread):
         self.run = catch_exceptions(self.error)(self.run)
 
     def run(self):
-        self.task()
+        result = self.task()
+        if result:
+            self.file_ready.emit(result)
         self.finished.emit()
+
+
+class FileOpenThread(QThread):
+    def __init__(self, file_path):
+        super().__init__()
+        self.file_path = file_path
+
+    def run(self):
+        import webbrowser
+        webbrowser.open(str(self.file_path))
 
 
 import traceback
