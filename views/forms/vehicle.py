@@ -886,8 +886,6 @@ class frm_vehicle(QDialog):
             return None
 
     def get_vehicle(self):
-        import time
-        time.sleep(3)
         self.vehicle = self.vehicles_controller.get_vehicle(
             self.auth_manager.token, self.id
         )

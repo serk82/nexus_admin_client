@@ -214,7 +214,8 @@ class frm_workorder(QDialog):
             return None
 
     def handle_error(self, error_message, error_details):
-        self.loading_dialog.close()
+        if self.loading_dialog:
+            self.loading_dialog.close()
         show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
 
@@ -380,7 +381,6 @@ class frm_workorder(QDialog):
             or str(file_path).endswith(".JPEG")
         ):
             webbrowser.open(str(file_path))
-            return
 
     def save(self):
         workorder = self.collect_workorder_data()
