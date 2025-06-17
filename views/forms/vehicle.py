@@ -886,6 +886,8 @@ class frm_vehicle(QDialog):
             return None
 
     def get_vehicle(self):
+        import time
+        time.sleep(3)
         self.vehicle = self.vehicles_controller.get_vehicle(
             self.auth_manager.token, self.id
         )
@@ -957,9 +959,9 @@ class frm_vehicle(QDialog):
                 self.ui.txt_search.text(),
             )
 
-    def handle_error(self, error_message):
+    def handle_error(self, error_message, error_details):
         self.loading_dialog.close()
-        QMessageBox.warning(self, " ", error_message)
+        show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
         self.data_update.emit()
 

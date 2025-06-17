@@ -69,9 +69,8 @@ class frm_permissions(QDialog):
         self.hilo.finished.connect(self.on_task_finished)
         self.hilo.start()
 
-    def handle_error(self, error_message):
-        # Función para manejar errores
-        QMessageBox.warning(self, "Error", error_message)
+    def handle_error(self, error_message, error_details):
+        show_error_dialog(self, error_message, error_details)
 
     def on_task_finished(self):
         self.loading_dialog.close()

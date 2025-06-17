@@ -10,6 +10,7 @@ from controllers import (
 )
 from lib.decorators import track_user_activity
 from lib.exceptions import *
+from lib.methods import *
 from lib.task_thread import TaskThread, LoadingDialog
 from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
@@ -101,9 +102,8 @@ class frm_table_view(QDialog):
         self.hilo.finished.connect(self.on_task_finished)
         self.hilo.start()
 
-    def handle_error(self, error_message):
-        # Función para manejar errores
-        QMessageBox.warning(self, "Error", error_message)
+    def handle_error(self, error_message, error_details):
+        show_error_dialog(self, error_message, error_details)
 
     def on_task_finished(self):
         self.loading_dialog.close()

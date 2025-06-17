@@ -213,10 +213,9 @@ class frm_workorder(QDialog):
         else:
             return None
 
-    def handle_error(self, error_message):
-        # Función para manejar errores
+    def handle_error(self, error_message, error_details):
         self.loading_dialog.close()
-        QMessageBox.warning(self, " ", error_message)
+        show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
 
     def load_add(self):

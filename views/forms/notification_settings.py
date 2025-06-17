@@ -1,6 +1,7 @@
 from controllers import AuthManager, UsersController
 from lib.decorators import track_user_activity
 from lib.exceptions import *
+from lib.methods import *
 from lib.task_thread import LoadingDialog, TaskThread
 from PyQt6.QtWidgets import QDialog, QMessageBox
 from views.forms_py import Ui_frm_notification_settings
@@ -50,9 +51,9 @@ class frm_notification_settings(QDialog):
             "inspection_kms_expiry": inspection_kms_expiry,
         }
 
-    def handle_error(self, error_message):
+    def handle_error(self, error_message, error_details):
         self.loading_dialog.close()
-        QMessageBox.warning(self, " ", error_message)
+        show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
 
     def on_save_clicked(self):

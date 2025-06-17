@@ -51,6 +51,17 @@ def question_no_yes(self, message):
     return QMessageBox.StandardButton(result)
 
 
+def show_error_dialog(parent, error_message, error_details):
+    from PyQt6.QtWidgets import QMessageBox
+
+    box = QMessageBox(parent)
+    box.setIcon(QMessageBox.Icon.Critical)
+    box.setWindowTitle("Error")
+    box.setText(error_message)
+    box.setDetailedText(error_details)
+    box.exec()
+
+
 def delete_temporary_folder():
     import shutil, sys
     from pathlib import Path

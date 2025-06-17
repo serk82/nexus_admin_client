@@ -2,7 +2,7 @@ from .vehicle import frm_vehicle
 from controllers import AuthManager, VehiclesController
 from lib.decorators import track_user_activity
 from lib.exceptions import *
-from lib.methods import get_kms_vehicles, get_format_miles
+from lib.methods import *
 from lib.task_thread import TaskThread, LoadingDialog
 from PyQt6.QtGui import QStandardItemModel, QStandardItem
 from PyQt6.QtWidgets import QDialog, QTableView, QMessageBox, QHeaderView
@@ -118,10 +118,9 @@ class frm_vehicles(QDialog):
         else:
             return None
 
-    def handle_error(self, error_message):
-        # Función para manejar errores
+    def handle_error(self, error_message, error_details):
         self.loading_dialog.close()
-        QMessageBox.warning(self, "Error", error_message)
+        show_error_dialog(self, error_message, error_details)
 
     def on_search(self):
         self.on_update()

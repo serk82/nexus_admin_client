@@ -68,10 +68,10 @@ class frm_inspection(QDialog):
             "hydraulic_filter": self.ui.chb_hydraulic_filter.isChecked(),
         }
 
-    def handle_error(self, error_message):
+    def handle_error(self, error_message, error_details):
         # Función para manejar errores
         self.loading_dialog.close()
-        QMessageBox.warning(self, " ", error_message)
+        show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
 
     def load_inspection(self):

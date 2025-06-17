@@ -3,6 +3,7 @@ from controllers import AuthManager
 from datetime import date
 from lib.config import API_HOST
 from lib.decorators import track_user_activity
+from lib.methods import *
 from lib.task_thread import TaskThread
 from pathlib import Path
 from PyQt6.QtWidgets import QDialog, QFileDialog, QMessageBox
@@ -183,8 +184,8 @@ class frm_backup(QDialog):
         )
         self.hilo.response_message.emit(response == QMessageBox.StandardButton.Yes)
 
-    def handle_error(self, error_message):
-        QMessageBox.warning(self, "Error", error_message)
+    def handle_error(self, error_message, error_details):
+        show_error_dialog(self, error_message, error_details)
 
     def handle_info_user(self, title, message):
         QMessageBox.question(
