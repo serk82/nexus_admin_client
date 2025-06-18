@@ -1375,7 +1375,7 @@ class frm_vehicle(QDialog):
         self.vehicle = response.get("vehicle")
         self.id = self.vehicle.get("id")
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        if self.path_tmp.exists() and any(self.path_tmp.iterdir()):
+        if self.path_tmp.exists() and any(self.path_tmp.iterdir()) and self.path_image:
             path_tmp_image = self.path_tmp / self.path_image.name
             file_name = None
             if path_tmp_image.name.endswith(".png"):
