@@ -830,6 +830,9 @@ class frm_vehicle(QDialog):
         self.inspections = self.inspections_controller.get_inspections(
             self.auth_manager.token, self.id
         )
+        self.last_inspection = self.inspections_controller.get_last_inspection(
+            self.auth_manager.token, self.id
+        )
 
     def get_last_date_inspection(self):
         last_inspection = ""
@@ -849,6 +852,7 @@ class frm_vehicle(QDialog):
 
     def get_next_kms_inspection(self):
         inspection_kms = self.ui.sbx_inspection_km.value()
+        last_inspection = self.get_last_date_inspection()
         next_inspection = (
             inspection_kms + self.last_inspection.get("kms")
             if self.last_inspection is not None
@@ -1375,21 +1379,15 @@ class frm_vehicle(QDialog):
         self.vehicle = response.get("vehicle")
         self.id = self.vehicle.get("id")
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        if self.path_tmp.exists() and any(self.path_tmp.iterdir()) and self.path_image:
+        if self.path_tmp.exists() and any(self.path_tmp.iterdir()) and self.path_image.exists():
             path_tmp_image = self.path_tmp / self.path_image.name
             file_name = None
-            if path_tmp_image.name.endswith(".png"):
+            if path_tmp_image.name.lower().endswith(".png"):
                 file_name = f"{self.id}.png"
-            elif path_tmp_image.name.endswith(".PNG"):
-                file_name = f"{self.id}.PNG"
-            elif path_tmp_image.name.endswith(".jpg"):
+            elif path_tmp_image.name.lower().endswith(".jpg"):
                 file_name = f"{self.id}.jpg"
-            elif path_tmp_image.name.endswith(".JPG"):
-                file_name = f"{self.id}.JPG"
-            elif path_tmp_image.name.endswith(".jpeg"):
+            elif path_tmp_image.name.lower().endswith(".jpeg"):
                 file_name = f"{self.id}.jpeg"
-            elif path_tmp_image.name.endswith(".JPEG"):
-                file_name = f"{self.id}.JPEG"
             if any(self.path_tmp.iterdir()):
                 response = self.files_controller.upload_or_replace_file(
                     self.auth_manager.token,
