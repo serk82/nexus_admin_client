@@ -168,6 +168,7 @@ def crear_acceso_linux(nombre, ruta_app, ruta_venv, icono_path=None):
                 Exec={ruta_venv} {ruta_app}
                 Terminal=false
                 StartupNotify=true
+                StartupWMClass=Nexus-Admin
                 Categories=Utility;
                 """
     if icono_path:
