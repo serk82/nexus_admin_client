@@ -155,13 +155,6 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
-              <widget class="QCheckBox" name="chb_deactivate">
-               <property name="text">
-                <string>Desactivar vehículo</string>
-               </property>
-              </widget>
-             </item>
              <item row="1" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
               <widget class="QLabel" name="lbl_dragdrop_image">
                <property name="sizePolicy">
@@ -191,6 +184,26 @@ background: rgb(191, 228, 241)</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+              <widget class="QCheckBox" name="chb_deactivate">
+               <property name="text">
+                <string>Desactivar vehículo</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+              <widget class="QPushButton" name="btn_delete_image">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Eliminar Imagen</string>
                </property>
               </widget>
              </item>

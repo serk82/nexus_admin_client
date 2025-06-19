@@ -70,6 +70,8 @@ class frm_vehicle(QDialog):
         self.basic_documents = None
 
         # Vehicle Image variables
+        self.should_delete_image = False
+        self.image_name = None
         self.path_image = None
         self.path_tmp = Path(sys.argv[0]).resolve().parent / "tmp"
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
@@ -103,6 +105,7 @@ class frm_vehicle(QDialog):
         self.ui.lbl_dragdrop_image.setAcceptDrops(True)
         self.ui.lbl_dragdrop_image.dragEnterEvent = self.dragEnterEvent
         self.ui.lbl_dragdrop_image.dropEvent = self.dropEventImage
+        self.ui.btn_delete_image.clicked.connect(self.delete_image_question)
         self.ui.tab_file.tabBar().tabBarClicked.connect(self.update_tab)
 
         # Events for workorders
@@ -611,6 +614,31 @@ class frm_vehicle(QDialog):
                 return
             self.load_documents()
 
+    def delete_image(self):
+        try:
+            self.files_controller.delete_file(
+                self.auth_manager.token, self.path_subfolder_image, self.image_name
+            )
+            self.set_image(None, None)
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"No se pudo eliminar la imagen:\n{e}",
+            )
+
+    def delete_image_question(self):
+        answer = QMessageBox.question(
+            self,
+            "Eliminar imagen",
+            "Seguro quieres eliminar la imagen del vehículo?\n\n!!!!! ATENCIÓN SI ELIMINA LA IMAGEN NO PODRÁ RECUPERARLA !!!!!",
+            QMessageBox.StandardButton.No | QMessageBox.StandardButton.Yes,
+        )
+        if answer == QMessageBox.StandardButton.Yes:
+            self.should_delete_image = True
+            self.ui.lbl_image.setPixmap(QPixmap())
+            self.ui.btn_delete_image.setEnabled(False)
+
     def delete_inspection(self):
         self.auth_manager.is_token_expired(self)
         selected_id = self.get_selected_inspection_id()
@@ -681,16 +709,10 @@ class frm_vehicle(QDialog):
         if urls:
             file_path = Path(urls[0].toLocalFile())
             if file_path.is_file():
-                if (
-                    str(file_path).endswith(".png")
-                    or str(file_path).endswith(".PNG")
-                    or str(file_path).endswith(".jpg")
-                    or str(file_path).endswith(".JPG")
-                    or str(file_path).endswith(".jpeg")
-                    or str(file_path).endswith(".JPEG")
-                ):
+                if str(file_path).lower().endswith((".png", ".jpg", ".jpeg")):
                     try:
                         self.copy_file(file_path)
+                        self.ui.btn_delete_image.setEnabled(True)
                     except Exception as e:
                         QMessageBox.critical(
                             self,
@@ -795,6 +817,11 @@ class frm_vehicle(QDialog):
     def enable_form_fields(self):
         self.set_form_fields_state(True)
         self.is_editing = True if self.edit else False
+        self.ui.btn_delete_image.setEnabled(
+            True
+            if not self.ui.lbl_image.pixmap().isNull() and self.is_editing
+            else False
+        )
 
     def get_filtered_workorders(self):
         # Empty the list of workorders
@@ -902,6 +929,7 @@ class frm_vehicle(QDialog):
         if "error" in response:
             raise Exception(response.get("error"))
         if response:
+            self.image_name = response[0]
             response = self.files_controller.get_file(
                 self.auth_manager.token,
                 self.path_subfolder_image,
@@ -909,8 +937,12 @@ class frm_vehicle(QDialog):
             )
             try:
                 self.set_image(None, response)
+                self.ui.btn_delete_image.setEnabled(True)
             except Exception as e:
                 print(f"No se pudo abrir el archivo:\n{e}")
+        else:
+            self.set_image(None, None)
+            self.ui.btn_delete_image.setEnabled(False)
 
         self.last_inspection = self.inspections_controller.get_last_inspection(
             self.auth_manager.token, self.id
@@ -1324,6 +1356,12 @@ class frm_vehicle(QDialog):
 
     def on_task_finished(self):
         self.loading_dialog.close()
+        print(self.ui.lbl_image.pixmap().isNull())
+        self.ui.btn_delete_image.setEnabled(
+            True
+            if not self.ui.lbl_image.pixmap().isNull() and self.is_editing
+            else False
+        )
         self.setEnabled(True)
         self.data_update.emit()
 
@@ -1379,7 +1417,15 @@ class frm_vehicle(QDialog):
         self.vehicle = response.get("vehicle")
         self.id = self.vehicle.get("id")
         self.path_subfolder_image = f"{self.company_id}/vehicles/{self.id}/photos/image"
-        if self.path_tmp.exists() and any(self.path_tmp.iterdir()) and self.path_image.exists():
+        if self.should_delete_image:
+            self.delete_image()
+            self.should_delete_image = False
+            return
+        if (
+            self.path_tmp.exists()
+            and any(self.path_tmp.iterdir())
+            and self.path_image.exists()
+        ):
             path_tmp_image = self.path_tmp / self.path_image.name
             file_name = None
             if path_tmp_image.name.lower().endswith(".png"):
@@ -1465,8 +1511,10 @@ class frm_vehicle(QDialog):
                     Qt.TransformationMode.SmoothTransformation,
                 )
             )
+            return
         if image:
             self.image_pixmap = QPixmap()
+
             self.image_pixmap.loadFromData(image)
             self.ui.lbl_image.setPixmap(
                 self.image_pixmap.scaled(
@@ -1475,6 +1523,8 @@ class frm_vehicle(QDialog):
                     Qt.TransformationMode.SmoothTransformation,
                 )
             )
+            return
+        self.ui.lbl_image.setPixmap(QPixmap())
 
     def update_tab(self, index):
         self.auth_manager.is_token_expired(self)
