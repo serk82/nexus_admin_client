@@ -939,7 +939,7 @@ class frm_vehicle(QDialog):
                 self.set_image(None, response)
                 self.ui.btn_delete_image.setEnabled(True)
             except Exception as e:
-                print(f"No se pudo abrir el archivo:\n{e}")
+                raise Exception(e)
         else:
             self.set_image(None, None)
             self.ui.btn_delete_image.setEnabled(False)
@@ -1356,7 +1356,6 @@ class frm_vehicle(QDialog):
 
     def on_task_finished(self):
         self.loading_dialog.close()
-        print(self.ui.lbl_image.pixmap().isNull())
         self.ui.btn_delete_image.setEnabled(
             True
             if not self.ui.lbl_image.pixmap().isNull() and self.is_editing
