@@ -45,7 +45,7 @@ def crear_carpeta_tmp():
 def obtener_python_path():
     sistema = platform.system()
     if sistema == "Windows":
-        return os.path.abspath("venv\\Scripts\\python.exe")
+        return os.path.abspath("venv")
     else:
         return os.path.abspath("venv/bin/python")
 
