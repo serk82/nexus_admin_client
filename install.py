@@ -182,23 +182,28 @@ def crear_acceso_linux(nombre, ruta_app, ruta_venv, icono_path=None):
 
 def crear_acceso_windows(nombre, ruta_app, ruta_venv, icono_path=None):
     import winshell
+    from pathlib import Path
     from win32com.client import Dispatch
 
-    # Usar pythonw.exe para evitar abrir la consola
-    ruta_pythonw = os.path.join(ruta_venv, "Scripts", "pythonw.exe")
-    if not os.path.exists(ruta_pythonw):
+    # Convertir rutas a Path para más legibilidad
+    ruta_pythonw = Path(ruta_venv) / "Scripts" / "pythonw.exe"
+    ruta_app = Path(ruta_app)
+    acceso_path = Path(winshell.desktop()) / f"{nombre}.lnk"
+
+    if not ruta_pythonw.exists():
         raise FileNotFoundError(f"No se encontró pythonw.exe en: {ruta_pythonw}")
 
-    desktop = winshell.desktop()
-    acceso_path = os.path.join(desktop, f"{nombre}.lnk")
-
     shell = Dispatch("WScript.Shell")
-    acceso = shell.CreateShortCut(acceso_path)
-    acceso.Targetpath = ruta_pythonw
+    acceso = shell.CreateShortCut(str(acceso_path))
+    acceso.Targetpath = str(ruta_pythonw)
     acceso.Arguments = f'"{ruta_app}"'
-    acceso.WorkingDirectory = os.path.dirname(ruta_app)
-    if icono_path and os.path.exists(icono_path):
-        acceso.IconLocation = icono_path
+    acceso.WorkingDirectory = str(ruta_app.parent)
+
+    if icono_path:
+        icono_path = Path(icono_path)
+        if icono_path.exists():
+            acceso.IconLocation = str(icono_path)
+
     acceso.save()
 
     print(f"📎 Acceso directo creado en el escritorio: {acceso_path}")
@@ -238,9 +243,7 @@ def main():
 
             crear_acceso_directo("Nexus-Admin", ruta_app, ruta_venv, icono_path)
 
-            print(
-                "🚀 Instalación completada."
-            )
+            print("🚀 Instalación completada.")
             break
         else:
             print("❌ No se pudo conectar al servidor. Intente otra IP.")
