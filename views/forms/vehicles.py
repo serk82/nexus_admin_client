@@ -166,12 +166,14 @@ class frm_vehicles(QDialog):
                 self.ui.txt_search.text(),
             )
         all_current_kms = get_kms_vehicles()
+        all_current_kms = None
         for item in data:
             current_kms = "0"
-            for vehicle in all_current_kms.findall("GRUA"):
-                if vehicle.find("MATRICULA").text == item.get("license_plate"):
-                    current_kms = get_format_miles(vehicle.find("KMS").text)
-                    break
+            if all_current_kms is not None:
+                for vehicle in all_current_kms.findall("GRUA"):
+                    if vehicle.find("MATRICULA").text == item.get("license_plate"):
+                        current_kms = get_format_miles(vehicle.find("KMS").text)
+                        break
             row = [
                 QStandardItem(str(item.get("id"))),
                 QStandardItem(item.get("alias")),

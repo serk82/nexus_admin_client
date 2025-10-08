@@ -12,6 +12,7 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem, QColor
 from PyQt6.QtWidgets import (
     QDialog,
     QAbstractItemView,
+    QMessageBox,
 )
 from PyQt6.QtCore import Qt
 from views.forms_py import Ui_frm_notifications
@@ -106,6 +107,10 @@ class frm_notifications(QDialog):
         vehicles = self.vehicles_controller.get_vehicles(
             self.auth_manager.token, company.get("id")
         )
+        if self.all_current_kms is None:
+            QMessageBox.information(
+                self, " ", "No se han podido obtener los KMS actuales.\n\nPor tanto, no se comprobarán ni mostrarán las revisiones por KMS."
+            )
         vehicle_items = []
         for vehicle in vehicles:
             vehicle_item = QStandardItem(vehicle.get("alias"))
@@ -115,9 +120,10 @@ class frm_notifications(QDialog):
             tachograph_item = self.check_tachograph(vehicle)
             if tachograph_item:
                 vehicle_item.appendRow(tachograph_item)
-            inspection_kms_item = self.check_inspection(vehicle)
-            if inspection_kms_item:
-                vehicle_item.appendRow(inspection_kms_item)
+            if self.all_current_kms is not None:
+                inspection_kms_item = self.check_inspection(vehicle)
+                if inspection_kms_item:
+                    vehicle_item.appendRow(inspection_kms_item)
             if vehicle_item.rowCount() > 0:
                 vehicle_items.append(vehicle_item)
         return vehicle_items

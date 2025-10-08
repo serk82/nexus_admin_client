@@ -62,6 +62,16 @@ def show_error_dialog(parent, error_message, error_details):
     box.exec()
 
 
+def show_info_dialog(parent, title, message):
+    from PyQt6.QtWidgets import QMessageBox
+
+    box = QMessageBox(parent)
+    box.setIcon(QMessageBox.Icon.Information)
+    box.setWindowTitle(title)
+    box.setText(message)
+    box.exec()
+
+
 def delete_temporary_folder():
     import shutil, sys
     from pathlib import Path

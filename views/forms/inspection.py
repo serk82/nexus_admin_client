@@ -44,7 +44,9 @@ class frm_inspection(QDialog):
 
     def add(self):
         inspection = self.collect_inspection_data()
-        self.inspection_controller.add_inspection(self.auth_manager.token, inspection)
+        return self.inspection_controller.add_inspection(
+            self.auth_manager.token, inspection
+        )
 
     def collect_inspection_data(self):
         return {
@@ -69,10 +71,16 @@ class frm_inspection(QDialog):
         }
 
     def handle_error(self, error_message, error_details):
-        # Función para manejar errores
         self.loading_dialog.close()
         show_error_dialog(self, error_message, error_details)
         self.setEnabled(True)
+
+    def handle_info_user(self, title, message):
+        print(f"handle_info_user: {title} - {message}")
+        self.loading_dialog.close()
+        show_info_dialog(self, title, message)
+        self.setEnabled(True)
+        print("handle_info_user finished")
 
     def load_inspection(self):
         self.inspection = self.inspection_controller.get_inspection(
@@ -133,6 +141,7 @@ class frm_inspection(QDialog):
             self.loading_dialog.show()
             self.hilo = TaskThread(self.add)
             self.hilo.error.connect(self.handle_error)
+            self.hilo.show_message_info.connect(self.handle_info_user)
             self.hilo.finished.connect(self.on_task_finished)
             self.hilo.start()
 
@@ -159,6 +168,8 @@ class frm_inspection(QDialog):
 
     def save(self):
         inspection = self.collect_inspection_data()
-        self.inspection_controller.update_inspection(
+        response = self.inspection_controller.update_inspection(
             self.auth_manager.token, inspection
         )
+        if "error" in response:
+            raise Exception(response.get("error"))

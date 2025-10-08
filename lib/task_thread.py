@@ -21,7 +21,10 @@ class TaskThread(QThread):
 
     def run(self):
         result = self.task()
-        if result:
+        if isinstance(result, dict):
+            if "error" in result:
+                self.show_message_info.emit(" ", result.get("error"))
+        elif isinstance(result, str):
             self.file_ready.emit(result)
         self.finished.emit()
 
