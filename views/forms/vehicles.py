@@ -166,7 +166,6 @@ class frm_vehicles(QDialog):
                 self.ui.txt_search.text(),
             )
         all_current_kms = get_kms_vehicles()
-        all_current_kms = None
         for item in data:
             current_kms = "0"
             if all_current_kms is not None:
