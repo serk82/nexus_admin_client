@@ -237,9 +237,9 @@ def main():
             ruta_app = os.path.abspath("app.py")
             ruta_venv = obtener_python_path()
             if platform.system() == "Windows":
-                icono_path = "img/logo.ico"
+                icono_path = os.path.abspath("img/logo.ico")
             else:
-                icono_path = "img/logo.png"
+                icono_path = os.path.abspath("img/logo.png")
 
             crear_acceso_directo("Nexus-Admin", ruta_app, ruta_venv, icono_path)
 
