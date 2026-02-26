@@ -34,6 +34,9 @@ class frm_notifications(QDialog):
         self.vehicles_controller = VehiclesController()
         self.today = datetime.now().date()
         self.all_current_kms = get_kms_vehicles()
+        self.last_inspections = self.inspections_controller.get_last_inspections(
+            self.auth_manager.token
+        )
 
         self.user = self.users_controller.get_user_by_id(
             self.auth_manager.token, self.auth_manager.user_id
@@ -109,7 +112,9 @@ class frm_notifications(QDialog):
         )
         if self.all_current_kms is None:
             QMessageBox.information(
-                self, " ", "No se han podido obtener los KMS actuales.\n\nPor tanto, no se comprobarán ni mostrarán las revisiones por KMS."
+                self,
+                " ",
+                "No se han podido obtener los KMS actuales.\n\nPor tanto, no se comprobarán ni mostrarán las revisiones por KMS.",
             )
         vehicle_items = []
         for vehicle in vehicles:
@@ -246,9 +251,15 @@ class frm_notifications(QDialog):
         return None
 
     def get_next_kms_inspection(self, vehicle_id, target_kms):
-        last_inspection = self.inspections_controller.get_last_inspection(
-            self.auth_manager.token, vehicle_id
-        )
+        for inspection in self.last_inspections:
+            if inspection.get("vehicle_id") == vehicle_id:
+                last_inspection = inspection
+                break
+        else:
+            last_inspection = None
+        #last_inspection = self.inspections_controller.get_last_inspection(
+        #    self.auth_manager.token, vehicle_id
+        #)
         next_inspection = (
             target_kms + last_inspection.get("kms")
             if last_inspection is not None
