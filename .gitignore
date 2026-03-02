@@ -9,4 +9,4 @@ scripts/
 tmp/
 test.py
 informe.pdf
-app.py
+app_local.py
