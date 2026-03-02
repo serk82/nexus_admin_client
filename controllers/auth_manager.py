@@ -52,7 +52,7 @@ class AuthManager:
         url = f"http://{API_HOST}:{API_PORT}/users/login/"
         data = {"username": username, "password": password}
         try:
-            response = requests.get(url, json=data)
+            response = requests.post(url, json=data)
             if response.status_code == 200:
                 login = response.json()
                 self.token = login["token"]
@@ -61,6 +61,7 @@ class AuthManager:
                 self.role_id = int(login["role_id"])
                 self.permissions = login["permissions"]
                 self.inactivity_limit = timedelta(seconds=float(login["inactivity"]))
+                self.record_activity()
                 return True
             else:
                 return False
